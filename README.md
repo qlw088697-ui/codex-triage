@@ -1,10 +1,27 @@
 # codex-triage
+[![test](https://github.com/qlw088697-ui/codex-triage/actions/workflows/test.yml/badge.svg)](https://github.com/qlw088697-ui/codex-triage/actions/workflows/test.yml)
 
 Community troubleshooting knowledge for OpenAI Codex.
 
-`codex-triage` analyzes `codex doctor --json` output and optional Codex/app logs, matches them against community-maintained issue signatures, and produces safe next steps plus a shareable Markdown report.
+# codex-triage
+
+Community troubleshooting knowledge for OpenAI Codex.
+
+**Status:** v0.1.0 · Node.js 20+ · MIT · CI passing
+
+`codex-triage` analyzes `codex doctor --json` output and optional Codex/app logs, matches them against community-maintained issue signatures, and provides safe troubleshooting guidance plus a shareable Markdown report.
 
 > Community project. Not affiliated with or endorsed by OpenAI.
+
+## What it helps with
+
+- Windows and WSL problems
+- Sandbox failures
+- Authentication errors
+- Network / proxy / TLS issues
+- MCP server failures
+- Installation and PATH problems
+- Codex state / SQLite problems
 
 ## Quick start
 
