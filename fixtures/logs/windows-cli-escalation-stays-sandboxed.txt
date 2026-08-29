@@ -1,0 +1,16 @@
+client=codex-tui
+platform=windows
+sandbox_permissions=require_escalated
+reviewer=guardian_subagent
+decision=approved
+
+effective_user=CodexSandboxOnline
+
+gh auth status
+Access is denied reading [USERPROFILE]\AppData\Roaming\GitHub CLI\config.yml
+
+git fetch
+SEC_E_NO_CREDENTIALS
+
+ssh work-host
+hostname could not be resolved
