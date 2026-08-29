@@ -1,0 +1,48 @@
+{
+  "id": "windows-createprocess-error-1312",
+  "title": "Windows sandbox cannot spawn a process (error 1312)",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "match": {
+    "any": [
+      {
+        "contains": "CreateProcessAsUserW failed: 1312"
+      }
+    ]
+  },
+  "summary": "The Windows sandbox runner failed during process creation because the expected logon session was unavailable.",
+  "explanation": "Treat this as a likely match, not proof of root cause.",
+  "actions": [
+    "Verify that the failure happens even for a trivial command such as `Get-Location`.",
+    "Save the current Codex version and doctor report before reinstalling or changing account policy.",
+    "Check the upstream issue for current status and version-specific workarounds."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31768",
+      "label": "openai/codex#31768"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "CreateProcessAsUserW",
+    "1312"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows Sandbox 无法创建进程（错误 1312）",
+      "summary": "Windows sandbox runner 在创建进程时找不到预期的登录会话。",
+      "explanation": "这只是高概率匹配，不等同于已经证明根因。",
+      "actions": [
+        "用 `Get-Location` 等最简单命令确认是否仍然失败。",
+        "重装或修改账户策略之前保存当前 Codex 版本与 doctor 报告。",
+        "查看上游 Issue 的最新状态与版本相关 workaround。"
+      ]
+    }
+  }
+}

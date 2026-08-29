@@ -1,0 +1,37 @@
+{
+  "id": "auth-initialization-failed",
+  "title": "Authentication subsystem failed to initialize",
+  "category": "auth",
+  "severity": "high",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "auth.load"
+      ],
+      "statuses": [
+        "fail"
+      ]
+    }
+  },
+  "summary": "Codex could not initialize its authentication manager.",
+  "actions": [
+    "Inspect the `auth.load` details before deleting or replacing credential files.",
+    "Check file access and environment-variable conflicts.",
+    "Retry login only after the underlying read/initialization error is understood."
+  ],
+  "tags": [
+    "auth",
+    "doctor"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "认证子系统初始化失败",
+      "summary": "Codex 无法初始化认证管理器。",
+      "actions": [
+        "先查看 `auth.load` 详情，不要直接删除凭据文件。",
+        "检查文件访问权限与认证环境变量冲突。",
+        "理解底层读取/初始化错误后再重新登录。"
+      ]
+    }
+  }
+}

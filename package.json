@@ -1,0 +1,36 @@
+{
+  "name": "codex-triage",
+  "version": "0.1.0",
+  "description": "Community troubleshooting knowledge layer for OpenAI Codex",
+  "type": "module",
+  "bin": {
+    "codex-triage": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "knowledge",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "npm run build --silent && node dist/cli.js",
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build --silent && node --test tests/*.test.mjs",
+    "check": "npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "codex",
+    "openai",
+    "troubleshooting",
+    "doctor",
+    "cli"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

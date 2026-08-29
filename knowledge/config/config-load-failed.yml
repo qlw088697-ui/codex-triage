@@ -1,0 +1,37 @@
+{
+  "id": "config-load-failed",
+  "title": "Codex configuration could not be loaded",
+  "category": "config",
+  "severity": "high",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "config.load"
+      ],
+      "statuses": [
+        "fail"
+      ]
+    }
+  },
+  "summary": "Codex doctor could not load the effective configuration.",
+  "actions": [
+    "Read the `config.load` details for the exact TOML/config error.",
+    "Temporarily isolate the smallest config change that reproduces the failure.",
+    "Fix the reported syntax/value problem and rerun `codex doctor --json`."
+  ],
+  "tags": [
+    "config",
+    "toml"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Codex 配置加载失败",
+      "summary": "Codex doctor 无法加载当前有效配置。",
+      "actions": [
+        "查看 `config.load` 的 details，找到具体 TOML / 配置错误。",
+        "把最近的配置改动缩小到最小可复现范围。",
+        "修复后重新运行 `codex doctor --json`。"
+      ]
+    }
+  }
+}

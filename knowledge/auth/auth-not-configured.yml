@@ -1,0 +1,42 @@
+{
+  "id": "auth-not-configured",
+  "title": "No Codex credentials were found",
+  "category": "auth",
+  "severity": "high",
+  "match": {
+    "any": [
+      {
+        "contains": "no Codex credentials were found"
+      }
+    ],
+    "doctor": {
+      "checkIds": [
+        "auth.credentials"
+      ],
+      "statuses": [
+        "fail"
+      ]
+    }
+  },
+  "summary": "Codex has no usable stored credentials or supported authentication environment variable.",
+  "actions": [
+    "Run `codex login` for ChatGPT authentication, or configure the supported API credential for your provider.",
+    "Make sure you authenticate in the same environment where Codex runs.",
+    "Rerun doctor and confirm `auth.credentials` is no longer failing."
+  ],
+  "tags": [
+    "auth",
+    "login"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "没有找到可用的 Codex 凭据",
+      "summary": "Codex 没有可用的已存储凭据，也没有检测到受支持的认证环境变量。",
+      "actions": [
+        "使用 `codex login` 登录 ChatGPT，或配置当前 provider 所需的 API 凭据。",
+        "确保登录发生在实际运行 Codex 的同一个环境。",
+        "再次运行 doctor，确认 `auth.credentials` 不再失败。"
+      ]
+    }
+  }
+}

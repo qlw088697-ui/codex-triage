@@ -1,0 +1,48 @@
+{
+  "id": "proxy-tls-dns",
+  "title": "Proxy, TLS, or DNS interference is likely",
+  "category": "network",
+  "severity": "medium",
+  "match": {
+    "any": [
+      {
+        "regex": "certificate|custom CA|ECONNRESET|connection refused|dns|proxy",
+        "flags": "i",
+        "weight": 35
+      }
+    ],
+    "doctor": {
+      "categories": [
+        "websocket",
+        "reachability"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "A network diagnostic is failing with a signature commonly associated with proxies, TLS interception, DNS, or connection policy.",
+  "actions": [
+    "Record the exact failing hostname and error class without publishing credentials or query tokens.",
+    "Check proxy environment variables and custom CA configuration.",
+    "Compare DNS resolution and HTTPS/WebSocket reachability from the same environment running Codex."
+  ],
+  "tags": [
+    "network",
+    "proxy",
+    "tls",
+    "dns"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "可能受到代理、TLS 或 DNS 影响",
+      "summary": "网络诊断失败，并出现常见于代理、TLS 拦截、DNS 或连接策略的问题特征。",
+      "actions": [
+        "记录准确的失败域名和错误类型，但不要公开凭据或 query token。",
+        "检查代理环境变量与自定义 CA。",
+        "从实际运行 Codex 的同一环境测试 DNS、HTTPS 与 WebSocket。"
+      ]
+    }
+  }
+}

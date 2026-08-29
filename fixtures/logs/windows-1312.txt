@@ -1,0 +1,3 @@
+windows sandbox: runner failed during SpawnChild:
+CreateProcessAsUserW failed: 1312
+(A specified logon session does not exist. It may already have been terminated.)

@@ -1,0 +1,35 @@
+{
+  "id": "token-exchange-failed",
+  "title": "OAuth token exchange failed",
+  "category": "auth",
+  "severity": "high",
+  "match": {
+    "any": [
+      {
+        "contains": "token_exchange_failed"
+      }
+    ]
+  },
+  "summary": "The sign-in flow reached token exchange but the exchange did not complete successfully.",
+  "actions": [
+    "Retry with a fresh login flow rather than reusing an old callback URL.",
+    "Check system clock, proxy/VPN, and whether multiple simultaneous login attempts are open.",
+    "Capture a sanitized doctor report and search upstream issues with the exact error code."
+  ],
+  "tags": [
+    "auth",
+    "oauth",
+    "token"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "OAuth token exchange 失败",
+      "summary": "登录流程已进入 token exchange，但交换没有成功完成。",
+      "actions": [
+        "重新发起一次新的登录流程，不要复用旧 callback URL。",
+        "检查系统时间、代理/VPN，以及是否同时打开了多个登录流程。",
+        "生成脱敏 doctor 报告，并用准确错误码检索上游 Issue。"
+      ]
+    }
+  }
+}

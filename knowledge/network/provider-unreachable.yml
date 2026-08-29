@@ -1,0 +1,38 @@
+{
+  "id": "provider-unreachable",
+  "title": "Model provider endpoint is unreachable",
+  "category": "network",
+  "severity": "high",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "network.provider_reachability"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "Codex doctor could not fully reach the configured model provider route.",
+  "actions": [
+    "Read the provider reachability details to identify which endpoint or route failed.",
+    "Check proxy, VPN, firewall, DNS, and custom CA configuration.",
+    "If using a custom provider, verify its base URL and required auth independently."
+  ],
+  "tags": [
+    "network",
+    "provider"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "模型 Provider 端点不可达",
+      "summary": "Codex doctor 无法完整访问当前配置的模型 provider 路由。",
+      "actions": [
+        "查看 provider reachability 详情，确认具体失败的端点/路由。",
+        "检查代理、VPN、防火墙、DNS 与自定义 CA。",
+        "若使用自定义 provider，独立验证 base URL 与认证。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "npm-global-root-mismatch",
+  "title": "npm would update a different Codex installation",
+  "category": "install",
+  "severity": "high",
+  "match": {
+    "any": [
+      {
+        "contains": "npm install -g @openai/codex would update a different install"
+      }
+    ],
+    "doctor": {
+      "checkIds": [
+        "installation"
+      ],
+      "statuses": [
+        "fail"
+      ]
+    }
+  },
+  "summary": "The Codex executable you are running is not under the npm global root that `npm install -g` would update.",
+  "actions": [
+    "Compare `running package root` and `npm package root` in the doctor report.",
+    "Fix PATH or npm prefix instead of repeatedly reinstalling into the wrong prefix.",
+    "Open a new shell and verify the executable path and version."
+  ],
+  "tags": [
+    "install",
+    "npm",
+    "path"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "npm 将更新另一个 Codex 安装位置",
+      "summary": "当前运行的 Codex 不在 `npm install -g` 实际会更新的 npm 全局目录里。",
+      "actions": [
+        "比较 doctor 中的 `running package root` 与 `npm package root`。",
+        "优先修复 PATH 或 npm prefix，而不是反复装到错误目录。",
+        "重新打开终端并核对 Codex 路径与版本。"
+      ]
+    }
+  }
+}

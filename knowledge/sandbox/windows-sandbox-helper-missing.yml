@@ -1,0 +1,39 @@
+{
+  "id": "windows-sandbox-helper-missing",
+  "title": "Windows sandbox helper or resource is missing",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "match": {
+    "any": [
+      {
+        "regex": "sandbox helper.*(missing|not found)|codex-windows-sandbox.*(missing|not found)|module could not be found",
+        "flags": "i"
+      }
+    ]
+  },
+  "summary": "A Codex Windows sandbox helper/resource appears to be missing or could not be loaded.",
+  "actions": [
+    "Do not download replacement helper binaries from third-party sources.",
+    "Repair or reinstall Codex from the same official installation channel.",
+    "Rerun doctor after reinstall and preserve the exact missing helper path if the issue remains."
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "install"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows Sandbox helper / 资源缺失",
+      "summary": "Codex 的 Windows sandbox helper 或相关资源似乎缺失或无法加载。",
+      "actions": [
+        "不要从第三方来源下载替代 helper 二进制文件。",
+        "通过同一官方安装渠道修复或重装 Codex。",
+        "重装后重新运行 doctor；若仍失败，保留准确的缺失路径。"
+      ]
+    }
+  }
+}

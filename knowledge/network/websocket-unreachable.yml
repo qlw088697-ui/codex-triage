@@ -1,0 +1,38 @@
+{
+  "id": "websocket-unreachable",
+  "title": "Responses WebSocket is unavailable",
+  "category": "network",
+  "severity": "medium",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "network.websocket_reachability"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "The WebSocket probe failed or closed immediately. HTTPS may still work, but real-time behavior can degrade.",
+  "actions": [
+    "Check whether your proxy or corporate network supports WebSocket upgrades.",
+    "Compare behavior with VPN/proxy disabled only if permitted by your environment policy.",
+    "Keep the doctor remediation and exact close/connect error in the report."
+  ],
+  "tags": [
+    "network",
+    "websocket"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Responses WebSocket 不可用",
+      "summary": "WebSocket 探测失败或握手后立即关闭；HTTPS 可能仍可用，但实时能力可能受影响。",
+      "actions": [
+        "检查代理或企业网络是否支持 WebSocket upgrade。",
+        "仅在环境政策允许时，对比关闭 VPN/代理后的表现。",
+        "在报告中保留 doctor remediation 与准确连接/关闭错误。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "windows-createprocess-error-5",
+  "title": "Windows sandbox cannot spawn a process (error 5)",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "match": {
+    "any": [
+      {
+        "contains": "CreateProcessAsUserW failed: 5"
+      }
+    ]
+  },
+  "summary": "The Windows sandbox failed before the requested command started, with Access Denied / error 5.",
+  "explanation": "Treat this as a likely match, not proof of root cause.",
+  "actions": [
+    "Confirm the same simple command works in a normal PowerShell outside Codex.",
+    "Capture `codex doctor --json` before changing Windows security policy.",
+    "Check the linked upstream reports and your Codex version for a known regression."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/26896",
+      "label": "openai/codex#26896"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "CreateProcessAsUserW"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows Sandbox 无法创建进程（错误 5）",
+      "summary": "Windows sandbox 在实际命令启动之前就失败，并返回 Access Denied / error 5。",
+      "explanation": "这只是高概率匹配，不等同于已经证明根因。",
+      "actions": [
+        "确认同一个简单命令在 Codex 外的普通 PowerShell 中能运行。",
+        "修改 Windows 安全策略前先保存 `codex doctor --json`。",
+        "结合 Codex 版本查看相关上游 Issue 是否为已知回归。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "state-database-integrity-failed",
+  "title": "Codex state database integrity check failed",
+  "category": "state",
+  "severity": "high",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "state.paths"
+      ],
+      "statuses": [
+        "fail"
+      ]
+    }
+  },
+  "summary": "Codex doctor detected a failed SQLite/state integrity check.",
+  "actions": [
+    "Identify exactly which database failed; do not treat every file under CODEX_HOME as corrupted.",
+    "Back up the affected state before attempting any repair or move.",
+    "Follow the doctor remediation and use upstream guidance for the specific database/runtime."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/39015",
+      "label": "Example: openai/codex#39015"
+    }
+  ],
+  "tags": [
+    "state",
+    "sqlite",
+    "integrity"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Codex state 数据库完整性检查失败",
+      "summary": "Codex doctor 检测到 SQLite / state 完整性检查失败。",
+      "actions": [
+        "先确认究竟是哪一个数据库失败，不要把整个 CODEX_HOME 都视为损坏。",
+        "进行任何移动/修复前备份受影响 state。",
+        "遵循 doctor remediation，并针对具体数据库/运行时查上游指导。"
+      ]
+    }
+  }
+}

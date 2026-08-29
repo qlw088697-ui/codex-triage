@@ -1,0 +1,44 @@
+{
+  "id": "duplicate-codex-install",
+  "title": "Multiple Codex executables are visible on PATH",
+  "category": "install",
+  "severity": "medium",
+  "match": {
+    "any": [
+      {
+        "contains": "PATH codex entries:"
+      }
+    ],
+    "doctor": {
+      "checkIds": [
+        "installation"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "The active shell can see more than one Codex executable, which can make updates and behavior appear inconsistent.",
+  "actions": [
+    "Inspect the `installation` doctor check to see every Codex path.",
+    "Decide which install channel should own Codex on this machine.",
+    "Remove stale PATH entries or old installs, then open a fresh shell."
+  ],
+  "tags": [
+    "install",
+    "path",
+    "duplicate"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "PATH 中存在多个 Codex 可执行文件",
+      "summary": "当前 shell 能看到多个 Codex，可导致升级后仍运行旧版本等不一致现象。",
+      "actions": [
+        "查看 doctor 的 `installation` 检查，确认所有 Codex 路径。",
+        "决定机器上由哪个安装渠道管理 Codex。",
+        "清理旧 PATH 或旧安装后重新打开终端。"
+      ]
+    }
+  }
+}

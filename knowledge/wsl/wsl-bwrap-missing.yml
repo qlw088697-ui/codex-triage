@@ -1,0 +1,48 @@
+{
+  "id": "wsl-bwrap-missing",
+  "title": "Bundled bwrap is missing in WSL mode",
+  "category": "wsl",
+  "severity": "high",
+  "platforms": [
+    "wsl"
+  ],
+  "match": {
+    "all": [
+      {
+        "contains": "bwrap"
+      },
+      {
+        "contains": "ENOENT"
+      }
+    ]
+  },
+  "summary": "Codex/desktop WSL startup logs indicate the bundled bubblewrap executable could not be found.",
+  "actions": [
+    "Confirm the log specifically names the bundled `bwrap` relocation/spawn path.",
+    "Avoid substituting arbitrary binaries into the app bundle.",
+    "Check the upstream Windows/WSL issue and update/repair Codex before changing WSL security settings."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/35436",
+      "label": "openai/codex#35436"
+    }
+  ],
+  "tags": [
+    "wsl",
+    "bwrap",
+    "desktop"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "WSL 模式缺少 bundled bwrap",
+      "summary": "Codex / Desktop 的 WSL 启动日志显示 bundled bubblewrap 可执行文件不存在。",
+      "actions": [
+        "确认日志明确指向 bundled `bwrap` 的 relocation / spawn 路径。",
+        "不要向应用包里手工塞入来源不明的替代二进制文件。",
+        "先查看上游 Windows/WSL Issue 并更新/修复 Codex，再考虑调整 WSL 安全设置。"
+      ]
+    }
+  }
+}

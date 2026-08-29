@@ -1,0 +1,54 @@
+{
+  "id": "wsl-oauth-localhost-callback",
+  "title": "WSL OAuth localhost callback may be unreachable",
+  "category": "auth",
+  "severity": "high",
+  "platforms": [
+    "wsl"
+  ],
+  "match": {
+    "any": [
+      {
+        "contains": "localhost:1455"
+      },
+      {
+        "contains": "/auth/callback"
+      },
+      {
+        "contains": "State mismatch"
+      }
+    ]
+  },
+  "summary": "The browser callback appears to be crossing Windows/WSL or another remote boundary, so localhost may refer to the wrong machine/context.",
+  "explanation": "Treat this as a likely match, not proof of root cause.",
+  "actions": [
+    "Confirm where the Codex login listener is running and where the browser is running.",
+    "For remote/headless flows, prefer an authentication method designed for that environment when available.",
+    "Check for stale VS Code/devcontainer port forwarding on port 1455 before retrying."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/12263",
+      "label": "openai/codex#12263"
+    }
+  ],
+  "tags": [
+    "auth",
+    "wsl",
+    "oauth",
+    "localhost"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "WSL OAuth localhost 回调可能不可达",
+      "summary": "浏览器回调可能跨越了 Windows / WSL 或远程环境边界，导致 localhost 指向错误的上下文。",
+      "explanation": "这只是高概率匹配，不等同于已经证明根因。",
+      "actions": [
+        "确认 Codex 登录监听器运行在哪里，以及浏览器运行在哪里。",
+        "远程/无头环境优先选择适合该环境的认证方式。",
+        "重试前检查 VS Code / devcontainer 是否残留 1455 端口转发。"
+      ]
+    }
+  }
+}

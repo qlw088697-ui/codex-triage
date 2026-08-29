@@ -1,0 +1,37 @@
+{
+  "id": "mcp-server-failed",
+  "title": "MCP configuration has a required failure",
+  "category": "mcp",
+  "severity": "high",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "mcp.config"
+      ],
+      "statuses": [
+        "fail"
+      ]
+    }
+  },
+  "summary": "At least one required MCP input, command, environment variable, or endpoint failed validation/reachability.",
+  "actions": [
+    "Use the `mcp.config` details to identify the specific server and missing input.",
+    "Verify the MCP command or URL outside Codex without exposing bearer tokens.",
+    "Disable only the affected server if it is optional; avoid changing unrelated Codex settings."
+  ],
+  "tags": [
+    "mcp",
+    "config"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "MCP 配置存在必需项失败",
+      "summary": "至少一个必需的 MCP 输入、命令、环境变量或端点未通过验证/可达性检查。",
+      "actions": [
+        "根据 `mcp.config` 详情定位具体 server 与缺失项。",
+        "在不暴露 bearer token 的前提下独立验证 MCP 命令或 URL。",
+        "若该 server 并非必需，可只停用受影响项，不要改动无关 Codex 配置。"
+      ]
+    }
+  }
+}

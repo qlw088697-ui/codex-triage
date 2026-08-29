@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "1784263670s since unix epoch",
+  "overallStatus": "warning",
+  "codexVersion": "0.144.5",
+  "checks": {
+    "auth.credentials": {
+      "id": "auth.credentials",
+      "category": "auth",
+      "status": "ok",
+      "summary": "auth is configured",
+      "details": {"auth env vars present": "OPENAI_API_KEY"},
+      "remediation": null,
+      "durationMs": 0
+    },
+    "network.websocket_reachability": {
+      "id": "network.websocket_reachability",
+      "category": "websocket",
+      "status": "warning",
+      "summary": "Responses WebSocket failed; HTTPS fallback may still work",
+      "details": {"error": "connect failed"},
+      "remediation": "Check proxy, VPN, firewall, DNS, custom CA, and WebSocket policy support.",
+      "durationMs": 1200
+    }
+  }
+}

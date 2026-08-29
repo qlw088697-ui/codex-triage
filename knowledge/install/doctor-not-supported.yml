@@ -1,0 +1,37 @@
+{
+  "id": "doctor-not-supported",
+  "title": "Installed Codex does not support doctor --json",
+  "category": "install",
+  "severity": "medium",
+  "match": {
+    "any": [
+      {
+        "contains": "unexpected argument '--json' found"
+      },
+      {
+        "contains": "unexpected argument 'doctor'"
+      }
+    ]
+  },
+  "summary": "The installed Codex build appears older than the doctor JSON interface expected by codex-triage.",
+  "actions": [
+    "Run `codex --version`.",
+    "Upgrade Codex through the same installation channel that currently owns the executable.",
+    "Retry `codex doctor --json` before using codex-triage."
+  ],
+  "tags": [
+    "install",
+    "doctor"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "当前 Codex 不支持 doctor --json",
+      "summary": "已安装的 Codex 版本似乎早于 codex-triage 依赖的 doctor JSON 接口。",
+      "actions": [
+        "运行 `codex --version`。",
+        "通过当前 Codex 所属的同一安装渠道进行升级。",
+        "先确认 `codex doctor --json` 可以运行，再执行 codex-triage。"
+      ]
+    }
+  }
+}

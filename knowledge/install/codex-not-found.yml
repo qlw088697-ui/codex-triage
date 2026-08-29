@@ -1,0 +1,46 @@
+{
+  "id": "codex-not-found",
+  "title": "Codex command is not installed or not on PATH",
+  "category": "install",
+  "severity": "high",
+  "match": {
+    "any": [
+      {
+        "contains": "codex: command not found"
+      },
+      {
+        "contains": "'codex' is not recognized"
+      }
+    ]
+  },
+  "summary": "The codex executable could not be found from the current shell.",
+  "explanation": "This usually means Codex is not installed in this environment or the package-manager bin directory is missing from PATH.",
+  "actions": [
+    "Confirm which shell/environment you intend to run Codex from.",
+    "Install or reinstall the official Codex CLI using a supported method.",
+    "Open a new shell and verify `codex --version` before retrying triage."
+  ],
+  "links": [
+    {
+      "type": "docs",
+      "url": "https://github.com/openai/codex",
+      "label": "openai/codex"
+    }
+  ],
+  "tags": [
+    "install",
+    "path"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "未找到 Codex 命令",
+      "summary": "当前 shell 无法找到 codex 可执行文件。",
+      "explanation": "通常是当前环境尚未安装 Codex，或包管理器的可执行目录没有加入 PATH。",
+      "actions": [
+        "确认你希望在哪个 shell / 环境里运行 Codex。",
+        "使用官方支持的方式安装或重装 Codex CLI。",
+        "重新打开终端，先确认 `codex --version` 可用。"
+      ]
+    }
+  }
+}

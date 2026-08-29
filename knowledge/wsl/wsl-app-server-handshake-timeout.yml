@@ -1,0 +1,48 @@
+{
+  "id": "wsl-app-server-handshake-timeout",
+  "title": "Codex app-server handshake timed out in WSL mode",
+  "category": "wsl",
+  "severity": "high",
+  "platforms": [
+    "wsl"
+  ],
+  "match": {
+    "any": [
+      {
+        "contains": "Codex app-server initialize handshake timed out"
+      }
+    ]
+  },
+  "summary": "The desktop/app transport started but app-server initialization did not complete within the expected window.",
+  "explanation": "This symptom has multiple possible causes, including WSL packaging problems, state database work, and stale/mismatched app-server components.",
+  "actions": [
+    "Keep nearby log lines that explain why initialization is still pending; the timeout alone is not enough to identify root cause.",
+    "Check for `bwrap`, state backfill, SQLite, or version-mismatch messages before deleting state.",
+    "Compare with the current upstream WSL handshake issue."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/39169",
+      "label": "openai/codex#39169"
+    }
+  ],
+  "tags": [
+    "wsl",
+    "app-server",
+    "handshake",
+    "desktop"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "WSL 模式下 app-server 握手超时",
+      "summary": "Desktop / app transport 已启动，但 app-server 初始化未在预期时间内完成。",
+      "explanation": "这个症状可能由多种原因触发，包括 WSL 打包问题、state 数据库处理以及 app-server 组件版本不一致。",
+      "actions": [
+        "保留超时前后解释“仍在等待什么”的日志；单独一个 timeout 不足以确定根因。",
+        "删除 state 前先检查 `bwrap`、state backfill、SQLite 或版本不一致信息。",
+        "对照当前上游 WSL handshake Issue。"
+      ]
+    }
+  }
+}

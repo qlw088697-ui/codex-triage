@@ -1,0 +1,3 @@
+bundled_executable_relocation_failed failedExecutableName=bwrap errorCode=ENOENT
+[AppServerConnection] Initialize handshake still pending durationMs=30002
+Codex app-server initialize handshake timed out

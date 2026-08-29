@@ -1,0 +1,38 @@
+{
+  "id": "ripgrep-missing",
+  "title": "Codex search command could not be verified",
+  "category": "search",
+  "severity": "medium",
+  "match": {
+    "doctor": {
+      "checkIds": [
+        "runtime.search"
+      ],
+      "statuses": [
+        "warning"
+      ]
+    }
+  },
+  "summary": "Codex could not verify the configured ripgrep/search command.",
+  "actions": [
+    "Inspect `search command` and `search provider` in the doctor details.",
+    "If using a packaged Codex build, repair/reinstall the package rather than replacing bundled files manually.",
+    "If Codex is using system search, make sure `rg --version` works in the same shell."
+  ],
+  "tags": [
+    "search",
+    "ripgrep",
+    "rg"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Codex 无法验证搜索命令",
+      "summary": "Codex 无法验证当前配置的 ripgrep / 搜索命令。",
+      "actions": [
+        "查看 doctor 中的 `search command` 与 `search provider`。",
+        "若使用打包版本，优先修复/重装软件包，而不是手工替换 bundled 文件。",
+        "若使用系统 rg，确认同一 shell 下 `rg --version` 正常。"
+      ]
+    }
+  }
+}
