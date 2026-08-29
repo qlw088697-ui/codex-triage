@@ -1,0 +1,6 @@
+node_modules/
+dist/
+coverage/
+*.log
+codex-triage-report.md
+.DS_Store

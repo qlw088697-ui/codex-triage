@@ -1,0 +1,34 @@
+name: New troubleshooting rule
+description: Suggest a Codex error signature or known issue
+labels: [knowledge]
+body:
+  - type: textarea
+    id: error
+    attributes:
+      label: Exact error message
+      description: Remove secrets, usernames, and private repository information.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options: [Windows, macOS, Linux, WSL]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Codex version
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Relevant codex doctor checks
+  - type: input
+    id: upstream
+    attributes:
+      label: Existing openai/codex issue
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Known safe workaround or next step
