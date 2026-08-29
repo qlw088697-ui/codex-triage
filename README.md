@@ -3,7 +3,6 @@
 
 Community troubleshooting knowledge for OpenAI Codex.
 
-# codex-triage
 
 Community troubleshooting knowledge for OpenAI Codex.
 
@@ -22,7 +21,7 @@ Community troubleshooting knowledge for OpenAI Codex.
 - MCP server failures
 - Installation and PATH problems
 - Codex state / SQLite problems
-
+- approved Windows CLI escalation remaining inside the sandbox;
 ## Quick start
 
 ```bash
@@ -163,7 +162,7 @@ This lets contributors add knowledge without editing the matching engine.
 
 ## v0.1 knowledge coverage
 
-The starter set includes 20 signatures across:
+The starter set includes 21 signatures across:
 
 - missing/duplicate/mismatched Codex installations;
 - unsupported `doctor --json` on older builds;
@@ -226,7 +225,7 @@ The runtime itself has zero npm dependencies. v0.1 knowledge files use JSON-comp
 
 ## Roadmap
 
-- **v0.1** — doctor parser, log matching, 20 rules, confidence score, EN/zh-CN output, Markdown report, redaction.
+- **v0.1** — doctor parser, log matching, 21 rules, confidence score, EN/zh-CN output, Markdown report, redaction.
 - **v0.2** — richer version constraints, rule fixtures, issue metadata refresh, improved platform detection.
 - **v0.3** — `explain <error>`, duplicate-issue assistance, offline FAQ/search.
 - **v1.0** — stable rule schema, broader platform coverage, community maintainers.
