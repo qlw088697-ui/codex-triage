@@ -1,0 +1,68 @@
+{
+  "id": "windows-cli-escalation-stays-sandboxed",
+  "title": "Approved Windows CLI escalation still runs inside sandbox",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "match": {
+    "any": [
+      {
+        "contains": "SEC_E_NO_CREDENTIALS",
+        "weight": 35
+      },
+      {
+        "contains": "GitHub CLI\\config.yml",
+        "weight": 35
+      },
+      {
+        "contains": "hostname could not be resolved",
+        "weight": 25
+      }
+    ],
+    "all": [
+      {
+        "regex": "CodexSandbox(?:Offline|Online)",
+        "weight": 30
+      }
+    ]
+  },
+  "summary": "An approved escalated command in the Windows Codex CLI may still be executing as a sandbox user, preventing access to the user's GitHub, SSH, or Git credentials.",
+  "explanation": "This pattern has been reported upstream when Windows CLI escalation is approved but the command remains inside the Codex sandbox. Similar commands may still work in Codex Desktop.",
+  "actions": [
+    "Confirm whether the same credential-dependent command works in Codex Desktop but fails in the terminal CLI.",
+    "Record the Codex CLI version and relevant sandbox configuration before changing permissions.",
+    "Avoid broadly disabling sandbox protections as a first troubleshooting step.",
+    "Check the linked upstream issue for fixes or version-specific workarounds."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41161",
+      "label": "openai/codex#41161"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "cli",
+    "escalation",
+    "github-cli",
+    "ssh",
+    "credentials"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows CLI 已批准提权但命令仍在 Sandbox 中运行",
+      "summary": "Windows Codex CLI 中已经批准的提权命令仍可能以 Codex Sandbox 用户运行，因此无法访问用户自己的 GitHub、SSH 或 Git 凭据。",
+      "explanation": "上游已有这种问题报告：CLI 的提权请求获批后仍留在 Sandbox 内，而同样操作在 Codex Desktop 中可以正常运行。",
+      "actions": [
+        "确认同一个需要凭据的命令是否在 Codex Desktop 中正常、但在终端 CLI 中失败。",
+        "修改权限之前记录 Codex CLI 版本和相关 Sandbox 配置。",
+        "不要把完全关闭 Sandbox 作为第一排障手段。",
+        "查看关联的上游 Issue，确认最新修复状态或特定版本 workaround。"
+      ]
+    }
+  }
+}
