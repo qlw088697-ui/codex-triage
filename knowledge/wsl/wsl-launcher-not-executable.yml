@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 2,
+  "id": "wsl-launcher-not-executable",
+  "title": "WSL launcher binary lacks execute permission",
+  "category": "wsl",
+  "severity": "medium",
+  "platforms": [
+    "wsl"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/28074",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "codex-desktop-wsl"
+      },
+      {
+        "contains": "Permission denied"
+      }
+    ]
+  },
+  "summary": "On fresh installs the WSL integration fails because the launcher binary under /mnt/c/Users/<user>/.codex/bin/wsl/codex-desktop-wsl lacks the execute bit, so Desktop-to-WSL launches fail with permission denied.",
+  "explanation": "The launcher is staged on the Windows drive mount, where the execute bit can be lost; upstream reports it even on completely fresh installs. Because the path lives on /mnt/c, DrvFs metadata settings affect whether chmod sticks.",
+  "actions": [
+    "Add the execute bit: chmod +x /mnt/c/Users/<user>/.codex/bin/wsl/codex-desktop-wsl.",
+    "If chmod does not stick on /mnt/c, enable DrvFs metadata in /etc/wsl.conf or move the launcher to the native WSL filesystem.",
+    "Confirm the Desktop WSL integration launches afterwards; check the upstream issue if fresh installs still break."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/28074",
+      "label": "openai/codex#28074"
+    }
+  ],
+  "tags": [
+    "wsl",
+    "permission",
+    "desktop",
+    "launcher"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "WSL 启动器缺少执行权限",
+      "summary": "全新安装后 WSL 集成即失败：/mnt/c/Users/<user>/.codex/bin/wsl/codex-desktop-wsl 启动器缺少执行位，Desktop 到 WSL 的启动全部报权限拒绝。",
+      "explanation": "启动器被放置在 Windows 盘挂载上，执行位容易丢失；上游报告全新安装也会复现。由于路径在 /mnt/c 上，chmod 能否生效还取决于 DrvFs 的 metadata 设置。",
+      "actions": [
+        "补执行位：chmod +x /mnt/c/Users/<user>/.codex/bin/wsl/codex-desktop-wsl。",
+        "如果 /mnt/c 上 chmod 不生效，在 /etc/wsl.conf 启用 DrvFs metadata，或把启动器挪到 WSL 原生文件系统。",
+        "之后确认 Desktop 的 WSL 集成能正常启动；全新安装仍失败就跟进上游 Issue。"
+      ]
+    }
+  }
+}

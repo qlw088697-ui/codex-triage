@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "id": "wsl-state-database-damaged-on-mnt-c",
+  "title": "WSL CLI reports damaged local database when sharing Windows App state on /mnt/c",
+  "category": "wsl",
+  "severity": "medium",
+  "platforms": [
+    "wsl"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/23251",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "local database appears to be damaged"
+      },
+      {
+        "contains": "/mnt/c"
+      }
+    ]
+  },
+  "summary": "When the WSL CLI shares the Windows Codex App state stored under /mnt/c/Users/<user>/.codex, the SQLite database on the Windows drive mount gets reported as damaged and Codex refuses to start.",
+  "explanation": "SQLite on the /mnt/c DrvFs/9p mount is unreliable - the same filesystem factor upstream suspects in WAL corruption reports. Windows and WSL writing the same state database across the mount leads to 'local database appears to be damaged' errors pointing at /mnt/c paths.",
+  "actions": [
+    "Back up the state directory before anything else.",
+    "Give WSL its own CODEX_HOME on the native Linux filesystem (e.g. ~/.codex inside WSL) instead of sharing the Windows App state.",
+    "Expect to re-login inside WSL after the move; session history from the Windows side stays with the Windows installation.",
+    "Keep projects on the native WSL filesystem too - /mnt/c is slow and fragile for both state and worktrees."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/23251",
+      "label": "openai/codex#23251"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/30957",
+      "label": "openai/codex#30957"
+    }
+  ],
+  "tags": [
+    "wsl",
+    "state",
+    "mnt-c",
+    "sqlite"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "WSL CLI 共享 /mnt/c 上的 Windows App 状态时报告数据库损坏",
+      "summary": "WSL 里的 CLI 共享 Windows Codex App 存放在 /mnt/c/Users/<user>/.codex 的状态时，Windows 盘挂载上的 SQLite 数据库被报告损坏，Codex 拒绝启动。",
+      "explanation": "/mnt/c 的 DrvFs/9p 挂载上跑 SQLite 不可靠——上游怀疑 WAL 损坏时也指向同一文件系统因素。Windows 与 WSL 跨挂载写同一个状态库，就会出现指向 /mnt/c 路径的 'local database appears to be damaged' 错误。",
+      "actions": [
+        "先备份状态目录，再做任何操作。",
+        "给 WSL 独立的 CODEX_HOME，放在 WSL 原生 Linux 文件系统（如 WSL 内的 ~/.codex），不再共享 Windows App 状态。",
+        "移动后需要在 WSL 内重新登录；Windows 侧的会话历史留在 Windows 安装里。",
+        "项目也建议放在 WSL 原生文件系统——/mnt/c 对状态和工作树都又慢又脆。"
+      ]
+    }
+  }
+}
