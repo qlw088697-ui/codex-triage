@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-namespace-tool-routing",
+  "title": "Custom Responses provider rejects requests over native namespace tools",
+  "category": "provider",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/32318",
+  "match": {
+    "any": [
+      {
+        "contains": "No endpoints found that support the native"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex serializes proprietary namespace tools into Responses requests for custom providers such as OpenRouter; the provider rejects endpoint selection with HTTP 400 before the model sees any prompt, intermittently and across Codex 0.142.x-0.144.x.",
+  "explanation": "Every OpenRouter model fails identically because the common request envelope is rejected before an underlying endpoint is selected. Disabling collab/multi_agent/apps/connectors/MCP features does not help - the namespace tool is still serialized, and the error does not name the offending namespace. An otherwise-identical binary and profile can succeed in one session and fail after relaunch, so the trigger is not a fixed feature flag. Changing the prompt or model cannot help; the request dies before generation.",
+  "actions": [
+    "If the provider also offers the Chat Completions API, switch the profile to wire_api=\"chat\" - that protocol has no namespace tool layer (protocol-level reasoning, not verified in the report).",
+    "On OpenRouter specifically, pick a model whose endpoints support the native namespace tool type per their provider-selection docs, or route to a provider that does.",
+    "Track the upstream issue - the requested fixes (flatten namespace tools for generic providers, expose the serialized tool list in doctor output) are exactly what this diagnosis needs."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/32318",
+      "label": "openai/codex#32318"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/23186",
+      "label": "openai/codex#23186"
+    }
+  ],
+  "tags": [
+    "provider",
+    "openrouter",
+    "namespace",
+    "responses",
+    "routing"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "自定义 Responses 提供商因原生 namespace 工具拒绝请求",
+      "summary": "Codex 把专有的 namespace 工具序列化进发给 OpenRouter 等自定义提供商的 Responses 请求里；提供商在端点选择阶段就以 HTTP 400 拒绝，模型完全看不到提示词，且在 0.142.x-0.144.x 间间歇性出现。",
+      "explanation": "OpenRouter 上所有模型都报同样的错，因为公共请求信封在底层端点被选择之前就被拒绝。禁用 collab/multi_agent/apps/connectors/MCP 等特性也没有用——namespace 工具仍会被序列化，且错误信息不会说明是哪个命名空间。同一份二进制和配置文件可能这次会话成功、重启后再失败，说明触发条件不是某个固定的特性开关。换提示词或换模型都无济于事：请求在生成之前就已死掉。",
+      "actions": [
+        "如果提供商同时提供 Chat Completions API，把配置切到 wire_api=\"chat\"——该协议没有 namespace 工具层（协议层面的推断，报告中未验证）。",
+        "在 OpenRouter 上按其 provider-selection 文档选择支持原生 namespace 工具类型的模型端点，或改路由到支持的提供商。",
+        "关注上游 Issue——其中请求的修复（为通用提供商展平 namespace 工具、在 doctor 输出中暴露序列化工具列表）正是这类诊断需要的信息。"
+      ]
+    }
+  }
+}
