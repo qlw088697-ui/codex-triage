@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.9.0] - 2026-08-30
+
+### Added
+
+- New WSL rules: `wsl-state-database-damaged-on-mnt-c` (openai/codex#23251 - sharing Windows App state over /mnt/c corrupts the SQLite database; move CODEX_HOME to the native WSL filesystem) and `wsl-launcher-not-executable` (openai/codex#28074 - the WSL launcher binary loses its execute bit on fresh installs). Knowledge base: 38 rules.
+
 ## [1.8.0] - 2026-08-30
 
 ### Added
