@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.21.0] - 2026-08-31
+
+### Added
+
+- Two more Windows sandbox rules: `windows-sandbox-parent-eperm` (openai/codex#41237 - project readable but ancestor/profile directory EPERM breaks esbuild/Wrangler bundling, correlated with a Desktop auto-update) and `windows-unelevated-nul-delay` (openai/codex#41351 - every unelevated-sandbox command stalls ~15.5s on a CreateFile against the NUL device; Procmon-confirmed, commands still complete). Knowledge base: 59 rules across 12 categories.
+
+### Changed
+
+- `desktop-code-mode-host-handshake` absorbed the sibling report openai/codex#41253: a new-task GPT-5.6 Terra variant on Desktop 26.825.x where switching the task to GPT-5.5 and back recovers workspace access.
+
 ## [1.20.0] - 2026-08-31
 
 ### Added

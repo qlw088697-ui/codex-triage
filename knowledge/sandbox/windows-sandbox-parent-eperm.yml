@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-sandbox-parent-eperm",
+  "title": "Sandboxed reads of parent/profile directories fail with EPERM, breaking esbuild bundling",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-08-31",
+  "source": "https://github.com/openai/codex/issues/41237",
+  "match": {
+    "any": [
+      {
+        "contains": "parent-directory-read: EPERM"
+      },
+      {
+        "regex": "Cannot read directory[\\s\\S]{0,400}?Access is denied",
+        "flags": "i"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Inside the Windows sandbox the project itself is readable, but enumerating the signed-in user's profile directory (an ancestor of the workspace) fails with EPERM, so bundlers that walk ancestor paths - esbuild, Wrangler - fail local startup even though source files and pure tests work.",
+  "explanation": "The shape is specific: workspace-read succeeds, parent-directory-read returns EPERM, and esbuild dies with 'Cannot read directory \"../../../..\": Access is denied' while trying to resolve a module by walking up from the readable source file. The report correlates the onset with a Codex Desktop auto-update on the same day (26.820.7780.0 worked, 26.820.10647.0 failed) while explicitly noting the command-runner version did not change - so the Desktop sandbox policy layer is the suspect, not the project or Node toolchain. Reported from Windows 10 22H2 with the elevated Windows sandbox and projects on the local C: drive.",
+  "actions": [
+    "Confirm the signature before blaming the project: source files read fine and pure tests pass inside the sandbox, while reading an ancestor directory fails - run your bundler's bare command to see the 'Cannot read directory' error.",
+    "Note the Desktop version that introduced the failure for your report - the same-day auto-update correlation is the strongest evidence upstream has.",
+    "Track the upstream issue; the fix belongs in the Desktop sandbox policy for profile-directory reads, not in esbuild or your config."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41237",
+      "label": "openai/codex#41237"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "eperm",
+    "esbuild",
+    "desktop"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "沙箱内读取父目录/用户目录报 EPERM，esbuild 打包被阻断",
+      "summary": "Windows 沙箱内项目本身可读，但枚举登录用户的 profile 目录（工作区的祖先目录）报 EPERM，导致需要向上遍历路径的打包器——esbuild、Wrangler——本地启动失败，而源文件读取和纯逻辑测试都正常。",
+      "explanation": "形态很有辨识度：workspace-read 成功、parent-directory-read 返回 EPERM，esbuild 在从可读的源文件向上解析模块时报 'Cannot read directory \"../../../..\": Access is denied'。报告把发病时间点与当天一次 Codex Desktop 自动更新关联（26.820.7780.0 正常，26.820.10647.0 失败），并明确指出命令执行器版本没有变化——嫌疑在 Desktop 的沙箱策略层，不在项目或 Node 工具链。来自 Windows 10 22H2 + elevated Windows 沙箱、项目位于本地 C 盘的报告。",
+      "actions": [
+        "先确认签名再怀疑项目：沙箱内源文件可读、纯测试通过，而读祖先目录失败——单独跑一次打包命令就能看到 'Cannot read directory' 报错。",
+        "记录发病时的 Desktop 版本——同日自动更新的时间线是上游最强的证据线索。",
+        "关注上游 issue；修复应落在 Desktop 沙箱对 profile 目录读取的策略上，与 esbuild 或你的配置无关。"
+      ]
+    },
+    "ja": {
+      "title": "サンドボックス内で親ディレクトリの読み取りが EPERM になり esbuild が失敗する",
+      "summary": "Windows サンドボックス内ではプロジェクト自体は読めるのに、サインインユーザーのプロファイルディレクトリ（ワークスペースの祖先）の列挙が EPERM で失敗します。祖先パスをたどるバンドラ（esbuild、Wrangler）はローカル起動に失敗し、ソースの読み取りと純粋なテストは正常のままです。",
+      "explanation": "形状は特徴的です。workspace-read は成功し、parent-directory-read は EPERM を返し、esbuild は読めるソースから上へモジュールを解決しようとして 'Cannot read directory \"../../../..\": Access is denied' で死にます。報告は発症を同日の Codex Desktop 自動更新と関連付けており（26.820.7780.0 は正常、26.820.10647.0 で失敗）、コマンドランナーのバージョンは不変だったと明記しています。疑いは Desktop のサンドボックスポリシー層にあり、プロジェクトや Node ツールチェーンではありません。Windows 10 22H2 + elevated サンドボックス、プロジェクトはローカル C ドライブからの報告です。",
+      "actions": ["プロジェクトを疑う前にシグネチャを確認します。サンドボックス内でソースは読めテストも通るのに、祖先ディレクトリの読み取りだけ失敗する——バンドラを単体で実行すれば 'Cannot read directory' エラーが見えます。", "発症時の Desktop バージョンを記録してください。同日の自動更新というタイムラインが上流への最強の証拠です。", "修正は Desktop のサンドボックスにおけるプロファイルディレクトリ読み取りポリシーにあるはずです。上流 issue をウォッチしてください。"]
+    }
+  }
+}
