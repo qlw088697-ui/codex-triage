@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 2,
+  "id": "network-dns-resolution-failed",
+  "title": "DNS resolution failed inside Codex",
+  "category": "network",
+  "severity": "low",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/12867",
+  "match": {
+    "any": [
+      {
+        "contains": "Temporary failure in name resolution"
+      },
+      {
+        "contains": "Could not resolve hostname"
+      },
+      {
+        "contains": "ENOTFOUND"
+      }
+    ],
+    "all": []
+  },
+  "summary": "A command run by Codex reports DNS resolution failure. The decisive triage is running the same command outside the sandbox: if the host resolves fine, the sandbox network policy is blocking DNS; if the host also fails, it is the machine's own network.",
+  "explanation": "Upstream reports cluster on the sandbox blocking DNS and socket creation while the host works fine - including git ssh push, npm installs, and automation runs where network access was disabled by default. Host-side failures (VPN, proxy, resolver) are a separate, equally common cause.",
+  "actions": [
+    "Run the same DNS lookup outside the sandbox (e.g. nslookup or curl) and compare.",
+    "Host resolves fine: enable network access for the command or automation; automations launch with network disabled unless configured.",
+    "Host also fails: fix the machine's network first - proxy, VPN, or resolver settings.",
+    "Track the upstream sandbox DNS issues for policy fixes."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/12867",
+      "label": "openai/codex#12867"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/16782",
+      "label": "openai/codex#16782"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/18675",
+      "label": "openai/codex#18675"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/37063",
+      "label": "openai/codex#37063"
+    }
+  ],
+  "tags": [
+    "network",
+    "dns",
+    "sandbox",
+    "triage"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Codex 内 DNS 解析失败",
+      "summary": "Codex 执行的命令报 DNS 解析失败。决定性的排查动作是在沙箱外跑同样的命令：宿主机正常则是沙箱网络策略拦截；宿主机也失败则是机器自身网络问题。",
+      "explanation": "上游报告集中在沙箱拦截 DNS/socket 而宿主机正常——包括 git ssh push、npm 安装、以及默认关闭网络的自动化任务。宿主机自身故障（VPN、代理、resolver）是同样常见的另一类原因。",
+      "actions": [
+        "在沙箱外跑同样的 DNS 查询（nslookup 或 curl）并对比结果。",
+        "宿主机正常：给该命令或自动化开启网络；自动化默认关闭网络，需要显式配置。",
+        "宿主机也失败：先修机器网络——代理、VPN 或 resolver 设置。",
+        "跟进上游沙箱 DNS 问题的策略修复。"
+      ]
+    }
+  }
+}
