@@ -189,7 +189,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
 
   if (mode === "faq") {
     const query = positionals.slice(1).join(" ").trim();
-    const scoped = rules.filter((rule) => !rule.platforms?.length || rule.platforms.includes(platform));
+    const scoped = rules.filter((rule) => !rule.deprecated && (!rule.platforms?.length || rule.platforms.includes(platform)));
     const hits = searchRules(scoped, query, locale).slice(0, limit);
     if (values.json) {
       console.log(JSON.stringify(redactValue({ schemaVersion: 1, mode, platform, query, results: faqHitsToJson(hits, locale) }), null, 2));

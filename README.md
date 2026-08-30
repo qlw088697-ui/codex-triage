@@ -212,6 +212,7 @@ CI runs the test suite on Windows, Ubuntu, and macOS with supported Node.js rele
 - **v0.3:** `explain <error>`, offline FAQ search, duplicate-issue assistance, stable JSON envelope, publish workflow. (shipped)
 - **v1.0:** frozen rule schema and public API, governance files, first version-constrained rule. (shipped)
 - **v1.1:** dependency-free YAML subset parsing for knowledge rules. (shipped)
+- **v1.2:** `mcp-server-path-unresolvable` rule, single-rule validator for contributors. (shipped)
 - **Beyond 1.0:** broader rule coverage through the community process, additional locales.
 
 Automatic destructive repair and default telemetry are intentionally outside the roadmap.

@@ -79,7 +79,7 @@ test("CLI rejects malformed inputs and invalid argument combinations", async (t)
 test("CLI exposes package version and accepts an explicit zero match limit", async (t) => {
   const version = run(["--version"]);
   assert.equal(version.status, 0);
-  assert.equal(version.stdout.trim(), "1.1.0");
+  assert.equal(version.stdout.trim(), "1.2.0");
 
   const directory = await mkdtemp(join(tmpdir(), "codex-triage-limit-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -183,4 +183,31 @@ test("markdown report lists known upstream issues before filing duplicates", asy
   assert.match(markdown, /## Before filing a new issue/);
   assert.match(markdown, /openai\/codex#31768/);
   assert.match(markdown, /avoid filing a duplicate/);
+});
+
+test("faq and matching both exclude deprecated rules", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "codex-triage-faq-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const active = {
+    schemaVersion: 2, id: "faq-active-rule", title: "Quantum flux identified", category: "test", severity: "low",
+    match: { any: [{ contains: "quantum flux" }] }, summary: "Active rule summary.", actions: ["Do the thing."],
+    tags: ["test"], i18n: {},
+  };
+  const retired = {
+    schemaVersion: 2, id: "faq-deprecated-rule", title: "Old quantum flux wisdom", category: "test", severity: "low",
+    deprecated: true, deprecationReason: "stale signature", match: { any: [{ contains: "quantum flux" }] },
+    summary: "Old summary.", actions: ["Legacy step."], tags: ["test"], i18n: {},
+  };
+  await writeFile(join(directory, "active.yml"), JSON.stringify(active), "utf8");
+  await writeFile(join(directory, "old.yml"), JSON.stringify(retired), "utf8");
+
+  const faq = run(["--knowledge", directory, "faq", "quantum", "--json"]);
+  assert.equal(faq.status, 0, faq.stderr);
+  const results = JSON.parse(faq.stdout).results.map((entry) => entry.id);
+  assert.deepEqual(results, ["faq-active-rule"]);
+
+  const explain = run(["--knowledge", directory, "explain", "quantum flux detected", "--json"]);
+  assert.equal(explain.status, 0, explain.stderr);
+  const matchIds = JSON.parse(explain.stdout).matches.map((match) => match.rule.id);
+  assert.deepEqual(matchIds, ["faq-active-rule"]);
 });
