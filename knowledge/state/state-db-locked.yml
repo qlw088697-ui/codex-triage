@@ -61,6 +61,17 @@
         "不要让 Windows 和 WSL 同时共用同一个 CODEX_HOME。",
         "单实例仍复发的话，到上游 Issue 看多终端重试修复的进展。"
       ]
+    },
+    "ja": {
+      "title": "状態データベースが別の Codex プロセスにロックされている",
+      "summary": "別の Codex プロセス（Desktop、app-server、モバイルブリッジ、2 つ目の CLI 端末）が state_5.sqlite のロックを持っているため、Codex が SQLite エラーコード 5（database is locked）で起動・初期化に失敗します。",
+      "explanation": "Windows と WSL で同じ CODEX_HOME を同時に共有するのは既知のトリガーですし、再試行ロジックが入る前の複数 CLI 端末も同様です。データベース自体は通常無事で、破損ではなく競合の問題です。",
+      "actions": [
+        "すべての Codex の窓口を閉じます: Desktop アプリ、CLI 端末、app-server、モバイルブリッジ。",
+        "残った codex / app-server プロセスを終了し、1 インスタンスだけ再起動します。",
+        "Windows と WSL で同じ CODEX_HOME を同時共有しないでください。",
+        "単一インスタンスで再発するなら、マルチ端末再試行の修正を上流 issue で確認します。"
+      ]
     }
   }
 }

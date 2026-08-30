@@ -38,6 +38,15 @@
         "确保登录发生在实际运行 Codex 的同一个环境。",
         "再次运行 doctor，确认 `auth.credentials` 不再失败。"
       ]
+    },
+    "ja": {
+      "title": "Codex の資格情報が見つからない",
+      "summary": "Codex に利用可能な保存済み資格情報も、サポートされた認証環境変数もありません。",
+      "actions": [
+        "ChatGPT 認証なら codex login を実行するか、利用プロバイダーのサポートされた API 資格情報を設定します。",
+        "Codex を実行するのと同じ環境で認証していることを確認します。",
+        "doctor を再実行し、auth.credentials が失敗しなくなったことを確認します。"
+      ]
     }
   }
 }

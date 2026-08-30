@@ -53,6 +53,17 @@
         "不要重装或反复校验二进制：报告里签名、ACL、SHA256、WebSocket、app-server 检查全部干净，重装解决不了握手路径的 bug。",
         "向上游报告时附上 Feedback ID 和桌面版证据包——机器特定的握手失败需要受影响/正常两台机器的对照 traces。"
       ]
+    },
+    "ja": {
+      "title": "Codex Desktop の GPT-5.6 ツール実行が \"code-mode host exited during handshake\" で失敗する",
+      "summary": "影響を受けるマシンでは、Codex Desktop が GPT-5.6 モデルのローカルツールを実行できません。毎回 code-mode host のハンドシェイク中に失敗し、同じマシン・アカウントでも Desktop の GPT-5.5 と CLI の同型 GPT-5.6 は正常です。",
+      "explanation": "最も詳細な報告の A/B マトリクスは通常の容疑者を排除しています。同じ codex.exe SHA256 が 2 台目の同一構成 Windows PC では動作すること、code-mode host バイナリが有効な OpenAI 署名と実行可能な ACL で存在し手動実行できること、app-server の stdio 初期化と WebSocket アップグレード（HTTP 101）が成功すること、skills ツリーを縮小しても失敗すること。失敗は Desktop → app-server → GPT-5.6 → code-mode host のハンドシェイク経路に特有で、アカウントやバイナリではなくマシン固有です。Windows 11 の Codex Desktop 26.820.x + codex-cli 0.149.1 からの報告で、CLI での gpt-5.6-luna / gpt-5.6-sol 実行は一貫して動作します。GPT-5.6 モデルのツールは code-mode host 経由で走るため、Desktop の GPT-5.5 は影響を受けません。",
+      "actions": [
+        "GPT-5.6 のタスクは CLI から実行します。同じ影響マシンでの動作が確認済みです。",
+        "ハンドシェイク経路が修正されるまで、ツールを使う作業は Desktop 内では GPT-5.5 に留めます。",
+        "再インストールやバイナリの再検証はしないでください。署名・ACL・SHA256・WebSocket・app-server のチェックは報告内ですべて正常でした。再インストールはハンドシェイク経路のバグに効きません。",
+        "上流へ報告する際は Feedback ID とデスクトップの証跡パッケージを添えてください。マシン固有のハンドシェイク失敗には、影響マシンと正常マシンの並行トレースが必要です。"
+      ]
     }
   }
 }

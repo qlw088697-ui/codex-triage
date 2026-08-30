@@ -28,7 +28,7 @@ Rules cover Windows, macOS, Linux, and WSL, tagged per rule. The CLI itself runs
 
 ## How do I add a rule?
 
-See [contributing-rules.md](contributing-rules.md) for authoring guidance and [rule-schema.md](rule-schema.md) for the frozen v1 schema. In short: write a JSON or YAML rule with a distinctive signature, zh-CN localization, and a public upstream source, then validate with `node scripts/validate-rule.mjs <file>` and open a PR. The fixture suite must pass for the new rule.
+See [contributing-rules.md](contributing-rules.md) for authoring guidance and [rule-schema.md](rule-schema.md) for the frozen v1 schema. In short: write a JSON or YAML rule with a distinctive signature, zh-CN and ja localization, and a public upstream source, then validate with `node scripts/validate-rule.mjs <file>` and open a PR. The fixture suite must pass for the new rule.
 
 ## Why is 2FA-bypass publishing used for releases?
 

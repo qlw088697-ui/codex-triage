@@ -60,6 +60,17 @@
         "若已存在 root 属主目录，修复 npm 全局前缀的属主，而不是再用 sudo 重装。",
         "去掉 sudo 重新安装，确认 codex --version 可用。"
       ]
+    },
+    "ja": {
+      "title": "npm グローバルインストールが EACCES 権限エラーで失敗する",
+      "summary": "npm がグローバル node_modules ディレクトリ（通常 /usr/lib/node_modules や /usr/local/lib/node_modules）に書き込めません。root や別ユーザーが所有しているため、@openai/codex のインストールや更新が失敗します。",
+      "explanation": "過去に一度 sudo npm install を実行して root 所有のディレクトリが残り、以後の非 sudo インストールや codex update がことごとく EACCES で失敗するパターンが頻発します。上流ではアップデータが root 所有のグローバルディレクトリに当たる問題も追跡されています。",
+      "actions": [
+        "最初に sudo に手を伸ばさないでください。所有権の問題を深くします。",
+        "npm のグローバル prefix をユーザー所有ディレクトリへ移す（npm config set prefix）か、Node バージョンマネージャーの利用を推奨します。",
+        "root 所有ディレクトリが既にあるなら、sudo での再インストールではなく npm グローバル prefix の所有権を修正します。",
+        "sudo なしでインストールを再実行し、codex --version が動くか確認します。"
+      ]
     }
   }
 }

@@ -52,6 +52,16 @@
         "手动验证新 token：用 curl 带新 bearer token 调 tools/list，预期 200。",
         "若新 token 仍 401，对照上游 Issue 检查 token audience 与 resource 指示符。"
       ]
+    },
+    "ja": {
+      "title": "OAuth ログイン済みでも MCP サーバーが tools/list に 401 を返す",
+      "summary": "OAuth ログインが完了した MCP サーバーでも tools/list が 401 Unauthorized を返し、Codex からどのツールも呼び出せません。",
+      "explanation": "上流報告では、サーバーは OAuth メタデータを正しく公開しており、未認証の tools/list は 401 を返す一方、他クライアントの認証付き要求は成功します。つまり保存された MCP 資格情報をリソースサーバーが受け付けていません。",
+      "actions": [
+        "codex mcp logout <サーバー名> の後 codex mcp login <サーバー名> で保存済み資格情報を更新します。",
+        "新しいトークンを手動で検証します。curl と新しい Bearer トークンで tools/list を呼び、200 を期待します。",
+        "新しいトークンでも 401 が続くなら、トークンのオーディエンスとリソースインジケーターを上流 issue と比較します。"
+      ]
     }
   }
 }

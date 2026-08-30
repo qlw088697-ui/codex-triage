@@ -47,6 +47,16 @@
         "对受影响命令走审批，或暂时把 Swift 构建放到沙箱外执行。",
         "跟进上游 Issue，等待 profile 放行 sourcekitd。"
       ]
+    },
+    "ja": {
+      "title": "Seatbelt サンドボックスが sourcekitd（Swift ツール群）を壊す",
+      "summary": "sourcekitd に依存する Swift ツールが macOS Seatbelt サンドボックス内で失敗し、同じツールは Codex の外では動きます。",
+      "explanation": "sourcekitd はマシンレベルのサービス参照を必要としますが、サンドボックスプロファイルはそれを許しません。そのため Codex 内から駆動される Swift の言語機能やビルドが、コードとは無関係な形で失敗します。",
+      "actions": [
+        "同じ Swift コマンドを Codex の外で実行し、失敗がサンドボックス固有か確認します。",
+        "当該コマンドを承認するか、当面は Swift ビルドをサンドボックス外で実行します。",
+        "sourcekitd をカバーする Seatbelt 許可を上流 issue でウォッチします。"
+      ]
     }
   }
 }

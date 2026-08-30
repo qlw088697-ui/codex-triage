@@ -57,6 +57,17 @@
         "移动后需要在 WSL 内重新登录；Windows 侧的会话历史留在 Windows 安装里。",
         "项目也建议放在 WSL 原生文件系统——/mnt/c 对状态和工作树都又慢又脆。"
       ]
+    },
+    "ja": {
+      "title": "/mnt/c で Windows アプリ状態を共有すると WSL CLI がローカル DB を壊れていると報告する",
+      "summary": "WSL CLI が /mnt/c/Users/<user>/.codex に保存された Windows Codex アプリの状態を共有すると、Windows ドライブのマウント上の SQLite データベースが壊れていると報告され、Codex が起動を拒否します。",
+      "explanation": "/mnt/c の DrvFs/9p マウント上の SQLite は信頼できません。WAL 破損報告で上流が疑うのと同じファイルシステム要因です。Windows と WSL がマウント越しに同じ状態データベースへ書き込むと、/mnt/c パスを指す「local database appears to be damaged」エラーになります。",
+      "actions": [
+        "何より先に状態ディレクトリをバックアップします。",
+        "Windows アプリ状態を共有する代わりに、WSL にネイティブ Linux ファイルシステム上の専用 CODEX_HOME（WSL 内の ~/.codex など）を与えます。",
+        "移動後は WSL 内での再ログインを覚悟してください。Windows 側のセッション履歴は Windows インストールに残ります。",
+        "プロジェクトもネイティブ WSL ファイルシステムに置きます。/mnt/c は状態にも worktree にも遅くて壊れやすいです。"
+      ]
     }
   }
 }

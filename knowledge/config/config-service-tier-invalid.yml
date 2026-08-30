@@ -50,6 +50,16 @@
         "删除或注释掉 service_tier 行，重启 Codex。",
         "若仍失败，对照上游 Issue 里的期望配置结构检查。"
       ]
+    },
+    "ja": {
+      "title": "更新後の service_tier 設定が不正になる",
+      "summary": "macOS の Codex Desktop 更新後、新しいセッションが config.toml の service_tier に関する不正な設定エラーで失敗します。",
+      "explanation": "macOS Codex Desktop 更新のリグレッションとして報告されています。古い service_tier エントリが新しいビルドに拒否され、キーを削除・修正するまで新しいセッションが開始できません。",
+      "actions": [
+        "~/.codex/config.toml を開いて service_tier エントリを探します。",
+        "service_tier の行を削除またはコメントアウトし、Codex を再起動します。",
+        "それでも失敗する場合は、期待されるスキーマを上流 issue の設定と比較します。"
+      ]
     }
   }
 }

@@ -79,7 +79,7 @@ test("CLI rejects malformed inputs and invalid argument combinations", async (t)
 test("CLI exposes package version and accepts an explicit zero match limit", async (t) => {
   const version = run(["--version"]);
   assert.equal(version.status, 0);
-  assert.equal(version.stdout.trim(), "1.18.0");
+  assert.equal(version.stdout.trim(), "1.19.0");
 
   const directory = await mkdtemp(join(tmpdir(), "codex-triage-limit-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -234,4 +234,28 @@ test("explain supports --codex-version evidence for version-constrained rules", 
   const faqRejected = run(["faq", "azure", "--codex-version", "0.147.0"]);
   assert.equal(faqRejected.status, 1);
   assert.match(faqRejected.stderr, /not available in faq mode/i);
+});
+
+test("ja locale renders Japanese UI, localized rules, and English fallback", async (t) => {
+  const shown = run(["explain", "CreateProcessAsUserW failed: 1312", "--platform", "windows", "--lang", "ja"]);
+  assert.equal(shown.status, 0, shown.stderr);
+  assert.match(shown.stdout, /プラットフォーム/);
+  assert.match(shown.stdout, /推奨される次のステップ/);
+
+  const faq = run(["faq", "--lang", "ja"]);
+  assert.equal(faq.status, 0, faq.stderr);
+  assert.match(faq.stdout, /よくある質問（オフライン検索）/);
+
+  const directory = await mkdtemp(join(tmpdir(), "codex-triage-ja-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const enOnly = {
+    schemaVersion: 2, id: "ja-fallback-rule", title: "English only rule", category: "test", severity: "low",
+    match: { any: [{ contains: "quantum flicker" }] }, summary: "English summary.", actions: ["Do the thing."],
+    tags: ["test"], i18n: {},
+  };
+  await writeFile(join(directory, "en-only.yml"), JSON.stringify(enOnly), "utf8");
+  const fallback = run(["--knowledge", directory, "explain", "quantum flicker detected", "--lang", "ja"]);
+  assert.equal(fallback.status, 0, fallback.stderr);
+  assert.match(fallback.stdout, /English only rule/);
+  assert.match(fallback.stdout, /推奨される次のステップ/);
 });

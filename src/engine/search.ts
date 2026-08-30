@@ -1,4 +1,4 @@
-import type { Rule } from "../knowledge/schema.js";
+import type { Locale, Rule } from "../knowledge/schema.js";
 
 export interface FaqHit {
   rule: Rule;
@@ -10,7 +10,7 @@ interface SearchField {
   weight: number;
 }
 
-function fieldsFor(rule: Rule, locale: "en" | "zh-CN"): SearchField[] {
+function fieldsFor(rule: Rule, locale: Locale): SearchField[] {
   const localized = rule.i18n[locale];
   const fields: SearchField[] = [
     { text: rule.title, weight: 3 },
@@ -30,18 +30,19 @@ function fieldsFor(rule: Rule, locale: "en" | "zh-CN"): SearchField[] {
 function tokenize(query: string): string[] {
   return query
     .toLowerCase()
-    .split(/[^a-z0-9\u4e00-\u9fff]+/)
+    .split(/[^a-z0-9\u3040-\u30ff\u3400-\u9fff]+/)
     .filter((token) => token.length > 1);
 }
 
 /**
  * Deterministic offline search over the bundled knowledge base. Both the base
- * (English) and the requested locale's fields are searched, so Chinese queries
- * hit zh titles and English queries keep working under --lang zh-CN. Every
- * query token must appear somewhere; the score is the summed field-weight of
- * its appearances plus a bonus when the whole phrase matches a summary.
+ * (English) and the requested locale's fields are searched, so Chinese and
+ * Japanese queries hit their localized titles while English queries keep
+ * working under any --lang. Every query token must appear somewhere; the
+ * score is the summed field-weight of its appearances plus a bonus when the
+ * whole phrase matches a summary.
  */
-export function searchRules(rules: Rule[], query: string, locale: "en" | "zh-CN"): FaqHit[] {
+export function searchRules(rules: Rule[], query: string, locale: Locale): FaqHit[] {
   const trimmed = query.trim();
   if (!trimmed) {
     return rules

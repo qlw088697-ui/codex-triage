@@ -53,6 +53,16 @@
         "关注上游 Issue 等待真正的修复：按活动提供商是否为 ChatGPT 后端来门控 Responses-Lite 与 collaboration 传输。",
         "如果你是先关掉 Responses-Lite 才撞到 collaboration 报错，两者同根同源——用同一份目录覆盖即可。"
       ]
+    },
+    "ja": {
+      "title": "カスタムプロバイダーが ChatGPT バックエンド向けに構築された gpt-5.6 要求を拒否する",
+      "summary": "同梱モデルカタログは gpt-5.6-sol/terra/luna に ChatGPT バックエンド専用の転送フラグをハードコードしており、Azure などのカスタムプロバイダーは宣言していない Responses-Lite ヘッダーと collaboration 名前空間ツールを受け取り、400 で拒否します。",
+      "explanation": "CLI にコンパイル込まれた models.json は gpt-5.6 エントリに use_responses_lite / multi_agent_version / tool_mode: code_mode_only を無条件で含み、カスタムプロバイダーはカタログを更新しないため、フラグはリモートから上書きできません。Azure は両方の形を拒否します。まず Responses-Lite ヘッダー（コード unsupported_value）、これを無効化すると今度は collaboration 名前空間（暗号化ツール専用に予約）です。doctor のチェックは通常健全に見えます。認証も接続も正常で、プロバイダーが要求の形そのものを拒否しているためです。ローカルカタログのワークアラウンド適用後、通常チャットと実際のツール呼び出しで検証済みです。",
+      "actions": [
+        "config.toml の model_catalog_json を、gpt-5.6 エントリで use_responses_lite=false かつ multi_agent_version=null にしたローカルカタログに向けます。両方のエラーが端から端まで解消しますが、上流のカタログ更新とは手動同期になります。",
+        "真の修正（Responses-Lite と collaboration 転送を、実際に ChatGPT バックエンドと通信するプロバイダーかでゲートする）を上流 issue でウォッチします。",
+        "Responses-Lite を無効化した後に collaboration エラーだけ出た場合も、根因は同じです。同じカタログ上書きを適用してください。"
+      ]
     }
   }
 }

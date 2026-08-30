@@ -14,6 +14,8 @@ test("locale aliases normalize consistently", () => {
   assert.equal(normalizeLocale("zh"), "zh-CN");
   assert.equal(normalizeLocale("zh_CN"), "zh-CN");
   assert.equal(normalizeLocale("en-US"), "en");
+  assert.equal(normalizeLocale("ja"), "ja");
+  assert.equal(normalizeLocale("ja-JP"), "ja");
   assert.throws(() => normalizeLocale("fr"), /lang/i);
 });
 

@@ -39,4 +39,4 @@ When a bundled rule misfires in the wild, users can report it through the "Wrong
 
 Actions should be reversible and read-only where possible. Do not recommend deleting databases, lowering operating-system security, disabling endpoint protection, changing firewall policy, or bypassing sandboxing as an automatic first step.
 
-Every rule must have tags and complete `zh-CN` title, summary, and actions. Links must use HTTP(S), and public upstream evidence is preferred.
+Every rule must have tags and complete `zh-CN` and `ja` title, summary, and actions. Rule content falls back to English per field when a locale block is absent, so `--lang ja` works even for custom rules without translations. Links must use HTTP(S), and public upstream evidence is preferred.

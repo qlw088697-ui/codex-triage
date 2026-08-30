@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Scaffolds a new knowledge rule with every required field and zh-CN stubs.
+// Scaffolds a new knowledge rule with every required field and zh-CN/ja stubs.
 //   node scripts/rule-new.mjs <category> <rule-id> "<English title>"
 // The generated file loads and validates immediately; replace the TODO
 // placeholders with the real signature, guidance, and upstream evidence.
@@ -47,6 +47,11 @@ const template = {
       summary: "TODO：一句话中文症状描述。",
       actions: ["TODO：给用户的第一条安全建议。"],
     },
+    ja: {
+      title: "TODO: 日本語タイトル",
+      summary: "TODO: 症状を一文で。",
+      actions: ["TODO: ユーザーへの最初の安全な次のステップ。"],
+    },
   },
 };
 
@@ -61,7 +66,7 @@ mkdirSync(dir, { recursive: true });
 writeFileSync(path, source, "utf8");
 console.log(`created ${path}`);
 console.log("next steps:");
-console.log("  1. Replace every TODO with the real signature, guidance, zh-CN text, and the public upstream issue link.");
+console.log("  1. Replace every TODO with the real signature, guidance, zh-CN/ja text, and the public upstream issue link.");
 console.log(`  2. Validate: node scripts/validate-rule.mjs knowledge/${category}/${id}.yml`);
 console.log("  3. npm test (the fixture suite exercises the new rule automatically).");
 console.log("  4. Open a PR referencing the upstream issue.");

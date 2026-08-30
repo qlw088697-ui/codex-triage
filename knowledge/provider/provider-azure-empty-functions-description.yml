@@ -52,6 +52,16 @@
         "关注上游 Issue 及相关 provider 兼容性报告，等待修复版本。",
         "如果你自己运维 Azure 网关，注意请求是被命名空间工具 schema 拒绝的，与认证或连通性无关。"
       ]
+    },
+    "ja": {
+      "title": "Azure Responses プロバイダーが空の functions 名前空間 description を拒否する",
+      "summary": "Codex 0.147.0 は既定ツールを空の description で functions 名前空間へシリアライズします。Azure OpenAI はそこで非空の description を要求するため、モデルが答える前にすべての要求が拒否されます。",
+      "explanation": "0.146.0 と 0.147.0 の間のリグレッションです（上流 #37022 の functions 名前空間グルーピング）。Azure の NamespaceToolParam スキーマは description に minLength 1 を課します。上流の報告者は同一要求を description を埋めてリプレイし HTTP 200 を得ており、空文字列が直接原因と確定しています。0.147.0 では code_mode_host を無効にしても名前空間は消えません。",
+      "actions": [
+        "上流の修正が降りてくるまで前バージョンを固定します: npm install -g @openai/codex@0.146.0。",
+        "修正版のリリースを上流 issue と関連のプロバイダー互換性報告でウォッチします。",
+        "Azure ゲートウェイを自分で運用している場合は、要求が名前空間ツールのスキーマで拒否されているのであって、認証や接続性ではない点に注意してください。"
+      ]
     }
   }
 }

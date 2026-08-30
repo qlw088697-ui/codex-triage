@@ -10,7 +10,7 @@ import { matchRules } from "./engine/matcher.js";
 import { searchRules } from "./engine/search.js";
 import { topMatches } from "./engine/rank.js";
 import { loadRules } from "./knowledge/loader.js";
-import type { Platform } from "./knowledge/schema.js";
+import type { Locale, Platform } from "./knowledge/schema.js";
 import { renderFaq, faqHitsToJson } from "./report/faq.js";
 import { renderMarkdownReport } from "./report/markdown.js";
 import { redactText, redactValue } from "./report/redact.js";
@@ -51,11 +51,12 @@ export function detectPlatform(
   return "linux";
 }
 
-export function normalizeLocale(value: string): "en" | "zh-CN" {
+export function normalizeLocale(value: string): Locale {
   const normalized = value.trim().toLowerCase().replace("_", "-");
   if (normalized === "en" || normalized.startsWith("en-")) return "en";
   if (normalized === "zh" || normalized === "zh-cn" || normalized === "zh-hans") return "zh-CN";
-  throw new Error("--lang must be en or zh-CN");
+  if (normalized === "ja" || normalized.startsWith("ja-")) return "ja";
+  throw new Error("--lang must be en, zh-CN, or ja");
 }
 
 export function parseIntegerOption(value: string, name: string, minimum: number, maximum: number): number {
@@ -75,7 +76,7 @@ export function parseCodexVersionOption(value: string | undefined): string | und
 }
 
 function help(): string {
-  return `codex-triage v${packageVersion()}\n\nUsage:\n  codex-triage [doctor.json] [options]\n  codex-triage explain "<error text>" [options]\n  codex-triage faq [query] [options]\n\nUse "-" as the input path (codex-triage -) or as the explain text (explain -) to read from stdin.\n\nOptions:\n  --log <path>             Add a Codex/app log to the analysis\n  --report                 Write codex-triage-report.md\n  --output <path>          Change the report output path\n  --json                   Emit sanitized matches as JSON\n  --lang <locale>          en or zh-CN (default: en)\n  --platform <platform>    windows, macos, linux, or wsl\n  --knowledge <path>       Use a custom knowledge directory\n  --limit <n>              Maximum matches/entries to show, 0..100 (default: 5)\n  --doctor-timeout <ms>    Timeout for codex doctor, 1000..120000 (default: 15000)\n  --codex-version <ver>    Version evidence (e.g. 0.147.0) when the input carries none\n  -v, --version            Show the package version\n  -h, --help               Show this help\n`;
+  return `codex-triage v${packageVersion()}\n\nUsage:\n  codex-triage [doctor.json] [options]\n  codex-triage explain "<error text>" [options]\n  codex-triage faq [query] [options]\n\nUse "-" as the input path (codex-triage -) or as the explain text (explain -) to read from stdin.\n\nOptions:\n  --log <path>             Add a Codex/app log to the analysis\n  --report                 Write codex-triage-report.md\n  --output <path>          Change the report output path\n  --json                   Emit sanitized matches as JSON\n  --lang <locale>          en, zh-CN, or ja (default: en)\n  --platform <platform>    windows, macos, linux, or wsl\n  --knowledge <path>       Use a custom knowledge directory\n  --limit <n>              Maximum matches/entries to show, 0..100 (default: 5)\n  --doctor-timeout <ms>    Timeout for codex doctor, 1000..120000 (default: 15000)\n  --codex-version <ver>    Version evidence (e.g. 0.147.0) when the input carries none\n  -v, --version            Show the package version\n  -h, --help               Show this help\n`;
 }
 
 async function readTextFile(path: string): Promise<string> {

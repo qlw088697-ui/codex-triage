@@ -56,6 +56,17 @@
         "让 Codex 自动恢复机制把损坏库移走重建；删任何文件前先跑 PRAGMA integrity_check 确认。",
         "避免把 CODEX_HOME 放在 NFS 或网络盘上，并跟进上游 WAL 损坏 Issue。"
       ]
+    },
+    "ja": {
+      "title": "状態データベースが壊れている（database disk image is malformed）",
+      "summary": "状態/ログデータベース（state_5.sqlite / logs_2.sqlite）が壊れています。更新後に起動しない、表示されるチャット履歴が消える、壊れたファイルを退避して自動回復する、などの形で現れます。",
+      "explanation": "上流報告はこれを WAL ジャーナルモードと並行ライター、CODEX_HOME の NFS 等ネットワークストレージ配置に結び付けています。会話の rollout ファイルは通常失われず、壊れたのはインデックスデータベースなので、履歴は再構築できることが多いです。",
+      "actions": [
+        "まず全 Codex プロセスを閉じます。",
+        "何かに手を付ける前に ~/.codex 全体をバックアップします。",
+        "Codex の自動回復に壊れたデータベースを退避させて再構築させるか、ファイルを削除する前に PRAGMA integrity_check で確認します。",
+        "CODEX_HOME を NFS やネットワークドライブに置かず、WAL 破損に関する上流 issue を確認します。"
+      ]
     }
   }
 }
