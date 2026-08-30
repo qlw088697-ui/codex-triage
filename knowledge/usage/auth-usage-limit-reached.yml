@@ -17,12 +17,13 @@
     ],
     "all": []
   },
-  "summary": "Codex blocks requests with the usage-limit message. On paid plans this can still be plan confusion or one of the known metering bugs: limits draining without activity, or a reset window exhausting immediately.",
-  "explanation": "Upstream reports include limits draining with no corresponding activity, Pro plans immediately shown as exhausted, and reset windows spent within minutes. First confirm the limit is real by checking the plan usage page before treating it as a technical failure.",
+  "summary": "Codex blocks requests with the usage-limit message. On paid plans this can still be plan confusion or one of the known metering bugs: limits draining without activity, a reset window exhausting immediately, or GPT-5.6 Sol burning most of a 5-hour Plus window in a single turn.",
+  "explanation": "Upstream reports include limits draining with no corresponding activity, Pro plans immediately shown as exhausted, and reset windows spent within minutes. On Plus with gpt-5.6 Sol the burn rate itself is the complaint: one ~15k-character structured prompt on Sol Max consumed the entire 5-hour window (openai/codex#41518), one 6-minute lightweight task on Sol High consumed ~60% (#41468), and Work mode reached ~90% in 13 minutes without producing the artifact (#41330) - consumption correlates with model and reasoning effort, not wall-clock time. First confirm the limit is real by checking the plan usage page before treating it as a technical failure.",
   "actions": [
     "Check the plan usage page in ChatGPT settings to confirm the remaining allowance.",
     "Wait for the 5-hour or weekly window to reset; on ChatGPT plans try codex rate-limit reset where available.",
     "If the limit drains without activity or resets and instantly exhausts, compare against the upstream metering issues.",
+    "On Plus with gpt-5.6 Sol High/Max, expect a drastically faster 5-hour drain than earlier models - a single long structured prompt can consume most or all of the window; compare burned quota against what the turn actually produced before assuming a metering bug.",
     "API-key users: rate limits depend on account billing tier, not the ChatGPT plan."
   ],
   "links": [
@@ -42,6 +43,16 @@
       "label": "openai/codex#32607"
     },
     {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41518",
+      "label": "openai/codex#41518"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41468",
+      "label": "openai/codex#41468"
+    },
+    {
       "type": "other",
       "url": "https://community.openai.com/t/upgraded-to-pro-and-get-hit-with-usage-limit-error/1379259",
       "label": "OpenAI Community: Usage limit error on Pro"
@@ -56,12 +67,13 @@
   "i18n": {
     "zh-CN": {
       "title": "已达使用上限（You've hit your usage limit）",
-      "summary": "Codex 以用量上限为由拒绝请求。付费计划下也可能是计划混淆或已知的计量 bug：限额无活动也在消耗、重置后立刻耗尽。",
-      "explanation": "上游报告包括限额在无对应活动的情况下下降、Pro 计划刚升级就显示耗尽、重置窗口几分钟内用完。先到 ChatGPT 设置的用量页确认限额是真的用完了，再当作技术故障处理。",
+      "summary": "Codex 以用量上限为由拒绝请求。付费计划下也可能是计划混淆或已知的计量 bug：限额无活动也在消耗、重置后立刻耗尽、或 GPT-5.6 Sol 一轮就烧掉 5 小时 Plus 窗口的大部分。",
+      "explanation": "上游报告包括限额在无对应活动的情况下下降、Pro 计划刚升级就显示耗尽、重置窗口几分钟内用完。Plus 上用 gpt-5.6 Sol 时燃烧速率本身就是投诉点：Sol Max 上一条约 15k 字符的结构化 prompt 烧光了整个 5 小时窗口（openai/codex#41518），Sol High 上一个 6 分钟的轻量任务烧掉约 60%（#41468），Work 模式 13 分钟烧到约 90% 还没产出要求的产物（#41330）——消耗与模型和推理强度相关，与墙钟时间无关。先到 ChatGPT 设置的用量页确认限额是真的用完了，再当作技术故障处理。",
       "actions": [
         "到 ChatGPT 设置的用量页确认剩余额度。",
         "等待 5 小时或每周窗口重置；ChatGPT 计划可用的话尝试 codex rate-limit reset。",
         "如果限额无活动自行下降、或重置后立刻耗尽，对照上游计量问题。",
+        "Plus 上用 gpt-5.6 Sol High/Max 时，5 小时额度的消耗速度远快于旧模型——一条长的结构化 prompt 就可能烧掉大半窗口；先对照这一轮实际产出什么再怀疑计量 bug。",
         "API key 用户：限流取决于账户计费档位，与 ChatGPT 计划无关。"
       ]
     }

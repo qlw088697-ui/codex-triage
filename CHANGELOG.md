@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.18.0] - 2026-08-30
+
+### Added
+
+- `desktop-workspace-permission-profile` (openai/codex#40801): Desktop chats fail with the ":workspace" PermissionProfileSelectionParams type error and GPT-5.6 vanishes from the picker; Store update, app-data reset, and config checks all verified insufficient in the report.
+
+### Changed
+
+- `auth-usage-limit-reached` now covers the GPT-5.6 Sol quota-burn cluster (openai/codex#41518/#41468/#41330): a single turn on Sol High/Max consuming 60-100% of a 5-hour Plus window, with guidance to compare burned quota against actual output before assuming a metering bug. Knowledge base: 55 rules across 12 categories.
+
 ## [1.17.0] - 2026-08-30
 
 ### Added
