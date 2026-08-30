@@ -10,16 +10,24 @@
   "match": {
     "any": [
       {
-        "regex": "sandbox helper.*(missing|not found)|codex-windows-sandbox.*(missing|not found)|module could not be found",
+        "regex": "orchestrator_helper_launch_failed|sandbox helper.*(missing|not found)|codex-windows-sandbox.*(missing|not found)|module could not be found",
         "flags": "i"
       }
     ]
   },
   "summary": "A Codex Windows sandbox helper/resource appears to be missing or could not be loaded.",
+  "explanation": "The sharpest reported shape (openai/codex#41411): every terminal, file, and task operation fails before the command starts with 'Failed to create unified exec process: orchestrator_helper_launch_failed: setup refresh failed to launch helper: helper=codex-windows-sandbox-setup.exe error=program not found', reproducible with a trivial Get-Date. It persisted across a Windows restart, the app Repair option, a full app Reset, and an auto-update from 26.820.9563.0 to 26.825.4187.0.",
   "actions": [
     "Do not download replacement helper binaries from third-party sources.",
-    "Repair or reinstall Codex from the same official installation channel.",
+    "Repair or reinstall Codex from the same official installation channel - but note openai/codex#41411 verified that Repair, Reset, an auto-update, and a Windows restart were all insufficient, so capture logs instead of reinstalling repeatedly.",
     "Rerun doctor after reinstall and preserve the exact missing helper path if the issue remains."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41411",
+      "label": "openai/codex#41411"
+    }
   ],
   "tags": [
     "windows",
@@ -30,18 +38,20 @@
     "zh-CN": {
       "title": "Windows Sandbox helper / 资源缺失",
       "summary": "Codex 的 Windows sandbox helper 或相关资源似乎缺失或无法加载。",
+      "explanation": "最尖锐的报告形态（openai/codex#41411）：所有终端、文件和任务操作在命令开始前就失败，报 'Failed to create unified exec process: orchestrator_helper_launch_failed: setup refresh failed to launch helper: helper=codex-windows-sandbox-setup.exe error=program not found'，用 Get-Date 这样的平凡命令即可复现。它跨 Windows 重启、应用修复、完整应用重置、以及 26.820.9563.0 到 26.825.4187.0 的自动更新持续存在。",
       "actions": [
         "不要从第三方来源下载替代 helper 二进制文件。",
-        "通过同一官方安装渠道修复或重装 Codex。",
+        "通过同一官方安装渠道修复或重装 Codex——但注意 openai/codex#41411 已验证修复、重置、自动更新和重启 Windows 全都无效，所以应保存日志而不是反复重装。",
         "重装后重新运行 doctor；若仍失败，保留准确的缺失路径。"
       ]
     },
     "ja": {
       "title": "Windows サンドボックスのヘルパーまたはリソースがない",
       "summary": "Codex Windows サンドボックスのヘルパー/リソースが欠けているか読み込めないようです。",
+      "explanation": "最も先鋭な報告形（openai/codex#41411）: すべての端末・ファイル・タスク操作がコマンド開始前に失敗し、'Failed to create unified exec process: orchestrator_helper_launch_failed: setup refresh failed to launch helper: helper=codex-windows-sandbox-setup.exe error=program not found' を返します。Get-Date のような自明なコマンドで再現します。Windows 再起動・アプリの修復・完全なリセット・26.820.9563.0 から 26.825.4187.0 への自動更新をまたいで持続しました。",
       "actions": [
         "ヘルパーバイナリを第三者源からダウンロードしないでください。",
-        "同じ公式インストール経路から Codex を修復・再インストールします。",
+        "同じ公式インストール経路から Codex を修復・再インストールします。ただし openai/codex#41411 では、修復・リセット・自動更新・Windows 再起動のすべてが不十分と検証済みのため、再インストールの繰り返しではなくログを保存してください。",
         "再インストール後に doctor を再実行し、問題が残るなら欠けているヘルパーの正確なパスを保存します。"
       ]
     }
