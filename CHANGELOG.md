@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.6.0] - 2026-08-30
+
+### Added
+
+- New install rule `install-npm-eacces` (openai/codex#1480, openai/codex#21897, openai/codex#10342): npm global install or update fails with EACCES on root-owned prefixes.
+- New macOS sandbox rules `sandbox-macos-sandbox-exec-missing` (openai/codex#591) and `sandbox-macos-network-access-ignored` (openai/codex#10390). Knowledge base: 34 rules.
+
 ## [1.5.0] - 2026-08-30
 
 ### Added

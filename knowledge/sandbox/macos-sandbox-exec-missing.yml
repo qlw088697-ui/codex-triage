@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "id": "sandbox-macos-sandbox-exec-missing",
+  "title": "macOS crashes with sandbox-exec not found (ENOENT)",
+  "category": "sandbox",
+  "severity": "medium",
+  "platforms": [
+    "macos"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/591",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "sandbox-exec"
+      },
+      {
+        "contains": "ENOENT"
+      }
+    ]
+  },
+  "summary": "On macOS the Codex sandbox runs through the system sandbox-exec (Seatbelt) tool; when that executable cannot be found or spawned, the CLI crashes with ENOENT instead of degrading gracefully.",
+  "explanation": "sandbox-exec lives under /usr/bin on normal macOS installs. Its absence usually means a stripped-down or non-standard environment (custom minimal images, some containers). Seatbelt itself is deprecated upstream, but it remains the macOS sandbox mechanism Codex relies on.",
+  "actions": [
+    "Confirm the binary exists: run ls -l /usr/bin/sandbox-exec.",
+    "Check whether the environment is a container or minimal image that strips /usr/bin, and test on a standard macOS install.",
+    "As an interim step, run Codex outside the sandbox only in a controlled environment you trust, and track the upstream issue."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/591",
+      "label": "openai/codex#591"
+    }
+  ],
+  "tags": [
+    "sandbox",
+    "macos",
+    "seatbelt"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "macOS 上因找不到 sandbox-exec 而崩溃（ENOENT）",
+      "summary": "macOS 上 Codex 的沙箱依赖系统的 sandbox-exec（Seatbelt）工具；找不到或无法拉起该可执行文件时，CLI 会以 ENOENT 崩溃而不是优雅降级。",
+      "explanation": "正常 macOS 安装里 sandbox-exec 位于 /usr/bin。缺失通常意味着精简版或非标准环境（定制镜像、部分容器）。Seatbelt 上游已标记废弃，但它仍是 Codex 依赖的 macOS 沙箱机制。",
+      "actions": [
+        "确认二进制存在：运行 ls -l /usr/bin/sandbox-exec。",
+        "检查当前环境是否为裁剪过 /usr/bin 的容器或精简镜像，并在标准 macOS 上对比测试。",
+        "临时方案：仅在可信的受控环境中让 Codex 跳出沙箱运行，并跟进上游 Issue。"
+      ]
+    }
+  }
+}

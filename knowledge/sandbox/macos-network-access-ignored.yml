@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "id": "sandbox-macos-network-access-ignored",
+  "title": "network_access = true is ignored by the macOS Seatbelt sandbox",
+  "category": "sandbox",
+  "severity": "low",
+  "platforms": [
+    "macos"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/10390",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "network_access"
+      },
+      {
+        "contains": "sandbox"
+      }
+    ]
+  },
+  "summary": "Setting network_access = true in config.toml does not reliably enable network access for sandboxed commands on macOS: the Seatbelt profile enforces network blocking at the OS level and overrides the config.",
+  "explanation": "The macOS sandbox policy compiles network restrictions into the Seatbelt profile itself, so config toggles can be silently ignored and sandboxed commands still fail with network errors even though the config looks correct.",
+  "actions": [
+    "Confirm the failing command only breaks inside the sandbox; the same command outside succeeding supports this diagnosis.",
+    "Consider approving the specific command instead of relying on network_access, or run the workflow outside the sandbox when network is essential.",
+    "Track the upstream issue for a config-aware Seatbelt policy."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/10390",
+      "label": "openai/codex#10390"
+    }
+  ],
+  "tags": [
+    "sandbox",
+    "macos",
+    "network",
+    "seatbelt",
+    "config"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "macOS Seatbelt 沙箱会忽略 network_access = true",
+      "summary": "在 config.toml 里设置 network_access = true 并不能可靠地给 macOS 沙箱内命令放开网络：Seatbelt profile 在操作系统层面强制断网，覆盖配置文件。",
+      "explanation": "macOS 沙箱把网络限制直接编译进 Seatbelt profile，配置开关可能被静默忽略——即使配置看起来正确，沙箱内命令的网络请求依然失败。",
+      "actions": [
+        "确认该命令只在沙箱内失败、沙箱外成功——这能支持此诊断。",
+        "考虑对具体命令走审批流程，而不是依赖 network_access；网络必需的工作流可在沙箱外运行。",
+        "跟进上游 Issue，等待配置可感知的 Seatbelt 策略。"
+      ]
+    }
+  }
+}
