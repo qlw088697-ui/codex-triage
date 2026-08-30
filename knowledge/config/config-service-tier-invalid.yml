@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 2,
+  "id": "config-service-tier-invalid",
+  "title": "Invalid configuration for service_tier after update",
+  "category": "config",
+  "severity": "medium",
+  "platforms": [
+    "macos"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/27297",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "service_tier"
+      },
+      {
+        "contains": "invalid configuration"
+      }
+    ]
+  },
+  "summary": "After a Codex Desktop update on macOS, new sessions fail with an invalid configuration error referencing service_tier in config.toml.",
+  "explanation": "Reported as a macOS Codex Desktop update regression: an older service_tier entry in config.toml is rejected by the newer build, blocking new sessions until the key is removed or corrected.",
+  "actions": [
+    "Open ~/.codex/config.toml and find the service_tier entry.",
+    "Remove or comment out the service_tier line, then restart Codex.",
+    "If sessions still fail, compare your config against the upstream issue for the expected schema."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/27297",
+      "label": "openai/codex#27297"
+    }
+  ],
+  "tags": [
+    "config",
+    "macos",
+    "desktop",
+    "update"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "更新后 service_tier 配置无效",
+      "summary": "macOS 上的 Codex Desktop 更新后，新会话因 config.toml 中 service_tier 相关的无效配置报错。",
+      "explanation": "上游报告为 macOS Codex Desktop 的更新回归：config.toml 里旧版 service_tier 配置被新版拒绝，删除或修正该键之前无法新建会话。",
+      "actions": [
+        "打开 ~/.codex/config.toml，找到 service_tier 条目。",
+        "删除或注释掉 service_tier 行，重启 Codex。",
+        "若仍失败，对照上游 Issue 里的期望配置结构检查。"
+      ]
+    }
+  }
+}
