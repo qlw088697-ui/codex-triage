@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 2,
+  "id": "install-npm-eacces",
+  "title": "npm global install fails with EACCES permission denied",
+  "category": "install",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/1480",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "EACCES"
+      },
+      {
+        "contains": "node_modules"
+      }
+    ]
+  },
+  "summary": "npm cannot write into the global node_modules directory (typically /usr/lib/node_modules or /usr/local/lib/node_modules) because it is owned by root or another user, so installing or updating @openai/codex fails.",
+  "explanation": "Frequently triggered by a single earlier sudo npm install that left root-owned directories behind; every later non-sudo install or codex update then fails with EACCES. Upstream also tracks the updater hitting root-owned global directories.",
+  "actions": [
+    "Do not reach for sudo first; it deepens the ownership problem.",
+    "Prefer moving the npm global prefix to a user-owned directory (npm config set prefix) or use a Node version manager.",
+    "If root-owned directories already exist, fix ownership of the npm global prefix instead of reinstalling with sudo.",
+    "Rerun the install without sudo and confirm codex --version works."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/1480",
+      "label": "openai/codex#1480"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/21897",
+      "label": "openai/codex#21897"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/10342",
+      "label": "openai/codex#10342"
+    }
+  ],
+  "tags": [
+    "install",
+    "npm",
+    "permissions",
+    "macos",
+    "linux"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "npm 全局安装报 EACCES 权限拒绝",
+      "summary": "npm 无法写入全局 node_modules 目录（通常是 /usr/lib/node_modules 或 /usr/local/lib/node_modules），目录被 root 或其他用户占有，导致安装或更新 @openai/codex 失败。",
+      "explanation": "常见诱因：早期用过一次 sudo npm install，留下 root 属主的目录；之后每次非 sudo 安装或 codex update 都会 EACCES。上游也记录了更新器撞上 root 属主全局目录的问题。",
+      "actions": [
+        "不要先用 sudo，它会让属主问题更糟。",
+        "优先把 npm 全局 prefix 挪到用户可写目录（npm config set prefix），或使用 Node 版本管理器。",
+        "若已存在 root 属主目录，修复 npm 全局前缀的属主，而不是再用 sudo 重装。",
+        "去掉 sudo 重新安装，确认 codex --version 可用。"
+      ]
+    }
+  }
+}
