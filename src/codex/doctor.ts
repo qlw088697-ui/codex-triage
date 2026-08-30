@@ -115,20 +115,47 @@ export function parseDoctorReport(value: unknown): DoctorReport {
   };
 }
 
-export interface DoctorRunResult { report?: DoctorReport; diagnosticText: string; exitCode: number | null; }
+export interface DoctorRunResult {
+  report?: DoctorReport;
+  diagnosticText: string;
+  exitCode: number | null;
+  timedOut?: boolean;
+  parseError?: string;
+}
 
-export function runCodexDoctor(): DoctorRunResult {
-  const result = spawnSync("codex", ["doctor", "--json"], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024, windowsHide: true });
+export function runCodexDoctor(timeoutMs = 15_000): DoctorRunResult {
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 1) throw new Error("doctor timeout must be a positive integer");
+  const result = spawnSync("codex", ["doctor", "--json"], {
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+    timeout: timeoutMs,
+    killSignal: "SIGTERM",
+    windowsHide: true,
+  });
   if (result.error) {
-    const notFound = (result.error as NodeJS.ErrnoException).code === "ENOENT";
-    return { diagnosticText: notFound ? "codex: command not found" : `codex doctor failed to start: ${result.error.message}`, exitCode: result.status };
+    const code = (result.error as NodeJS.ErrnoException).code;
+    const notFound = code === "ENOENT";
+    const timedOut = code === "ETIMEDOUT";
+    const diagnosticText = notFound
+      ? "codex: command not found"
+      : timedOut
+        ? `codex doctor timed out after ${timeoutMs}ms`
+        : `codex doctor failed to start: ${result.error.message}`;
+    return { diagnosticText, exitCode: result.status, timedOut };
   }
   const stdout = result.stdout ?? "";
   const stderr = result.stderr ?? "";
   const diagnosticText = [stdout, stderr].filter(Boolean).join("\n").trim();
+  if (!stdout.trim()) {
+    return { diagnosticText: diagnosticText || `codex doctor exited with code ${result.status ?? "unknown"} and produced no JSON`, exitCode: result.status };
+  }
   try {
     return { report: parseDoctorReport(JSON.parse(stdout)), diagnosticText, exitCode: result.status };
-  } catch {
-    return { diagnosticText, exitCode: result.status };
+  } catch (error) {
+    return {
+      diagnosticText,
+      exitCode: result.status,
+      parseError: error instanceof Error ? error.message : String(error),
+    };
   }
 }

@@ -1,5 +1,12 @@
 export { parseDoctorReport, runCodexDoctor } from "./codex/doctor.js";
+export type { DoctorCheck, DoctorIssue, DoctorReport, DoctorStatus } from "./codex/types.js";
 export { loadRules } from "./knowledge/loader.js";
 export { matchRules } from "./engine/matcher.js";
-export { redactText } from "./report/redact.js";
+export type { MatchEvidence, MatchInput, RuleMatch } from "./engine/matcher.js";
+export { searchRules } from "./engine/search.js";
+export type { FaqHit } from "./engine/search.js";
+export type { DoctorMatcher, Platform, Rule, TextMatcher } from "./knowledge/schema.js";
+export { redactText, redactValue } from "./report/redact.js";
 export { renderMarkdownReport } from "./report/markdown.js";
+export { renderFaq, faqHitsToJson } from "./report/faq.js";
+export { renderTerminal, sanitizeTerminalText } from "./report/terminal.js";

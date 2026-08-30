@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "auth-not-configured",
   "title": "No Codex credentials were found",
   "category": "auth",

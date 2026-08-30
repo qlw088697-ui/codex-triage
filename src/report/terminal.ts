@@ -9,6 +9,12 @@ function localize(rule: Rule, locale: string) {
 
 export interface TerminalRenderOptions { report?: DoctorReport; matches: RuleMatch[]; platform: Platform; locale: string; }
 
+export function sanitizeTerminalText(value: string): string {
+  return value
+    .replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "");
+}
+
 export function renderTerminal(options: TerminalRenderOptions): string {
   const zh = options.locale.toLowerCase().startsWith("zh");
   const out: string[] = ["Codex Triage", "─".repeat(56), `${zh ? "平台" : "Platform"}: ${options.platform}`];
@@ -32,5 +38,5 @@ export function renderTerminal(options: TerminalRenderOptions): string {
     }
     out.push("", "─".repeat(56));
   }
-  return out.join("\n");
+  return sanitizeTerminalText(out.join("\n"));
 }

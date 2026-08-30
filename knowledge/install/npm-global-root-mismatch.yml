@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "npm-global-root-mismatch",
   "title": "npm would update a different Codex installation",
   "category": "install",

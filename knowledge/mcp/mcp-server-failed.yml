@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "mcp-server-failed",
   "title": "MCP configuration has a required failure",
   "category": "mcp",

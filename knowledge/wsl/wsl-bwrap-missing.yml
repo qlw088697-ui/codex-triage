@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "wsl-bwrap-missing",
   "title": "Bundled bwrap is missing in WSL mode",
   "category": "wsl",

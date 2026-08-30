@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "token-exchange-failed",
   "title": "OAuth token exchange failed",
   "category": "auth",

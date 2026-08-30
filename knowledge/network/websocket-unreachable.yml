@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "websocket-unreachable",
   "title": "Responses WebSocket is unavailable",
   "category": "network",

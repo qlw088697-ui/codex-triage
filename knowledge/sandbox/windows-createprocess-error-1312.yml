@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "windows-createprocess-error-1312",
   "title": "Windows sandbox cannot spawn a process (error 1312)",
   "category": "sandbox",

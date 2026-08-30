@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "proxy-tls-dns",
   "title": "Proxy, TLS, or DNS interference is likely",
   "category": "network",
