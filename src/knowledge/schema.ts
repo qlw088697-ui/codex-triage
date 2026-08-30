@@ -1,4 +1,7 @@
 export type Platform = "windows" | "macos" | "linux" | "wsl";
+
+/** Locales with full CLI UI strings; rule-level i18n falls back to English per field. */
+export type Locale = "en" | "zh-CN" | "ja";
 export type Severity = "low" | "medium" | "high";
 export type DoctorStatus = "ok" | "warning" | "fail";
 

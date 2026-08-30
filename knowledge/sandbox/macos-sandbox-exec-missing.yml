@@ -49,6 +49,16 @@
         "检查当前环境是否为裁剪过 /usr/bin 的容器或精简镜像，并在标准 macOS 上对比测试。",
         "临时方案：仅在可信的受控环境中让 Codex 跳出沙箱运行，并跟进上游 Issue。"
       ]
+    },
+    "ja": {
+      "title": "macOS が sandbox-exec 不在でクラッシュする（ENOENT）",
+      "summary": "macOS では Codex サンドボックスがシステムの sandbox-exec（Seatbelt）ツール経由で動きます。その実行ファイルが見つからない・起動できない場合、CLI は穏やかに代替する代わりに ENOENT でクラッシュします。",
+      "explanation": "sandbox-exec は通常の macOS インストールでは /usr/bin の下にあります。不在は多くの場合、要素を削った非標準環境（独自の最小イメージ、一部のコンテナ）を意味します。Seatbelt 自体は上流で非推奨ですが、Codex が依存する macOS サンドボックス機構のままです。",
+      "actions": [
+        "バイナリの存在を確認します: ls -l /usr/bin/sandbox-exec。",
+        "その環境が /usr/bin を削るコンテナや最小イメージでないか調べ、標準的な macOS インストールで試します。",
+        "暫定策として、信頼できる管理された環境でのみサンドボックス外で Codex を実行し、上流 issue をウォッチします。"
+      ]
     }
   }
 }

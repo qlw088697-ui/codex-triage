@@ -50,6 +50,16 @@
         "如果 /mnt/c 上 chmod 不生效，在 /etc/wsl.conf 启用 DrvFs metadata，或把启动器挪到 WSL 原生文件系统。",
         "之后确认 Desktop 的 WSL 集成能正常启动；全新安装仍失败就跟进上游 Issue。"
       ]
+    },
+    "ja": {
+      "title": "WSL ランチャーバイナリに実行権限がない",
+      "summary": "新規インストールで WSL 統合が失敗します。/mnt/c/Users/<user>/.codex/bin/wsl/codex-desktop-wsl のランチャーバイナリに実行ビットがなく、Desktop から WSL への起動が permission denied で失敗します。",
+      "explanation": "ランチャーは Windows ドライブのマウント上に展開され、そこでは実行ビットが落ちることがあります。完全な新規インストールでも報告されています。パスが /mnt/c 上にあるため、DrvFs のメタデータ設定が chmod の保持を左右します。",
+      "actions": [
+        "実行ビットを付けます: chmod +x /mnt/c/Users/<user>/.codex/bin/wsl/codex-desktop-wsl。",
+        "/mnt/c 上で chmod が保持されないなら、/etc/wsl.conf で DrvFs メタデータを有効化するか、ランチャーを WSL ネイティブファイルシステムへ移します。",
+        "その後 Desktop の WSL 統合が起動するか確認します。新規インストールでも壊れるなら上流 issue を確認します。"
+      ]
     }
   }
 }

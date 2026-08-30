@@ -39,6 +39,15 @@
         "优先修复 PATH 或 npm prefix，而不是反复装到错误目录。",
         "重新打开终端并核对 Codex 路径与版本。"
       ]
+    },
+    "ja": {
+      "title": "npm が別の Codex インストールを更新しようとする",
+      "summary": "実行中の Codex 実行ファイルが、npm install -g が更新する npm グローバルルートの下にありません。",
+      "actions": [
+        "doctor レポートの running package root と npm package root を比較します。",
+        "間違った prefix への再インストールを繰り返すのではなく、PATH か npm prefix を修正します。",
+        "新しいシェルを開き、実行ファイルのパスとバージョンを確認します。"
+      ]
     }
   }
 }

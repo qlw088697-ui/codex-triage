@@ -43,6 +43,16 @@
         "修改 Windows 安全策略前先保存 `codex doctor --json`。",
         "结合 Codex 版本查看相关上游 Issue 是否为已知回归。"
       ]
+    },
+    "ja": {
+      "title": "Windows サンドボックスがプロセスを生成できない（エラー 5）",
+      "summary": "要求されたコマンドが始まる前に Windows サンドボックスが Access Denied（エラー 5）で失敗しました。",
+      "explanation": "根因の証明ではなく、有力な一致として扱ってください。",
+      "actions": [
+        "Codex の外の普通の PowerShell で同じ単純コマンドが動くか確認します。",
+        "Windows セキュリティポリシーを変える前に codex doctor --json を取得します。",
+        "リンクされた上流報告と自分の Codex バージョンで既知のリグレッションを確認します。"
+      ]
     }
   }
 }

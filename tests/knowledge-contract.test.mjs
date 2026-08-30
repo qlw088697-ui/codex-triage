@@ -2,13 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { loadRules } from "../dist/knowledge/loader.js";
 
-test("every bundled rule has tags and complete zh-CN guidance", async () => {
+test("every bundled rule has tags and complete zh-CN and ja guidance", async () => {
   const rules = await loadRules();
   for (const rule of rules) {
     assert.ok(rule.tags.length, `${rule.id} needs tags`);
-    assert.ok(rule.i18n["zh-CN"]?.title, `${rule.id} needs zh-CN title`);
-    assert.ok(rule.i18n["zh-CN"]?.summary, `${rule.id} needs zh-CN summary`);
-    assert.ok(rule.i18n["zh-CN"]?.actions?.length, `${rule.id} needs zh-CN actions`);
+    for (const locale of ["zh-CN", "ja"]) {
+      assert.ok(rule.i18n[locale]?.title, `${rule.id} needs ${locale} title`);
+      assert.ok(rule.i18n[locale]?.summary, `${rule.id} needs ${locale} summary`);
+      assert.ok(rule.i18n[locale]?.actions?.length, `${rule.id} needs ${locale} actions`);
+    }
   }
 });
 

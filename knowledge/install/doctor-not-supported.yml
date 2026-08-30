@@ -33,6 +33,15 @@
         "通过当前 Codex 所属的同一安装渠道进行升级。",
         "先确认 `codex doctor --json` 可以运行，再执行 codex-triage。"
       ]
+    },
+    "ja": {
+      "title": "インストール済み Codex は doctor --json に非対応",
+      "summary": "インストールされた Codex ビルドは、codex-triage が期待する doctor JSON インターフェースより古いようです。",
+      "actions": [
+        "codex --version を実行します。",
+        "実行ファイルを現在管理しているインストール経路で Codex をアップグレードします。",
+        "codex-triage を使う前に codex doctor --json を再試行します。"
+      ]
     }
   }
 }

@@ -49,6 +49,16 @@
         "确认元数据无误后重试 codex mcp login；仍失败则跟进上游 Issue。",
         "如服务器支持，可临时改用静态 auth header 配置 MCP 服务器替代 OAuth。"
       ]
+    },
+    "ja": {
+      "title": "codex mcp login が \"no authorization support detected\" で中断する",
+      "summary": "OAuth メタデータを正しく公開している MCP サーバーに対しても、codex mcp login が即座に 'No authorization support detected' で失敗します。",
+      "explanation": "仕様準拠の OAuth サーバーに対する macOS arm64 での報告です。関連する失敗ファミリーとして mcp login 中の issuer 検証エラーもあります。壊れているのは CLI 側の OAuth 検出であり、サーバー設定ではありません。",
+      "actions": [
+        "サーバーが well-known エンドポイント（RFC 8414）で OAuth メタデータを実際に公開しているか確認します。",
+        "メタデータを確認した上で codex mcp login を再試行し、それでも中断する場合は上流 issue を確認します。",
+        "サーバーが対応しているなら、OAuth の代わりに静的認証ヘッダーで MCP サーバーを設定する回避策もあります。"
+      ]
     }
   }
 }

@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.19.0] - 2026-08-30
+
+### Added
+
+- Japanese (`--lang ja`) as a full third locale: all 55 bundled rules now carry complete ja title/summary/explanation/actions, the terminal and FAQ renderers speak Japanese, and `faq` search indexes ja titles (kana-aware tokenization). Locale aliases `ja`/`ja-JP` normalize to `ja`; rule-level i18n falls back to English per field, so custom rules without translations still render under `--lang ja`. The knowledge-base contract test now enforces zh-CN and ja completeness, and `scripts/rule-new.mjs` scaffolds ja stubs alongside zh-CN.
+
 ## [1.18.0] - 2026-08-30
 
 ### Added

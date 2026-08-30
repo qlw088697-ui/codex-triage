@@ -34,6 +34,15 @@
         "若使用打包版本，优先修复/重装软件包，而不是手工替换 bundled 文件。",
         "若使用系统 rg，确认同一 shell 下 `rg --version` 正常。"
       ]
+    },
+    "ja": {
+      "title": "Codex の検索コマンドを検証できなかった",
+      "summary": "Codex が設定された ripgrep/検索コマンドを検証できませんでした。",
+      "actions": [
+        "doctor の詳細にある search command と search provider を確認します。",
+        "パッケージ版 Codex なら、同梱ファイルを手で置き換えるのではなくパッケージを修復・再インストールします。",
+        "システムの検索を使っているなら、同じシェルで rg --version が動くことを確認します。"
+      ]
     }
   }
 }

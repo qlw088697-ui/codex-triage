@@ -54,6 +54,17 @@
         "Windows 下 MCP 服务器定义中的路径，把单反斜杠改为正斜杠或双反斜杠。",
         "重新运行 codex；能进入的话再跑 codex doctor 确认 config.load 通过。"
       ]
+    },
+    "ja": {
+      "title": "config.toml をパースできない（起動失敗）",
+      "summary": "~/.codex/config.toml にパースできない TOML があるため Codex が起動時に終了します。エラーにはファイル名・行・列が示されます。",
+      "explanation": "上流で報告されている原因は、VSCode 拡張が再起動のたびに config.toml の内容を自身に追記して TOML を壊すケースと、Windows の MCP サーバー定義でパスを単一のバックスラッシュで書くケース（TOML はエスケープと解釈する）です。",
+      "actions": [
+        "エラーメッセージの行と列に従って ~/.codex/config.toml を開きます。",
+        "重複ブロック（既知の VSCode 拡張のバグ）を探して削除します。",
+        "Windows の MCP サーバー定義では、パスの単一バックスラッシュをフォワードスラッシュまたは二重バックスラッシュに置き換えます。",
+        "Codex を再実行します。doctor を実行できるなら codex doctor で config.load の合格を確認します。"
+      ]
     }
   }
 }

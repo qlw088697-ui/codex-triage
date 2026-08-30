@@ -50,6 +50,16 @@
         "不要反复重装：报告中 Store 更新和完整应用数据重置都被验证无效，这需要客户端修复。",
         "关注上游 issue 及相关桌面版选择器/会话回归，等修复版本。"
       ]
+    },
+    "ja": {
+      "title": "Desktop のチャットが :workspace 権限プロファイルの型エラーで失敗する",
+      "summary": "Codex Desktop が組み込みの \":workspace\" 権限プロファイルを、バックエンドが内部タグ付き enum として期待する場所に素の文字列で送るため、すべてのチャット（新規も再開も）が即座に失敗し、GPT-5.6 がピッカーから消えます。",
+      "explanation": "これは Desktop 側のクライアント/サーバー契約のリグレッションです。正確なエラーは 'Invalid request: invalid type: string \":workspace\", expected internally tagged enum PermissionProfileSelectionParams'。報告者は 3 つのローカル原因を排除しました。最新の Microsoft Store パッケージへ更新済み、Reset-AppxPackage でアプリデータをリセット済み、~/.codex/config.toml にカスタム default_permissions = \":workspace\" は存在しない——それでも Windows 11 x64（Desktop 26.820.7780.0、エンタープライズプラン）で新規・既存の全チャットが失敗します。消えた GPT-5.6 ピッカー項目とこの型エラーの組み合わせは、関連 issue で追跡されている Desktop のピッカー/セッション/権限状態のリグレッションを指します。",
+      "actions": [
+        "まず安価な確認として、~/.codex/config.toml にカスタム default_permissions がないことを確かめます。ローカルの上書きは同じ形のエラーになり得ます（参考報告では不在でした）。",
+        "再インストールを繰り返さないでください。Store 更新とアプリデータの完全リセットの両方が不十分と検証済みで、クライアント修正が必要です。",
+        "修正版のリリースを上流 issue と関連する Desktop ピッカー/セッション系リグレッションでウォッチします。"
+      ]
     }
   }
 }

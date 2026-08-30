@@ -52,6 +52,16 @@
         "移除或改名 PATH 上冲突的 rg.exe（或升级它），让内置二进制生效。",
         "重启 Codex，确认搜索不再报回退。"
       ]
+    },
+    "ja": {
+      "title": "このシェルで ripgrep が使えず（PowerShell 検索へフォールバック）",
+      "summary": "Windows で Codex が現在のシェルで ripgrep を使えないと報告し、黙って遅い PowerShell ファイル検索へフォールバックします。多くはユーザー PATH の rg.exe が同梱バイナリを覆い隠すためです。",
+      "explanation": "上流報告では、Desktop/CLI が Codex 同梱の ripgrep より先にユーザー PATH から rg を解決し、PATH 上の壊れた/非互換な rg.exe があると、rg が Codex の外では動くのにシェルが使用不可と宣言します。",
+      "actions": [
+        "Codex が使うのと同じシェルで rg --version を実行し、どの rg.exe が解決されるか確認します（where rg）。",
+        "競合するユーザー PATH の rg.exe を削除・リネーム・更新して、同梱バイナリが勝つようにします。",
+        "Codex を再起動し、検索がフォールバックを報告しなくなったことを確認します。"
+      ]
     }
   }
 }
