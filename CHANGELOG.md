@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.15.0] - 2026-08-30
+
+### Added
+
+- `provider-responses-lite-model-unsupported` from the ChatGPT-route Responses-Lite cluster (openai/codex#31150, #30403, #30238): with ChatGPT sign-in, gpt-5.5 is routed into a Responses-Lite transport that rejects it with 400 unsupported_value while gpt-5.4 works on the same account; actions cover the confirmed gpt-5.4 fallback and the client-side catalog suppression option. Knowledge base: 49 rules across 11 categories.
+
+### Fixed
+
+- Tightened `provider-chatgpt-only-tool-transport` to match the full "Responses-Lite only supports" error so the ChatGPT-route variant above no longer collides with the custom-provider rule.
+
 ## [1.14.0] - 2026-08-30
 
 ### Added

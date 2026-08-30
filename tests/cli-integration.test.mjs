@@ -79,7 +79,7 @@ test("CLI rejects malformed inputs and invalid argument combinations", async (t)
 test("CLI exposes package version and accepts an explicit zero match limit", async (t) => {
   const version = run(["--version"]);
   assert.equal(version.status, 0);
-  assert.equal(version.stdout.trim(), "1.14.0");
+  assert.equal(version.stdout.trim(), "1.15.0");
 
   const directory = await mkdtemp(join(tmpdir(), "codex-triage-limit-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
