@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "sandbox-gpt56-readonly-no-tools",
+  "title": "GPT-5.6 sessions in the read-only sandbox are provisioned with no tools",
+  "category": "sandbox",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/31843",
+  "match": {
+    "any": [
+      {
+        "contains": "no terminal or file-reading tool"
+      },
+      {
+        "contains": "NO-TOOLS"
+      }
+    ],
+    "all": []
+  },
+  "summary": "With any GPT-5.6 model, read-only sandbox sessions receive no tool bundle at all, so the model reports it has no shell or file-reading tool and read-only automation silently degrades to plain chat.",
+  "explanation": "The reproduction matrix isolates the trigger to the model/sandbox combination: gpt-5.6-sol and gpt-5.6-terra under read-only report no tools, while the same models under workspace-write and gpt-5.5 under read-only both execute commands normally. Raising sandbox permissions (disk-full-read-access) does not help, and identical CLI versions behave differently only by model - so this is model provisioning, not a CLI or permission misconfiguration. The reporter is on the ChatGPT desktop local load balancer, so a backend/rollout-side cause is likely; it was filed within hours of the GPT-5.6 GA rollout and shares the unvalidated-gpt-5.6-metadata theme of openai/codex#31882.",
+  "actions": [
+    "For read-only runs use -m gpt-5.5, or switch the session to -s workspace-write; both are confirmed working in the reproduction matrix.",
+    "Do not chase permissions: adding sandbox_permissions=[\"disk-full-read-access\"] was tested and does not provision tools.",
+    "Track the upstream issue - the fix belongs in GPT-5.6 tool provisioning for read-only sandboxes."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31843",
+      "label": "openai/codex#31843"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31882",
+      "label": "openai/codex#31882"
+    }
+  ],
+  "tags": [
+    "sandbox",
+    "read-only",
+    "gpt-5.6",
+    "tools",
+    "exec"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "GPT-5.6 在只读沙箱会话中拿不到任何工具",
+      "summary": "任何 GPT-5.6 模型在只读沙箱会话里都不会被供给工具包，模型会自述没有 shell 或文件读取工具，只读自动化悄悄退化成纯聊天。",
+      "explanation": "复现矩阵把触发条件隔离到模型与沙箱的组合：gpt-5.6-sol 和 gpt-5.6-terra 在 read-only 下报无工具，同样模型在 workspace-write 下、gpt-5.5 在 read-only 下都能正常执行命令。放宽沙箱权限（disk-full-read-access）没有帮助，相同 CLI 版本只有模型不同表现就不同——这是模型侧的工具供给问题，不是 CLI 或权限配置错误。报告者走的是 ChatGPT 桌面版本地负载均衡，后端/灰度侧原因的可能性较大；该 issue 在 GPT-5.6 GA 发布数小时内提交，与 openai/codex#31882 同属 gpt-5.6 元数据未经非默认配置验证的主题。",
+      "actions": [
+        "只读任务改用 -m gpt-5.5，或把会话切到 -s workspace-write；两者都在复现矩阵中确认可用。",
+        "不要折腾权限：实测加 sandbox_permissions=[\"disk-full-read-access\"] 并不会供给工具。",
+        "关注上游 Issue——修复应落在 GPT-5.6 在只读沙箱下的工具供给。"
+      ]
+    }
+  }
+}

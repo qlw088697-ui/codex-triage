@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "desktop-code-mode-host-handshake",
+  "title": "Codex Desktop fails GPT-5.6 tool execution with \"code-mode host exited during handshake\"",
+  "category": "desktop",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/40943",
+  "match": {
+    "any": [
+      {
+        "contains": "code-mode host exited during handshake"
+      }
+    ],
+    "all": []
+  },
+  "summary": "On affected machines, Codex Desktop cannot execute local tools with GPT-5.6 models: every command fails during the code-mode host handshake, while GPT-5.5 in Desktop and the same GPT-5.6 models through the CLI work on the same machine and account.",
+  "explanation": "The A/B matrix in the most detailed report rules out the usual suspects: same codex.exe SHA256 works on a second identical Windows PC; the code-mode host binary exists with a valid OpenAI signature and executable ACLs and runs manually; the app-server stdio initialization and the WebSocket upgrade (HTTP 101) both succeed; a reduced skills tree still fails. The failure is specific to the Desktop -> app-server -> GPT-5.6 -> code-mode host handshake path and is machine-specific rather than account- or binary-specific. Reported from Codex Desktop 26.820.x with codex-cli 0.149.1 on Windows 11; CLI execution of gpt-5.6-luna and gpt-5.6-sol works throughout. GPT-5.6 models run their tools through the code-mode host, which is why GPT-5.5 Desktop is unaffected.",
+  "actions": [
+    "Run GPT-5.6 tasks through the CLI - confirmed working on the same affected machine.",
+    "Stay on GPT-5.5 inside Codex Desktop for tool-using work until the handshake path is fixed.",
+    "Do not reinstall or re-verify the binary: signature, ACL, SHA256, WebSocket, and app-server checks were all clean in the report; reinstalling does not address a handshake-path bug.",
+    "When filing upstream, include a Feedback ID and the desktop evidence package - machine-specific handshake failures need side-by-side traces from an affected and a working PC."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40943",
+      "label": "openai/codex#40943"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40798",
+      "label": "openai/codex#40798"
+    }
+  ],
+  "tags": [
+    "desktop",
+    "windows",
+    "code-mode",
+    "gpt-5.6",
+    "handshake",
+    "tools"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Codex 桌面版 GPT-5.6 工具执行报 \"code-mode host exited during handshake\"",
+      "summary": "在受影响的机器上，Codex 桌面版无法用 GPT-5.6 模型执行本地工具：每条命令都在 code-mode host 握手阶段失败，而同机同号的 GPT-5.5 桌面版和走 CLI 的同款 GPT-5.6 都正常。",
+      "explanation": "最详细报告中的 A/B 矩阵排除了常见嫌疑：相同 codex.exe SHA256 在另一台同配置 Windows 机器上正常；code-mode host 二进制存在、OpenAI 签名有效、ACL 可执行、手动运行正常；app-server stdio 初始化和 WebSocket 升级（HTTP 101）都成功；精简 skills 目录后依旧失败。失败特定于 桌面版 -> app-server -> GPT-5.6 -> code-mode host 这条握手路径，且是机器特定的，与账号或二进制无关。报告来自 Windows 11 上的 Codex Desktop 26.820.x + codex-cli 0.149.1；CLI 执行 gpt-5.6-luna 与 gpt-5.6-sol 始终正常。GPT-5.6 的工具走 code-mode host，所以桌面版的 GPT-5.5 不受影响。",
+      "actions": [
+        "GPT-5.6 任务改走 CLI——同一台受影响机器上确认可用。",
+        "握手路径修复前，桌面版内做工具类工作先用 GPT-5.5。",
+        "不要重装或反复校验二进制：报告里签名、ACL、SHA256、WebSocket、app-server 检查全部干净，重装解决不了握手路径的 bug。",
+        "向上游报告时附上 Feedback ID 和桌面版证据包——机器特定的握手失败需要受影响/正常两台机器的对照 traces。"
+      ]
+    }
+  }
+}

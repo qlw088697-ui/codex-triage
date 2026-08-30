@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.16.0] - 2026-08-30
+
+### Added
+
+- Continued the gpt-5.6 tool-provisioning family with two rules: `sandbox-gpt56-readonly-no-tools` (openai/codex#31843 - GPT-5.6 sessions in the read-only sandbox receive no tool bundle; gpt-5.5 or workspace-write confirmed working) and a new **desktop** category with `desktop-code-mode-host-handshake` (openai/codex#40943 cluster - machine-specific Desktop handshake failure for GPT-5.6 tool execution; CLI confirmed working on the same machine). Knowledge base: 51 rules across 12 categories.
+
 ## [1.15.0] - 2026-08-30
 
 ### Added
