@@ -29,9 +29,24 @@ Local, community-maintained troubleshooting knowledge for OpenAI Codex.
 - installation and PATH conflicts
 - Codex state and SQLite integrity problems
 
-## Install from source
+## Install
 
 Requirements: Node.js 20 or newer.
+
+Run without installing:
+
+```bash
+npx codex-triage
+```
+
+Or install globally:
+
+```bash
+npm install -g codex-triage
+codex-triage --help
+```
+
+### Install from source
 
 ```bash
 git clone https://github.com/qlw088697-ui/codex-triage.git
@@ -47,12 +62,6 @@ On Windows PowerShell, if execution policy blocks `npm.ps1`, use `npm.cmd` witho
 npm.cmd ci
 npm.cmd run build
 node dist\cli.js --help
-```
-
-After the package is published to npm, the intended usage is:
-
-```bash
-npx codex-triage
 ```
 
 GitHub dependency installation is supported through the package `prepare` script. Published tarballs are rebuilt and tested by `prepack`.
@@ -191,7 +200,8 @@ Terminal, Markdown, and JSON output all pass through the same final local redact
 
 No redactor can guarantee removal of every private value. Always review a generated report before publishing it.
 
-See [docs/privacy.md](docs/privacy.md) and [SECURITY.md](SECURITY.md).
+New here? Follow [docs/triage-walkthrough.md](docs/triage-walkthrough.md) for a full walkthrough, or check [docs/faq.md](docs/faq.md).  
+See also [docs/privacy.md](docs/privacy.md) and [SECURITY.md](SECURITY.md).
 
 ## Development
 
