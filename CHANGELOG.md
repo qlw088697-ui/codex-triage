@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.11.0] - 2026-08-30
+
+### Added
+
+- New usage category with `auth-usage-limit-reached` (openai/codex#12799, openai/codex#28908, openai/codex#32607): the usage-limit message with plan-confusion and known metering-bug guidance. Knowledge base: 44 rules.
+
 ## [1.10.0] - 2026-08-30
 
 ### Added
