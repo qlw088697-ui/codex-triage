@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "id": "mcp-login-no-auth-support",
+  "title": "codex mcp login aborts with no authorization support detected",
+  "category": "mcp",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/34684",
+  "match": {
+    "any": [
+      {
+        "contains": "No authorization support detected"
+      }
+    ],
+    "all": []
+  },
+  "summary": "codex mcp login fails instantly with 'No authorization support detected' even against MCP servers that advertise OAuth metadata correctly.",
+  "explanation": "Reported on macOS arm64 against a spec-compliant OAuth server; a related failure family is issuer validation errors during mcp login. The CLI-side OAuth detection is the failing part, not the server configuration.",
+  "actions": [
+    "Verify the server actually publishes OAuth metadata at the well-known endpoints (RFC 8414).",
+    "Retry codex mcp login after confirming metadata; check the upstream issues if it still aborts.",
+    "As a workaround, configure the MCP server with a static auth header instead of OAuth if the server supports it."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/34684",
+      "label": "openai/codex#34684"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31573",
+      "label": "openai/codex#31573"
+    }
+  ],
+  "tags": [
+    "mcp",
+    "oauth",
+    "login",
+    "macos"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "codex mcp login 立即失败：未检测到授权支持",
+      "summary": "codex mcp login 秒失败并报 'No authorization support detected'，即使 MCP 服务器正确声明了 OAuth 元数据。",
+      "explanation": "上游报告于 macOS arm64、对规范兼容的 OAuth 服务器复现；同族问题还有 mcp login 时的 issuer 校验失败。出问题的是 CLI 侧的 OAuth 探测，不是服务器配置。",
+      "actions": [
+        "先确认服务器确实在 well-known 端点发布 OAuth 元数据（RFC 8414）。",
+        "确认元数据无误后重试 codex mcp login；仍失败则跟进上游 Issue。",
+        "如服务器支持，可临时改用静态 auth header 配置 MCP 服务器替代 OAuth。"
+      ]
+    }
+  }
+}

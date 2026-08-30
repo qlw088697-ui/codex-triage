@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## [1.5.0] - 2026-08-30
+
+### Added
+
+- New state rule `state-rollout-db-parity` (openai/codex#26132): doctor's rollout parity warning, with backup-first guidance.
+- New search rule `search-rg-not-usable` (openai/codex#13542, openai/codex#22360): Windows ripgrep fallback to PowerShell search when a user-PATH rg.exe shadows the bundled binary.
+- New MCP rules `mcp-login-no-auth-support` (openai/codex#34684) and `mcp-oauth-401-tools-list` (openai/codex#20009): the two most-reported MCP OAuth failure signatures. Knowledge base: 31 rules.
+
 ## [1.4.0] - 2026-08-30
 
 ### Added

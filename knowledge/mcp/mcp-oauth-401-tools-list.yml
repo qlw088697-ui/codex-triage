@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "id": "mcp-oauth-401-tools-list",
+  "title": "MCP server answers tools/list with 401 despite OAuth login",
+  "category": "mcp",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/20009",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "tools/list"
+      },
+      {
+        "contains": "401"
+      }
+    ]
+  },
+  "summary": "An MCP server that completed OAuth login still answers tools/list with 401 Unauthorized, so no tools are invokable in Codex.",
+  "explanation": "Upstream reports describe servers advertising OAuth metadata correctly and unauthenticated tools/list returning 401 while authenticated requests from other clients succeed - the stored MCP credentials are not accepted by the resource server.",
+  "actions": [
+    "Run codex mcp logout <server-name> then codex mcp login <server-name> to refresh stored credentials.",
+    "Verify the new token manually: call tools/list with curl and the fresh bearer token; expect 200.",
+    "If 401 persists with a fresh token, compare token audience and resource indicators against the upstream issue."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/20009",
+      "label": "openai/codex#20009"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/24058",
+      "label": "openai/codex#24058"
+    }
+  ],
+  "tags": [
+    "mcp",
+    "oauth",
+    "401",
+    "tools"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "MCP 服务器完成 OAuth 登录后 tools/list 仍返回 401",
+      "summary": "MCP 服务器明明完成了 OAuth 登录，tools/list 依然返回 401 Unauthorized，导致 Codex 里没有任何可用工具。",
+      "explanation": "上游报告：服务器正确声明 OAuth 元数据、未认证请求返回 401，而其他客户端用认证请求能成功——说明 Codex 存储的 MCP 凭据不被资源服务器接受。",
+      "actions": [
+        "执行 codex mcp logout <server-name> 再 codex mcp login <server-name> 刷新存储的凭据。",
+        "手动验证新 token：用 curl 带新 bearer token 调 tools/list，预期 200。",
+        "若新 token 仍 401，对照上游 Issue 检查 token audience 与 resource 指示符。"
+      ]
+    }
+  }
+}

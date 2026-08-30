@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "id": "state-rollout-db-parity",
+  "title": "Rollout files are missing from the state database",
+  "category": "state",
+  "severity": "low",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/26132",
+  "match": {
+    "any": [],
+    "all": [],
+    "doctor": {
+      "checkIds": [
+        "state.rollout_db_parity"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "The doctor state.rollout_db_parity check reports rollout session files that are missing from the SQLite state database, so history may be incomplete.",
+  "explanation": "Observed in an upstream doctor report alongside other warnings. This is a data-parity warning, not a hard failure: Codex keeps running, but session history lookups may miss entries.",
+  "actions": [
+    "Do not delete the state database as a first step; back up ~/.codex first.",
+    "Restart Codex and rerun codex doctor to see whether parity is restored on its own.",
+    "If warnings persist, check the upstream issue for current backfill guidance before touching SQLite files."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/26132",
+      "label": "openai/codex#26132"
+    }
+  ],
+  "tags": [
+    "state",
+    "sqlite",
+    "rollout",
+    "doctor"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "State 数据库缺少 rollout 会话文件",
+      "summary": "doctor 的 state.rollout_db_parity 检查报告部分 rollout 会话文件在 SQLite 状态库中缺失，历史记录可能不完整。",
+      "explanation": "上游 doctor 报告中与其他告警同时出现。这是数据一致性告警而非硬故障：Codex 仍可运行，但会话历史查询可能缺条目。",
+      "actions": [
+        "第一步不要删状态库；先备份 ~/.codex。",
+        "重启 Codex 后重跑 codex doctor，看一致性是否自行恢复。",
+        "告警持续的话，先看上游 Issue 的回填指引，再考虑动 SQLite 文件。"
+      ]
+    }
+  }
+}
