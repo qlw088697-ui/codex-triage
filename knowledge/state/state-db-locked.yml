@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "id": "state-db-locked",
+  "title": "State database is locked by another Codex process",
+  "category": "state",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/28666",
+  "match": {
+    "any": [
+      {
+        "contains": "database is locked"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex fails to start or initialize its state runtime with SQLite error code 5 (database is locked) because another Codex process - Desktop, app-server, mobile bridge, or a second CLI terminal - holds the lock on state_5.sqlite.",
+  "explanation": "Sharing one CODEX_HOME between Windows and WSL at the same time is a known trigger, as is running several CLI terminals before the retry logic landed. The database itself is usually fine; it is a contention problem, not corruption.",
+  "actions": [
+    "Close every Codex surface: Desktop app, CLI terminals, app-server, and any mobile bridge.",
+    "Kill lingering codex or app-server processes, then start one instance again.",
+    "Do not share the same CODEX_HOME between Windows and WSL concurrently.",
+    "If it recurs with a single instance, check the upstream issues for multi-terminal retry fixes."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/28666",
+      "label": "openai/codex#28666"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/30105",
+      "label": "openai/codex#30105"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/20213",
+      "label": "openai/codex#20213"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31426",
+      "label": "openai/codex#31426"
+    }
+  ],
+  "tags": [
+    "state",
+    "sqlite",
+    "locked",
+    "startup"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "State 数据库被另一个 Codex 进程锁定",
+      "summary": "Codex 启动或初始化 state runtime 失败，SQLite 报错误码 5（database is locked）——另一个 Codex 进程（Desktop、app-server、手机桥接或第二个 CLI 终端）占着 state_5.sqlite 的锁。",
+      "explanation": "Windows 和 WSL 同时共用一个 CODEX_HOME 是已知诱因；多终端并发在重试逻辑合入前也会触发。数据库本身通常没坏——这是争锁问题，不是损坏。",
+      "actions": [
+        "关掉所有 Codex 界面：Desktop、各 CLI 终端、app-server、手机桥接。",
+        "结束残留的 codex / app-server 进程，再重新启动一个实例。",
+        "不要让 Windows 和 WSL 同时共用同一个 CODEX_HOME。",
+        "单实例仍复发的话，到上游 Issue 看多终端重试修复的进展。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 2,
+  "id": "state-db-malformed",
+  "title": "State database is malformed (database disk image is malformed)",
+  "category": "state",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/24030",
+  "match": {
+    "any": [
+      {
+        "contains": "database disk image is malformed"
+      }
+    ],
+    "all": []
+  },
+  "summary": "The state or logs database (state_5.sqlite / logs_2.sqlite) is corrupted: Codex may fail to launch after an update, lose visible chat history, or auto-recover by moving the damaged file aside.",
+  "explanation": "Upstream reports tie this to WAL journal mode with concurrent writers, and to CODEX_HOME placed on NFS or other network storage. Conversation rollout files are usually not lost - it is the index database that broke, so history can often be rebuilt.",
+  "actions": [
+    "Close every Codex process first.",
+    "Back up the whole ~/.codex directory before touching anything.",
+    "Let Codex auto-recovery move the malformed database aside and rebuild, or run PRAGMA integrity_check to confirm before deleting any file.",
+    "Avoid keeping CODEX_HOME on NFS or network drives, and check the upstream issue on WAL corruption."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/24030",
+      "label": "openai/codex#24030"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/30957",
+      "label": "openai/codex#30957"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/27363",
+      "label": "openai/codex#27363"
+    }
+  ],
+  "tags": [
+    "state",
+    "sqlite",
+    "corruption",
+    "startup"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "State 数据库损坏（database disk image is malformed）",
+      "summary": "state 或 logs 数据库（state_5.sqlite / logs_2.sqlite）损坏：Codex 可能在更新后无法启动、聊天历史消失，或自动把损坏文件移开重建。",
+      "explanation": "上游把它归因于 WAL 日志模式下的并发写入，以及把 CODEX_HOME 放在 NFS 等网络存储上。会话 rollout 文件通常没丢——坏的是索引库，历史往往可以重建。",
+      "actions": [
+        "先关闭所有 Codex 进程。",
+        "动任何文件之前，先完整备份 ~/.codex 目录。",
+        "让 Codex 自动恢复机制把损坏库移走重建；删任何文件前先跑 PRAGMA integrity_check 确认。",
+        "避免把 CODEX_HOME 放在 NFS 或网络盘上，并跟进上游 WAL 损坏 Issue。"
+      ]
+    }
+  }
+}
