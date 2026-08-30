@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "duplicate-codex-install",
   "title": "Multiple Codex executables are visible on PATH",
   "category": "install",

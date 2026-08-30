@@ -32,5 +32,10 @@ export async function loadRules(directory = DEFAULT_KNOWLEDGE_DIR): Promise<Rule
     if (seen.has(rule.id)) throw new Error(`Duplicate rule id: ${rule.id}`);
     seen.add(rule.id);
   }
+  for (const rule of rules) {
+    if (rule.replacedBy && !seen.has(rule.replacedBy)) {
+      throw new Error(`Rule ${rule.id} references unknown replacedBy id: ${rule.replacedBy}`);
+    }
+  }
   return rules;
 }

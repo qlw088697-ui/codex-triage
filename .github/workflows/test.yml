@@ -1,17 +1,43 @@
 name: test
+
 on:
   push:
   pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        node: [20, 22]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npm run check
+      - run: node dist/cli.js --help
+      - run: node dist/cli.js --version
+      - name: Coverage thresholds
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 22
+        run: npm run coverage:check
+      - name: Secret scan
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 22
+        run: npm run scan:secrets
+      - name: Pack and install smoke test
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 22
+        run: npm run pack:smoke
+      - name: Verify package contents
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 22
+        run: npm pack --dry-run --json

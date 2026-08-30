@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "windows-cli-escalation-stays-sandboxed",
   "title": "Approved Windows CLI escalation still runs inside sandbox",
   "category": "sandbox",

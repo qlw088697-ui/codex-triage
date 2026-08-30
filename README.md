@@ -1,239 +1,224 @@
 # codex-triage
+
 [![test](https://github.com/qlw088697-ui/codex-triage/actions/workflows/test.yml/badge.svg)](https://github.com/qlw088697-ui/codex-triage/actions/workflows/test.yml)
 
-Community troubleshooting knowledge for OpenAI Codex.
+Local, community-maintained troubleshooting knowledge for OpenAI Codex.
 
+**Status:** v1.0.0 · Node.js 20+ · MIT
 
-Community troubleshooting knowledge for OpenAI Codex.
-
-**Status:** v0.1.0 · Node.js 20+ · MIT · CI passing
-
-`codex-triage` analyzes `codex doctor --json` output and optional Codex/app logs, matches them against community-maintained issue signatures, and provides safe troubleshooting guidance plus a shareable Markdown report.
+`codex-triage` analyzes `codex doctor --json` output and optional Codex/app logs, matches them against reviewed issue signatures, and produces safe troubleshooting guidance or a sanitized Markdown/JSON report.
 
 > Community project. Not affiliated with or endorsed by OpenAI.
 
+## Design goals
+
+- Local and offline after installation; no report upload by default.
+- Diagnostic only; no automatic deletion, permission changes, firewall edits, or sandbox bypasses.
+- Evidence-based matches tied to one doctor check rather than unrelated text from the full report.
+- Community rules separated from the TypeScript matching engine.
+- Zero runtime npm dependencies.
+
 ## What it helps with
 
-- Windows and WSL problems
-- Sandbox failures
-- Authentication errors
-- Network / proxy / TLS issues
+- Windows, macOS, Linux, and WSL environment problems
+- sandbox and process creation failures
+- authentication and token exchange errors
+- network, proxy, TLS, DNS, and WebSocket failures
 - MCP server failures
-- Installation and PATH problems
-- Codex state / SQLite problems
-- approved Windows CLI escalation remaining inside the sandbox;
-## Quick start
+- installation and PATH conflicts
+- Codex state and SQLite integrity problems
+
+## Install from source
+
+Requirements: Node.js 20 or newer.
 
 ```bash
-npm install
+git clone https://github.com/qlw088697-ui/codex-triage.git
+cd codex-triage
+npm ci
 npm run build
-node dist/cli.js
+node dist/cli.js --help
 ```
 
-Or during development:
+On Windows PowerShell, if execution policy blocks `npm.ps1`, use `npm.cmd` without lowering system security settings:
 
-```bash
-npm run dev -- fixtures/doctor/current-object.json --log fixtures/logs/windows-1312.txt
+```powershell
+npm.cmd ci
+npm.cmd run build
+node dist\cli.js --help
 ```
 
-Once published to npm, the intended UX is:
+After the package is published to npm, the intended usage is:
 
 ```bash
 npx codex-triage
 ```
 
-By default the CLI runs:
+GitHub dependency installation is supported through the package `prepare` script. Published tarballs are rebuilt and tested by `prepack`.
+
+## Usage
+
+With no positional input, the CLI runs `codex doctor --json` with a 15-second timeout:
 
 ```bash
-codex doctor --json
+codex-triage
 ```
 
-then performs a second local redaction pass and matches the report against the YAML knowledge base.
-
-## Examples
-
-Analyze a saved doctor report:
+Analyze a saved doctor report and optionally add a log:
 
 ```bash
 codex-triage doctor.json
-```
-
-Add a Codex/Desktop log:
-
-```bash
 codex-triage doctor.json --log codex.log
 ```
 
-Chinese terminal output:
+Chinese output and explicit platform selection:
 
 ```bash
-codex-triage doctor.json --lang zh-CN
+codex-triage doctor.json --lang zh-CN --platform wsl
 ```
 
-Generate a sanitized report:
+Match a raw error without a file, or pipe one in:
+
+```bash
+codex-triage explain "CreateProcessAsUserW failed: 1312" --platform windows
+some-command-that-fails | codex-triage explain -
+codex doctor --json | codex-triage -
+```
+
+Search the bundled knowledge offline before asking anywhere:
+
+```bash
+codex-triage faq websocket
+codex-triage faq 握手超时 --lang zh-CN --platform wsl
+```
+
+With no query, `faq` lists every rule in the knowledge base. Results honor `--platform` and `--limit`, and Chinese queries match zh-CN titles and summaries.
+
+Generate a sanitized Markdown report:
 
 ```bash
 codex-triage doctor.json --log codex.log --report
-
-# custom path
-codex-triage doctor.json --log codex.log --report --output my-report.md
+codex-triage doctor.json --report --output my-report.md
 ```
 
-Machine-readable output:
+Generate sanitized machine-readable output:
 
 ```bash
 codex-triage doctor.json --json
 ```
 
-## Example output
+JSON output is a stable envelope: `schemaVersion`, `mode` (`doctor`, `file`, `explain`, or `faq`), `platform`, and then mode-specific fields (`report` + `matches` for diagnostics, `query` + `results` for `faq`). Exit codes: `0` success, `1` invalid arguments/input, `2` automatic `codex doctor` did not produce a valid report.
+
+Important options:
 
 ```text
-Codex Triage
-────────────────────────────────────────────────────────
-Platform: windows
-Codex: 0.148.0
-Doctor: warning
-
-Found 1 possible issue(s)
-
-HIGH · Windows sandbox cannot spawn a process (error 1312)
-Confidence: 65%
-
-The Windows sandbox runner failed during process creation because the expected logon session was unavailable.
-
-Suggested next steps:
-  1. Verify that the failure happens even for a trivial command such as `Get-Location`.
-  2. Save the current Codex version and doctor report before reinstalling or changing account policy.
-  3. Check the upstream issue for current status and version-specific workarounds.
+--log <path>             Add a Codex/app log
+--report                 Write a Markdown report
+--output <path>          Report output path; requires --report
+--json                   Emit sanitized JSON
+--lang <locale>          en or zh-CN
+--platform <platform>    windows, macos, linux, or wsl
+--knowledge <path>       Custom rule directory
+--limit <n>              Maximum matches/entries, 0..100
+--doctor-timeout <ms>    1000..120000
+--version                Print package version
 ```
 
-## Why this exists
+## Matching model
 
-`codex doctor` is intentionally diagnostic and read-mostly. It gives support tooling a structured, redacted report. `codex-triage` adds a community knowledge layer on top:
+Rules with a structured doctor constraint are evaluated against each eligible doctor check independently. Their text signals and doctor status must come from the same check. Generic remediation text and issue remedy text are intentionally excluded from diagnostic evidence so suggested fixes cannot trigger diagnoses.
 
-- what a distinctive error probably means;
-- whether it resembles a known upstream issue;
-- which safe checks to try next;
-- whether the symptom looks local, environmental, or plausibly upstream;
-- a sanitized report that can be reviewed before posting to GitHub.
+Text-only rules can analyze an attached log or one doctor check at a time. Required `all` signals cannot be assembled from unrelated checks. JSON output includes evidence paths explaining where each signal was found.
 
-The parser accepts the current keyed `checks` JSON shape and a legacy/fixture array shape so older captured reports remain useful.
+Confidence scores are deterministic evidence scores, not statistical probabilities.
 
-## Knowledge, not hard-coded fixes
+## Knowledge rules
 
-Troubleshooting rules live in YAML:
+Files under `knowledge/` use JSON syntax saved with `.yml` or `.json` extensions. JSON is a valid YAML 1.2 subset and keeps the runtime dependency-free. Do not use general YAML syntax in v0.1.1.
 
-```text
-knowledge/
-├── auth/
-├── config/
-├── install/
-├── mcp/
-├── network/
-├── sandbox/
-├── search/
-├── state/
-└── wsl/
-```
-
-A rule is stored as JSON-compatible YAML (JSON syntax in a `.yml` file) in v0.1 so the runtime stays dependency-free. Example:
+Minimal valid rule:
 
 ```json
-id: windows-createprocess-error-1312
-title: Windows sandbox cannot spawn a process (error 1312)
-category: sandbox
-severity: high
-platforms:
-  - windows
-match:
-  any:
-    - contains: "CreateProcessAsUserW failed: 1312"
-summary: >-
-  The Windows sandbox runner failed during process creation because the expected logon session was unavailable.
-actions:
-  - Verify the failure with a trivial command.
-  - Save the Codex version and doctor report.
-links:
-  - type: github_issue
-    url: https://github.com/openai/codex/issues/31768
+{
+  "id": "windows-createprocess-error-1312",
+  "title": "Windows sandbox cannot spawn a process (error 1312)",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": ["windows"],
+  "match": {
+    "any": [
+      { "contains": "CreateProcessAsUserW failed: 1312" }
+    ]
+  },
+  "summary": "The Windows sandbox runner could not create a process.",
+  "actions": [
+    "Verify the failure with a trivial command."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31768"
+    }
+  ],
+  "tags": ["windows", "sandbox"],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows Sandbox 无法创建进程（错误 1312）",
+      "summary": "Windows sandbox runner 无法创建进程。",
+      "actions": ["先用最简单命令复现问题。"]
+    }
+  }
+}
 ```
 
-This lets contributors add knowledge without editing the matching engine.
+The loader rejects malformed regexes, catastrophic-backtracking regexes, unsafe URL protocols, duplicate matchers, empty doctor constraints, and rules without a diagnostic signal.
 
-## v0.1 knowledge coverage
+Optional rule metadata (validated at load time):
 
-The starter set includes 21 signatures across:
+- `codexVersions`: expressions such as `0.144.*`, `>=0.145.0`, or `=1.2.3`. Expressions are OR-combined; a rule is skipped when the reported Codex version satisfies none, or when no version evidence exists. Comparators cannot use wildcards.
+- `lastVerified`: ISO date (`YYYY-MM-DD`) of the last human verification of the rule.
+- `source`: public http(s) URL documenting the signature.
+- `deprecated` with a required `deprecationReason`, plus an optional `replacedBy` rule id that must exist. Deprecated rules are never matched.
 
-- missing/duplicate/mismatched Codex installations;
-- unsupported `doctor --json` on older builds;
-- config load failures;
-- missing credentials and auth initialization failures;
-- WSL `localhost:1455` OAuth callback problems;
-- token exchange failures;
-- provider/WebSocket/proxy/TLS/DNS connectivity;
-- ripgrep/search verification failures;
-- required MCP failures;
-- Windows `CreateProcessAsUserW` errors 5 and 1312;
-- missing Windows sandbox resources;
-- missing `bwrap` in WSL mode;
-- app-server handshake timeouts in WSL mode;
-- state/SQLite integrity failures.
+Every bundled rule is exercised by a synthesized positive fixture, a near-miss negative fixture, and, when platform-scoped, a cross-platform negative fixture (`tests/rule-fixtures.test.mjs`).
 
-## Safety model
+The full rule contract is frozen in [docs/rule-schema.md](docs/rule-schema.md), and the JSON output contract in [docs/json-output.md](docs/json-output.md). See [docs/contributing-rules.md](docs/contributing-rules.md) before proposing a rule.
 
-v0.1 is diagnostic only. It deliberately does **not**:
+## Privacy and safety
 
-- delete Codex state;
-- change Windows permissions or security policy;
-- disable endpoint protection;
-- modify firewall rules;
-- bypass Codex sandboxing;
-- automatically rewrite `config.toml`.
+Terminal, Markdown, and JSON output all pass through the same final local redaction boundary. The redactor covers common API keys, access tokens, Authorization headers, URL credentials, email addresses, and user home paths. Markdown diagnostic blocks use dynamically sized fences so log content cannot close the block.
 
-Potential future repair commands should default to `--dry-run` and require explicit user action.
+No redactor can guarantee removal of every private value. Always review a generated report before publishing it.
 
-## Privacy
-
-The official doctor JSON is designed to be redacted for support use. `codex-triage` still applies another local best-effort pass because users may attach arbitrary logs.
-
-No redactor can guarantee that every private value is removed. Review generated reports before publishing them.
-
-`codex-triage` does not upload reports by default.
-
-## Contributing a new issue signature
-
-You usually do not need to write TypeScript.
-
-1. Add `knowledge/<category>/<problem>.yml`.
-2. Add a sanitized fixture under `fixtures/logs/` when possible.
-3. Run `npm test` and `npm run build`.
-4. Open a PR with the upstream issue link when one exists.
-
-See [`docs/contributing-rules.md`](docs/contributing-rules.md).
+See [docs/privacy.md](docs/privacy.md) and [SECURITY.md](SECURITY.md).
 
 ## Development
 
-Requirements: Node.js 20+.
-
 ```bash
-npm install
+npm ci
 npm test
-npm run build
+npm run coverage:check
+npm run scan:secrets
+npm run pack:smoke
+npm pack --dry-run --json
 ```
 
-The runtime itself has zero npm dependencies. v0.1 knowledge files use JSON-compatible YAML (a valid YAML 1.2 subset), so troubleshooting does not depend on a YAML package being available.
+CI runs the test suite on Windows, Ubuntu, and macOS with supported Node.js release lines, enforces coverage thresholds (80% lines, 70% branches), scans first-party files for credential-shaped values, and installs the packed tarball before every release. Runtime behavior has no third-party npm dependency.
 
 ## Roadmap
 
-- **v0.1** — doctor parser, log matching, 21 rules, confidence score, EN/zh-CN output, Markdown report, redaction.
-- **v0.2** — richer version constraints, rule fixtures, issue metadata refresh, improved platform detection.
-- **v0.3** — `explain <error>`, duplicate-issue assistance, offline FAQ/search.
-- **v1.0** — stable rule schema, broader platform coverage, community maintainers.
+- **v0.1.x:** privacy boundary, evidence-scoped matching, strict rule validation, cross-platform CI. (shipped)
+- **v0.2:** version constraints, `lastVerified`/`source`/deprecation metadata, per-rule positive and negative fixtures, coverage thresholds, secret scanning, pack smoke test. (shipped)
+- **v0.3:** `explain <error>`, offline FAQ search, duplicate-issue assistance, stable JSON envelope, publish workflow. (shipped)
+- **v1.0:** frozen rule schema and public API, governance files, first version-constrained rule. (shipped)
+- **Beyond 1.0:** broader rule coverage through the community process, optional YAML parsing, additional locales.
+
+Automatic destructive repair and default telemetry are intentionally outside the roadmap.
 
 ## Upstream references
 
 - OpenAI Codex: https://github.com/openai/codex
-- Current doctor implementation: https://github.com/openai/codex/blob/main/codex-rs/cli/src/doctor.rs
+- Codex doctor implementation: https://github.com/openai/codex/blob/main/codex-rs/cli/src/doctor.rs
 
 ## License
 

@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "ripgrep-missing",
   "title": "Codex search command could not be verified",
   "category": "search",

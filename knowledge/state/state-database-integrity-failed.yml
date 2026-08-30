@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "state-database-integrity-failed",
   "title": "Codex state database integrity check failed",
   "category": "state",

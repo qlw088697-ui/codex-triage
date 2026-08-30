@@ -1,100 +1,155 @@
 import type { DoctorCheck, DoctorReport } from "../codex/types.js";
-import type { Platform, Rule } from "../knowledge/schema.js";
+import { codexVersionSatisfies } from "../knowledge/schema.js";
+import type { DoctorMatcher, Platform, Rule, TextMatcher } from "../knowledge/schema.js";
 
 export interface MatchInput {
   report?: DoctorReport;
   extraText?: string;
   platform: Platform;
+  codexVersion?: string;
+}
+
+export interface MatchEvidence {
+  source: "doctor" | "log" | "platform";
+  path: string;
+  signal: string;
+  weight: number;
 }
 
 export interface RuleMatch {
   rule: Rule;
   confidence: number;
   reasons: string[];
+  evidence: MatchEvidence[];
+  checkId?: string;
 }
 
-function stringifyDoctor(report?: DoctorReport): string {
-  if (!report) return "";
-  const parts = [report.codexVersion, report.overallStatus];
-  for (const check of report.checks) {
-    parts.push(check.id, check.category, check.status, check.summary, check.remediation ?? "");
-    for (const [key, value] of Object.entries(check.details)) {
-      parts.push(key, ...(Array.isArray(value) ? value : [value]));
-    }
-    parts.push(...check.notes);
-    for (const issue of check.issues) {
-      parts.push(issue.cause, issue.measured ?? "", issue.expected ?? "", issue.remedy ?? "", ...(issue.fields ?? []));
-    }
+interface EvidenceField { path: string; text: string; }
+interface EvidenceDocument {
+  source: "doctor" | "log";
+  path: string;
+  fields: EvidenceField[];
+  check?: DoctorCheck;
+}
+
+function checkEvidence(check: DoctorCheck): EvidenceDocument {
+  const root = `doctor.check[${check.id}]`;
+  const fields: EvidenceField[] = [{ path: `${root}.summary`, text: check.summary }];
+  for (const [key, value] of Object.entries(check.details)) {
+    const values = Array.isArray(value) ? value : [value];
+    fields.push({ path: `${root}.details.${key}`, text: [key, ...values].join("\n") });
   }
-  return parts.join("\n");
+  check.notes.forEach((note, index) => fields.push({ path: `${root}.notes[${index}]`, text: note }));
+  check.issues.forEach((issue, index) => {
+    const issueRoot = `${root}.issues[${index}]`;
+    fields.push({ path: `${issueRoot}.cause`, text: issue.cause });
+    if (issue.measured) fields.push({ path: `${issueRoot}.measured`, text: issue.measured });
+    if (issue.expected) fields.push({ path: `${issueRoot}.expected`, text: issue.expected });
+    if (issue.fields?.length) fields.push({ path: `${issueRoot}.fields`, text: issue.fields.join("\n") });
+  });
+  return { source: "doctor", path: root, fields, check };
 }
 
-function textMatcherMatches(text: string, matcher: { contains?: string; regex?: string; flags?: string }): boolean {
-  if (matcher.contains) return text.toLowerCase().includes(matcher.contains.toLowerCase());
-  if (matcher.regex) {
-    try {
-      return new RegExp(matcher.regex, matcher.flags ?? "i").test(text);
-    } catch {
-      return false;
-    }
-  }
-  return false;
+function matcherWeight(matcher: TextMatcher, kind: "any" | "all"): number {
+  return matcher.weight ?? (kind === "any" ? 65 : 35);
 }
 
-function checkMatchesDoctorConstraint(check: DoctorCheck, doctor: NonNullable<Rule["match"]["doctor"]>): boolean {
+function matcherSignal(matcher: TextMatcher): string {
+  return matcher.contains ? `contains:${matcher.contains}` : `regex:${matcher.regex}`;
+}
+
+function fieldMatches(field: EvidenceField, matcher: TextMatcher): boolean {
+  if (matcher.contains) return field.text.toLowerCase().includes(matcher.contains.toLowerCase());
+  if (!matcher.regex) return false;
+  return new RegExp(matcher.regex, matcher.flags ?? "i").test(field.text);
+}
+
+function findEvidence(document: EvidenceDocument, matcher: TextMatcher, kind: "any" | "all"): MatchEvidence | undefined {
+  const field = document.fields.find((candidate) => fieldMatches(candidate, matcher));
+  if (!field) return undefined;
+  return {
+    source: document.source,
+    path: field.path,
+    signal: matcherSignal(matcher),
+    weight: matcherWeight(matcher, kind),
+  };
+}
+
+function checkMatchesDoctorConstraint(check: DoctorCheck, doctor: DoctorMatcher): boolean {
   if (doctor.checkIds?.length && !doctor.checkIds.includes(check.id)) return false;
   if (doctor.categories?.length && !doctor.categories.includes(check.category)) return false;
   if (doctor.statuses?.length && !doctor.statuses.includes(check.status)) return false;
   return true;
 }
 
-function doctorConstraintMatches(report: DoctorReport | undefined, rule: Rule): DoctorCheck | undefined {
+function doctorBaseWeight(doctor: DoctorMatcher): number {
+  return doctor.checkIds?.length ? 65 : 30;
+}
+
+function evaluateDocument(rule: Rule, document: EvidenceDocument): RuleMatch | undefined {
+  const anyEvidence = rule.match.any
+    .map((matcher) => findEvidence(document, matcher, "any"))
+    .filter((item): item is MatchEvidence => Boolean(item));
+  if (rule.match.any.length && !anyEvidence.length) return undefined;
+
+  const allEvidence = rule.match.all
+    .map((matcher) => findEvidence(document, matcher, "all"));
+  if (allEvidence.some((item) => !item)) return undefined;
+
+  const evidence: MatchEvidence[] = [...anyEvidence, ...allEvidence as MatchEvidence[]];
+  const reasons = evidence.map((item) => `matched ${item.signal} at ${item.path}`);
+  let confidence = 0;
+
+  if (rule.match.doctor && document.check) {
+    const weight = doctorBaseWeight(rule.match.doctor);
+    evidence.unshift({
+      source: "doctor",
+      path: `${document.path}.status`,
+      signal: `${document.check.id}=${document.check.status}`,
+      weight,
+    });
+    reasons.unshift(`doctor: ${document.check.id}=${document.check.status}`);
+    confidence += weight;
+  }
+
+  if (anyEvidence.length) confidence += Math.min(65, anyEvidence.reduce((sum, item) => sum + item.weight, 0));
+  confidence += (allEvidence as MatchEvidence[]).reduce((sum, item) => sum + item.weight, 0);
+  confidence = Math.max(1, Math.min(99, confidence));
+
+  return { rule, confidence, reasons, evidence, checkId: document.check?.id };
+}
+
+function candidateDocuments(rule: Rule, input: MatchInput): EvidenceDocument[] {
   const doctor = rule.match.doctor;
-  if (!doctor || !report) return undefined;
-  return report.checks.find((check) => checkMatchesDoctorConstraint(check, doctor));
+  if (doctor) {
+    if (!input.report) return [];
+    return input.report.checks
+      .filter((check) => checkMatchesDoctorConstraint(check, doctor))
+      .map(checkEvidence);
+  }
+
+  const documents: EvidenceDocument[] = [];
+  if (input.extraText) {
+    documents.push({ source: "log", path: "log", fields: [{ path: "log", text: input.extraText }] });
+  }
+  if (input.report) documents.push(...input.report.checks.map(checkEvidence));
+  return documents;
 }
 
 export function matchRules(rules: Rule[], input: MatchInput): RuleMatch[] {
-  const text = [stringifyDoctor(input.report), input.extraText ?? ""].filter(Boolean).join("\n");
   const results: RuleMatch[] = [];
 
   for (const rule of rules) {
     if (rule.platforms?.length && !rule.platforms.includes(input.platform)) continue;
-
-    const anyMatches = rule.match.any.filter((matcher) => textMatcherMatches(text, matcher));
-    if (rule.match.any.length && anyMatches.length === 0) continue;
-
-    const allMatches = rule.match.all.filter((matcher) => textMatcherMatches(text, matcher));
-    if (allMatches.length !== rule.match.all.length) continue;
-
-    const doctorCheck = doctorConstraintMatches(input.report, rule);
-    if (rule.match.doctor && !doctorCheck) continue;
-
-    const hasSignal = anyMatches.length > 0 || allMatches.length > 0 || Boolean(doctorCheck);
-    if (!hasSignal) continue;
-
-    let confidence = 0;
-    const reasons: string[] = [];
-
-    const matchedText = [...anyMatches, ...allMatches];
-    for (let i = 0; i < matchedText.length; i += 1) {
-      const matcher = matchedText[i];
-      const weight = matcher.weight ?? (i === 0 ? 50 : 10);
-      confidence += weight;
-      reasons.push(matcher.contains ? `matched text: ${matcher.contains}` : `matched regex: ${matcher.regex}`);
-    }
-
-    if (doctorCheck) {
-      confidence += 25;
-      reasons.push(`doctor: ${doctorCheck.id}=${doctorCheck.status}`);
-    }
-    if (rule.platforms?.length) {
-      confidence += 15;
-      reasons.push(`platform: ${input.platform}`);
-    }
-
-    confidence = Math.max(55, Math.min(99, confidence));
-    results.push({ rule, confidence, reasons });
+    if (rule.deprecated) continue;
+    if (!codexVersionSatisfies(input.codexVersion, rule.codexVersions)) continue;
+    const candidates = candidateDocuments(rule, input);
+    const matches = candidates
+      .map((candidate) => evaluateDocument(rule, candidate))
+      .filter((match): match is RuleMatch => Boolean(match));
+    if (!matches.length) continue;
+    matches.sort((a, b) => b.confidence - a.confidence || (a.checkId ?? "").localeCompare(b.checkId ?? ""));
+    results.push(matches[0]);
   }
 
   const severityRank = { high: 3, medium: 2, low: 1 } as const;

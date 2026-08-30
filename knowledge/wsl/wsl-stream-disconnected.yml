@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "id": "wsl-stream-disconnected",
+  "title": "WSL: stream disconnected before completion (Codex 0.129.0+)",
+  "category": "wsl",
+  "severity": "high",
+  "platforms": [
+    "wsl"
+  ],
+  "codexVersions": [
+    ">=0.129.0"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/24511",
+  "match": {
+    "any": [
+      {
+        "contains": "stream disconnected before completion"
+      }
+    ]
+  },
+  "summary": "Codex versions newer than 0.128.0 lose their backend stream inside WSL while the same account works on native Windows.",
+  "explanation": "Reported against Codex 0.129.0+ in WSL (upstream doctor report captured 0.133.0). The failure is WSL-specific; native Windows with the same account is unaffected, which points at the WSL transport path rather than credentials.",
+  "actions": [
+    "Confirm the failure is WSL-only by running the same command from native Windows with the same account.",
+    "Note the exact Codex version and capture `codex doctor --json` from inside WSL.",
+    "Watch the upstream issue and pin the last working version (0.128.0) if an immediate downgrade is acceptable."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/24511",
+      "label": "openai/codex#24511"
+    }
+  ],
+  "tags": [
+    "wsl",
+    "stream",
+    "network",
+    "regression"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "WSL：流连接中断（Codex 0.129.0+）",
+      "summary": "0.128.0 之后的版本在 WSL 内丢失后端流式连接，同一账号在原生 Windows 上不受影响。",
+      "explanation": "上游报告针对 WSL 内的 Codex 0.129.0+（doctor 报告来自 0.133.0）。失败仅在 WSL 出现，指向 WSL 传输路径而非凭据问题。",
+      "actions": [
+        "用同一账号在原生 Windows 运行同一命令，确认失败是否仅限 WSL。",
+        "记录确切的 Codex 版本，并在 WSL 内执行 `codex doctor --json` 保存报告。",
+        "关注上游 Issue；如需立即恢复可回退到最后可用的 0.128.0。"
+      ]
+    }
+  }
+}

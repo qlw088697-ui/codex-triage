@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "wsl-oauth-localhost-callback",
   "title": "WSL OAuth localhost callback may be unreachable",
   "category": "auth",

@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "windows-sandbox-helper-missing",
   "title": "Windows sandbox helper or resource is missing",
   "category": "sandbox",

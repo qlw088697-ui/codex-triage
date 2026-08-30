@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "windows-createprocess-error-5",
   "title": "Windows sandbox cannot spawn a process (error 5)",
   "category": "sandbox",

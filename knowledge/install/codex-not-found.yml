@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "codex-not-found",
   "title": "Codex command is not installed or not on PATH",
   "category": "install",

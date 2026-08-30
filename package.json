@@ -1,22 +1,41 @@
 {
   "name": "codex-triage",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Community troubleshooting knowledge layer for OpenAI Codex",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "codex-triage": "./dist/cli.js"
   },
   "files": [
     "dist",
     "knowledge",
+    "docs",
     "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
     "LICENSE"
   ],
   "scripts": {
     "dev": "npm run build --silent && node dist/cli.js",
     "build": "tsc -p tsconfig.json",
     "test": "npm run build --silent && node --test tests/*.test.mjs",
-    "check": "npm test"
+    "test:coverage": "npm run build --silent && node --experimental-test-coverage --test tests/*.test.mjs",
+    "coverage:check": "npm run build --silent && node scripts/check-coverage.mjs",
+    "scan:secrets": "npm run build --silent && node scripts/scan-secrets.mjs",
+    "pack:smoke": "npm run build --silent && node scripts/pack-smoke.mjs",
+    "pack:check": "npm pack --dry-run --json",
+    "check": "npm test",
+    "prepare": "npm run build",
+    "prepack": "npm run check"
   },
   "engines": {
     "node": ">=20"
@@ -28,9 +47,23 @@
     "doctor",
     "cli"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qlw088697-ui/codex-triage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qlw088697-ui/codex-triage/issues"
+  },
+  "homepage": "https://github.com/qlw088697-ui/codex-triage#readme",
+  "sideEffects": false,
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {},
   "devDependencies": {
+    "@types/node": "^20.17.0",
     "typescript": "^5.9.2"
   }
 }

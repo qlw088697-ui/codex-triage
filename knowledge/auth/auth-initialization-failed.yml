@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "auth-initialization-failed",
   "title": "Authentication subsystem failed to initialize",
   "category": "auth",

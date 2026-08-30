@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "wsl-app-server-handshake-timeout",
   "title": "Codex app-server handshake timed out in WSL mode",
   "category": "wsl",

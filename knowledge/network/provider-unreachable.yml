@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "id": "provider-unreachable",
   "title": "Model provider endpoint is unreachable",
   "category": "network",
