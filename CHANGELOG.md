@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.20.0] - 2026-08-31
+
+### Added
+
+- Two more Windows sandbox rules with hard error signatures: `windows-apply-patch-helper-stall` (openai/codex#41492 - apply_patch stalls after one or two successful patches while reads and commands keep working) and `windows-sandbox-provision-helper-unknown` (openai/codex#41715 - provisioning fails before any command with helper_unknown_error; doctor's CrowdStrike/EDR flag is the strongest documented correlation).
+
+### Changed
+
+- `windows-sandbox-helper-missing` now also matches `orchestrator_helper_launch_failed` and documents openai/codex#41411: Repair, Reset, auto-update, and a Windows restart were all verified insufficient, so capture logs instead of reinstalling repeatedly. Knowledge base: 57 rules across 12 categories.
+
 ## [1.19.0] - 2026-08-30
 
 ### Added

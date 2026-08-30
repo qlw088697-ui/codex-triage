@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-apply-patch-helper-stall",
+  "title": "apply_patch stops updating existing files with \"fs sandbox helper did not stop after its response\"",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-08-31",
+  "source": "https://github.com/openai/codex/issues/41492",
+  "match": {
+    "any": [
+      {
+        "contains": "fs sandbox helper did not stop after its response"
+      }
+    ],
+    "all": []
+  },
+  "summary": "After one or two successful patches, apply_patch can no longer read or lock existing files for updates and fails with this helper error, while file reading and shell commands keep working - the stall lives in Codex's internal protected editor mechanism, not in the project.",
+  "explanation": "The report's ruled-out list is the diagnostic value: it is not the project or source code, not a git lock, and not generic Windows ACL permissions - the first patches go through and reads always work. A new Codex chat and a full Windows restart did not clear it either, so the state stuck behind the helper response survives sessions and reboots. Reported from Codex local 26.825.32147 on Windows.",
+  "actions": [
+    "Confirm reads and plain command execution still work - if they do, this is the helper stall, not repository or permission trouble.",
+    "Skip the usual suspects: git locks, ACL changes, and project issues were all ruled out in the report, and neither a new chat nor a Windows restart cleared it.",
+    "No verified workaround exists yet - report upstream with the exact Codex version and note how many patches succeeded before the stall began."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41492",
+      "label": "openai/codex#41492"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "apply-patch",
+    "desktop"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "apply_patch 更新已有文件时报 \"fs sandbox helper did not stop after its response\"",
+      "summary": "成功应用一两个补丁后，apply_patch 无法再读取或锁定已有文件进行更新并报此 helper 错误，而文件读取和 shell 命令都正常——卡点在 Codex 内部的受保护编辑机制，不在项目本身。",
+      "explanation": "报告的排除清单就是诊断价值：不是项目或源码问题，不是 git 锁，也不是一般性的 Windows ACL 权限——最初的补丁能成功且读取始终正常。新建 Codex 会话和重启 Windows 都无法清除，说明卡在 helper 响应背后的状态能跨会话和重启存活。来自 Windows 上的 Codex local 26.825.32147 报告。",
+      "actions": [
+        "确认读取和普通命令执行仍然正常——如果正常，这就是 helper 卡住，而不是仓库或权限问题。",
+        "别在常见嫌疑上耗时间：报告里已排除 git 锁、ACL 改动和项目问题，新会话和重启 Windows 也都无法解决。",
+        "目前没有经过验证的规避方法——向上游报告时附上准确的 Codex 版本，并说明卡住前成功了几个补丁。"
+      ]
+    },
+    "ja": {
+      "title": "apply_patch が既存ファイルの更新で \"fs sandbox helper did not stop after its response\" で失敗する",
+      "summary": "1〜2 個のパッチが成功した後、apply_patch が既存ファイルの読み取り/ロックに失敗してこのヘルパーエラーを出します。ファイル読み取りとシェルコマンドは正常のまま。詰まりは Codex 内部の保護エディタ機構にあり、プロジェクト側にはありません。",
+      "explanation": "報告の除外リストこそが診断価値です。プロジェクトやソースの問題ではなく、git のロックでもなく、一般的な Windows ACL 権限でもありません。最初のパッチは通るし読み取りは常に正常です。新しいチャットや Windows 再起動でも解消しないため、ヘルパー応答の背後に残った状態はセッションと再起動をまたいで生き残ります。Windows の Codex local 26.825.32147 からの報告です。",
+      "actions": ["読み取りと通常のコマンド実行がまだ動くか確認します。動くならこれはヘルパーの詰まりであり、リポジトリや権限の問題ではありません。", "ありきたりな容疑は飛ばしてください。git ロック・ACL 変更・プロジェクト問題は報告内で排除済みで、新しいチャットも Windows 再起動も解消しませんでした。", "検証済みの回避策はまだありません。正確な Codex バージョンと、詰まる前に何個のパッチが成功したかを添えて上流へ報告してください。"]
+    }
+  }
+}

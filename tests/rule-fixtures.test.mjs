@@ -7,7 +7,7 @@ import { loadRules } from "../dist/knowledge/loader.js";
 // a regex matcher, add its sample here so the fixture tests stay exhaustive.
 const regexSamples = new Map([
   ["certificate|custom CA|ECONNRESET|connection refused|dns|proxy", "TLS certificate"],
-  ["sandbox helper.*(missing|not found)|codex-windows-sandbox.*(missing|not found)|module could not be found", "sandbox helper module missing"],
+  ["orchestrator_helper_launch_failed|sandbox helper.*(missing|not found)|codex-windows-sandbox.*(missing|not found)|module could not be found", "orchestrator_helper_launch_failed: sandbox helper program not found"],
   ["CodexSandbox(?:Offline|Online)", "CodexSandboxOffline"],
 ]);
 

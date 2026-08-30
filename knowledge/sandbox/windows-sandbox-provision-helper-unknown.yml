@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-sandbox-provision-helper-unknown",
+  "title": "Windows sandbox provisioning fails before any command (helper_unknown_error)",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-08-31",
+  "source": "https://github.com/openai/codex/issues/41715",
+  "match": {
+    "any": [
+      {
+        "contains": "helper_unknown_error"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Windows sandbox setup/refresh fails before process creation - \"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\" - so every terminal, file, and task operation dies even though normal PowerShell works outside Codex.",
+  "explanation": "Doctor's hard failure is the sandbox provisioning check (elevated backend). The strongest documented lead is in the same doctor output: CrowdStrike Falcon is detected with a warning that it can interfere with Codex, even though no explicit blocking event appeared in the Windows logs. The reporter verified the usual local causes are clean: runtime files exist, the workspace and its parent are owned by the normal Windows user, CodexSandboxUsers already holds Modify/Synchronize on the workspace, no domain or Azure AD join is configured, and reboot, app Repair, and new conversations did not clear it. Reported on Windows 11 (build 26200) with Codex Desktop 26.825.6671.0, sandbox_mode workspace-write.",
+  "actions": [
+    "Run codex doctor and read the sandbox provisioning entry together with the security.endpoint warning - the CrowdStrike/EDR flag is the strongest documented correlation for helper_unknown_error.",
+    "Loop in your security team before touching EDR: an exclusion for the Codex runtime paths is the plausible fix but was not tested in the report.",
+    "Do not keep rebooting or repairing: reboot, app Repair, ownership checks, and explicit CodexSandboxUsers ACL grants were all verified clean in the report.",
+    "When reporting upstream, include the doctor sandbox-provisioning section and the exact CreateProcess rejection message."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41715",
+      "label": "openai/codex#41715"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41135",
+      "label": "openai/codex#41135"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "provisioning",
+    "edr"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows 沙箱供给在任何命令之前就失败（helper_unknown_error）",
+      "summary": "Windows 沙箱的建立/刷新在进程创建之前就失败（\"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\"），导致所有终端、文件和任务操作全部死亡，而 Codex 之外正常 PowerShell 一切正常。",
+      "explanation": "doctor 的硬失败是沙箱供给检查（elevated 后端）。文档证据里最强的线索在同一段 doctor 输出中：检测到 CrowdStrike Falcon 并附有\"可能干扰 Codex\"的警告——尽管 Windows 日志里没有明确的拦截事件，EDR 关联仍是首要怀疑。报告者已验证常规本地原因全部干净：运行时文件存在，工作区及其父目录归正常 Windows 用户所有，CodexSandboxUsers 已有工作区的 Modify/Synchronize 权限，未加入域或 Azure AD，重启、应用修复和新会话都无法清除。来自 Windows 11（build 26200）+ Codex Desktop 26.825.6671.0、sandbox_mode workspace-write 的报告。",
+      "actions": [
+        "运行 codex doctor，把沙箱供给条目和 security.endpoint 警告放在一起读——CrowdStrike/EDR 标记是 helper_unknown_error 最强的文档化关联。",
+        "动 EDR 之前先拉上安全团队：给 Codex 运行时路径加排除是合理的修法候选，但报告中未验证。",
+        "别再反复重启或修复：重启、应用修复、所有权检查、给 CodexSandboxUsers 显式 ACL 授权在报告里全部验证为干净。",
+        "向上游报告时附上 doctor 的沙箱供给段落和准确的 CreateProcess 拒绝消息。"
+      ]
+    },
+    "ja": {
+      "title": "Windows サンドボックスの供給がどのコマンドより先に失敗する（helper_unknown_error）",
+      "summary": "Windows サンドボックスのセットアップ/リフレッシュがプロセス生成の前に失敗し（\"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\"）、端末・ファイル・タスクの全操作が死にます。Codex の外の通常の PowerShell は正常です。",
+      "explanation": "doctor の深刻な失敗はサンドボックス供給チェック（elevated バックエンド）です。文書化された最有力の手がかりは同じ doctor 出力にあります。CrowdStrike Falcon が「Codex を妨害しうる」という警告付きで検出されており、Windows ログに明示的なブロックイベントはないものの、EDR 関連が第一容疑です。報告者は通常のローカル原因をすべて検証済みです。ランタイムファイルは存在し、ワークスペースと親ディレクトリは通常の Windows ユーザー所有、CodexSandboxUsers にはワークスペースの Modify/Synchronize が既に付与済み、ドメインや Azure AD 参加はなし、再起動・アプリ修復・新しい会話でも解消しません。Windows 11（build 26200）+ Codex Desktop 26.825.6671.0、sandbox_mode workspace-write からの報告です。",
+      "actions": ["codex doctor を実行し、サンドボックス供給エントリと security.endpoint の警告を併せて読みます。CrowdStrike/EDR のフラグが helper_unknown_error の最有力の文書化された相関です。", "EDR に手を付ける前にセキュリティチームを巻き込んでください。Codex ランタイムパスの除外が有望な修正ですが、報告内では未検証です。", "再起動や修復を繰り返さないでください。再起動・アプリ修復・所有権チェック・CodexSandboxUsers への明示的な ACL 付与は、報告内ですべてクリーンと検証済みです。", "上流へ報告する際は、doctor のサンドボックス供給セクションと正確な CreateProcess 拒否メッセージを添えてください。"]
+    }
+  }
+}
