@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.14.0] - 2026-08-30
+
+### Added
+
+- Two more provider rules plus one informational rule from the custom-provider compatibility cluster: `provider-chatgpt-only-tool-transport` (openai/codex#31882, gpt-5.6 ChatGPT-backend transport flags rejected by Azure with the verified `model_catalog_json` override) and `provider-namespace-tool-routing` (openai/codex#32318, OpenRouter rejects native namespace tools before generation), plus `provider-model-metadata-fallback` for the "Defaulting to fallback metadata" warning. Knowledge base: 48 rules across 11 categories.
+
 ## [1.13.0] - 2026-08-30
 
 ### Added

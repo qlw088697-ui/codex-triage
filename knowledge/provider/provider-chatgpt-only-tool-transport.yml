@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-chatgpt-only-tool-transport",
+  "title": "Custom providers reject gpt-5.6 requests built for the ChatGPT backend",
+  "category": "provider",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/31882",
+  "match": {
+    "any": [
+      {
+        "contains": "X-OpenAI-Internal-Codex-Responses-Lite"
+      },
+      {
+        "contains": "Namespace 'collaboration' is reserved"
+      }
+    ],
+    "all": []
+  },
+  "summary": "The bundled model catalog hardcodes ChatGPT-backend transport flags for gpt-5.6-sol/terra/luna, so Azure and other custom providers receive Responses-Lite headers and collaboration namespace tools they never advertised and reject the request with a 400.",
+  "explanation": "The models.json compiled into the CLI ships use_responses_lite/multi_agent_version/tool_mode: code_mode_only for the gpt-5.6 entries unconditionally, and custom providers never refresh the catalog, so the flags cannot be overridden remotely. Azure rejects both shapes: the Responses-Lite header (code unsupported_value) and, once that is disabled, the collaboration namespace (reserved for encrypted tool use). Doctor checks typically look healthy because auth and connectivity are fine - the provider rejects the request shape itself. Verified with plain chat and real tool calls after the local-catalog workaround.",
+  "actions": [
+    "Point model_catalog_json in config.toml at a local catalog copy where the gpt-5.6 entries set use_responses_lite=false and multi_agent_version=null; this resolves both errors end-to-end but drifts when the bundled catalog updates upstream.",
+    "Watch the upstream issue for the real fix: gating Responses-Lite and collaboration transport on whether the active provider actually talks to the ChatGPT backend.",
+    "If you only hit the collaboration error after forcing Responses-Lite off, both failures share this root cause - apply the same catalog override."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31882",
+      "label": "openai/codex#31882"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31843",
+      "label": "openai/codex#31843"
+    }
+  ],
+  "tags": [
+    "provider",
+    "azure",
+    "gpt-5.6",
+    "responses-lite",
+    "400"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "自定义提供商拒绝为 ChatGPT 后端构造的 gpt-5.6 请求",
+      "summary": "内置模型目录为 gpt-5.6-sol/terra/luna 硬编码了 ChatGPT 后端专属的传输标记，Azure 等自定义提供商会收到从未声明支持的 Responses-Lite 头和 collaboration 命名空间工具，并以 400 拒绝请求。",
+      "explanation": "编译进 CLI 的 models.json 为 gpt-5.6 条目无条件携带 use_responses_lite/multi_agent_version/tool_mode: code_mode_only，而自定义提供商永远不会刷新远程目录，这些标记无法在线覆盖。Azure 会先后拒绝两种形态：先是 Responses-Lite 头（错误码 unsupported_value），强制关闭后是 collaboration 命名空间（保留给加密工具使用）。doctor 检查通常一切正常，因为认证与连通性没问题——是提供商拒绝了请求形态本身。本地目录 workaround 已通过纯对话和真实工具调用端到端验证。",
+      "actions": [
+        "在 config.toml 中把 model_catalog_json 指向一份本地目录副本，将其中的 gpt-5.6 条目改为 use_responses_lite=false、multi_agent_version=null；这能端到端解决两种报错，但上游更新内置目录后需要手动同步。",
+        "关注上游 Issue 等待真正的修复：按活动提供商是否为 ChatGPT 后端来门控 Responses-Lite 与 collaboration 传输。",
+        "如果你是先关掉 Responses-Lite 才撞到 collaboration 报错，两者同根同源——用同一份目录覆盖即可。"
+      ]
+    }
+  }
+}

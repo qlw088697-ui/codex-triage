@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-model-metadata-fallback",
+  "title": "Model is missing from the bundled catalog; Codex falls back to default metadata",
+  "category": "provider",
+  "severity": "low",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/32318",
+  "match": {
+    "any": [
+      {
+        "contains": "Defaulting to fallback metadata"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Custom model slugs are not in the bundled models.json catalog, so Codex guesses context window and transport defaults; sessions still work, but performance can degrade and provider-specific request shapes may be wrong.",
+  "explanation": "This warning is informational, not fatal - the reporter saw it during sessions that generated and executed tools successfully. It means the active model slug has no catalog entry, so Codex uses fallback metadata for context window, reasoning-summary support, and tool transport decisions. Wrong guesses here can produce subtly degraded behavior or the wrong request envelope for custom providers.",
+  "actions": [
+    "Define the model in a local catalog JSON (context window, reasoning-summary support) and point model_catalog_json at it in config.toml to replace the guesses.",
+    "If requests are being rejected outright rather than just degraded, see the provider rules for namespace and Responses-Lite transport errors."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/32318",
+      "label": "openai/codex#32318"
+    }
+  ],
+  "tags": [
+    "provider",
+    "metadata",
+    "catalog",
+    "custom-model"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "模型不在内置目录中，Codex 回退到默认元数据",
+      "summary": "自定义模型标识不在内置 models.json 目录里，Codex 只能猜测上下文窗口和传输默认值；会话仍能工作，但性能可能下降，发往自定义提供商的请求形态也可能出错。",
+      "explanation": "这条警告是提示性的，不是致命错误——报告者在模型正常生成并执行工具的会话中同样看到了它。它的含义是当前模型标识没有目录条目，Codex 只能用回退元数据决定上下文窗口、推理摘要支持和工具传输方式。这些猜测出错时，会表现为性能悄悄变差，或发往自定义提供商的请求信封不对。",
+      "actions": [
+        "在本地目录 JSON 中定义该模型（上下文窗口、推理摘要支持），并在 config.toml 中用 model_catalog_json 指向它，替换掉猜测值。",
+        "如果请求是被直接拒绝而不是性能下降，请查看 namespace 与 Responses-Lite 传输相关的 provider 规则。"
+      ]
+    }
+  }
+}
