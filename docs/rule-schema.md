@@ -4,7 +4,7 @@ This document is the normative contract for knowledge rules starting with codex-
 
 **Compatibility promise:** within the 1.x series the schema only gains optional fields. Required fields never change meaning, and existing valid rules keep loading unchanged. A breaking change requires a new `schemaVersion` generation and a major release. Loaders reject rules whose `schemaVersion` is newer than the generation they support — that refusal is intentional.
 
-Rules are JSON syntax stored with a `.yml`, `.yaml`, or `.json` extension (JSON is a YAML 1.2 subset; general YAML block syntax is not accepted).
+Rules are stored with a `.yml`, `.yaml`, or `.json` extension. Since 1.1 a file may be strict JSON or the supported YAML subset: block mappings, block sequences (including compact `- key: value` items), flow collections, single/double quoted or plain scalars, and comments. Anchors, aliases, tags, directives, and multi-line block scalars are rejected with a clear error instead of being mis-parsed. Plain scalars containing `": "` must be quoted.
 
 ## Example
 

@@ -45,6 +45,7 @@ For text-only rules, an attached log is one evidence document and each doctor ch
 - Input reports and logs are untrusted and size-limited.
 - Bundled and custom knowledge rules are validated before matching.
 - Regexes are compiled at load time and restricted to deterministic flags and bounded length.
+- Rule sources are parsed as strict JSON first, then a dependency-free YAML subset; unsupported YAML constructs are rejected rather than mis-parsed.
 - Rule links are restricted to HTTP(S).
 - Every output format receives final redaction.
 - The engine never mutates Codex configuration or operating-system state.

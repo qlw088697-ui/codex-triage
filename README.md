@@ -134,7 +134,7 @@ Confidence scores are deterministic evidence scores, not statistical probabiliti
 
 ## Knowledge rules
 
-Files under `knowledge/` use JSON syntax saved with `.yml` or `.json` extensions. JSON is a valid YAML 1.2 subset and keeps the runtime dependency-free. Do not use general YAML syntax in v0.1.1.
+Files under `knowledge/` may be strict JSON or the supported YAML subset, saved with `.yml`, `.yaml`, or `.json` extensions. The dependency-free parser accepts block mappings and sequences, flow collections, and comments; anchors, aliases, tags, directives, and multi-line block scalars are rejected at load time.
 
 Minimal valid rule:
 
@@ -211,7 +211,8 @@ CI runs the test suite on Windows, Ubuntu, and macOS with supported Node.js rele
 - **v0.2:** version constraints, `lastVerified`/`source`/deprecation metadata, per-rule positive and negative fixtures, coverage thresholds, secret scanning, pack smoke test. (shipped)
 - **v0.3:** `explain <error>`, offline FAQ search, duplicate-issue assistance, stable JSON envelope, publish workflow. (shipped)
 - **v1.0:** frozen rule schema and public API, governance files, first version-constrained rule. (shipped)
-- **Beyond 1.0:** broader rule coverage through the community process, optional YAML parsing, additional locales.
+- **v1.1:** dependency-free YAML subset parsing for knowledge rules. (shipped)
+- **Beyond 1.0:** broader rule coverage through the community process, additional locales.
 
 Automatic destructive repair and default telemetry are intentionally outside the roadmap.
 
