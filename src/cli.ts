@@ -67,8 +67,15 @@ export function parseIntegerOption(value: string, name: string, minimum: number,
   return parsed;
 }
 
+export function parseCodexVersionOption(value: string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  const trimmed = value.trim();
+  if (!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(trimmed)) throw new Error("--codex-version must be a version like 0.147.0");
+  return trimmed;
+}
+
 function help(): string {
-  return `codex-triage v${packageVersion()}\n\nUsage:\n  codex-triage [doctor.json] [options]\n  codex-triage explain "<error text>" [options]\n  codex-triage faq [query] [options]\n\nUse "-" as the input path (codex-triage -) or as the explain text (explain -) to read from stdin.\n\nOptions:\n  --log <path>             Add a Codex/app log to the analysis\n  --report                 Write codex-triage-report.md\n  --output <path>          Change the report output path\n  --json                   Emit sanitized matches as JSON\n  --lang <locale>          en or zh-CN (default: en)\n  --platform <platform>    windows, macos, linux, or wsl\n  --knowledge <path>       Use a custom knowledge directory\n  --limit <n>              Maximum matches/entries to show, 0..100 (default: 5)\n  --doctor-timeout <ms>    Timeout for codex doctor, 1000..120000 (default: 15000)\n  -v, --version            Show the package version\n  -h, --help               Show this help\n`;
+  return `codex-triage v${packageVersion()}\n\nUsage:\n  codex-triage [doctor.json] [options]\n  codex-triage explain "<error text>" [options]\n  codex-triage faq [query] [options]\n\nUse "-" as the input path (codex-triage -) or as the explain text (explain -) to read from stdin.\n\nOptions:\n  --log <path>             Add a Codex/app log to the analysis\n  --report                 Write codex-triage-report.md\n  --output <path>          Change the report output path\n  --json                   Emit sanitized matches as JSON\n  --lang <locale>          en or zh-CN (default: en)\n  --platform <platform>    windows, macos, linux, or wsl\n  --knowledge <path>       Use a custom knowledge directory\n  --limit <n>              Maximum matches/entries to show, 0..100 (default: 5)\n  --doctor-timeout <ms>    Timeout for codex doctor, 1000..120000 (default: 15000)\n  --codex-version <ver>    Version evidence (e.g. 0.147.0) when the input carries none\n  -v, --version            Show the package version\n  -h, --help               Show this help\n`;
 }
 
 async function readTextFile(path: string): Promise<string> {
@@ -121,6 +128,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
       knowledge: { type: "string" },
       limit: { type: "string", default: "5" },
       "doctor-timeout": { type: "string", default: "15000" },
+      "codex-version": { type: "string" },
       version: { type: "boolean", short: "v", default: false },
       help: { type: "boolean", short: "h", default: false },
     },
@@ -145,6 +153,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
   const explicitPlatform = parsePlatform(values.platform);
   const limit = parseIntegerOption(values.limit, "--limit", 0, 100);
   const doctorTimeout = parseIntegerOption(values["doctor-timeout"], "--doctor-timeout", 1000, 120000);
+  const codexVersionEvidence = parseCodexVersionOption(values["codex-version"]);
 
   let report: DoctorReport | undefined;
   let diagnosticText = "";
@@ -162,6 +171,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
     mode = "faq";
     if (values.report) throw new Error("--report is not available in faq mode");
     if (values.log) throw new Error("--log is not available in faq mode");
+    if (codexVersionEvidence) throw new Error("--codex-version is not available in faq mode");
   } else if (positionals[0]) {
     mode = "file";
     if (positionals[0] === "-") {
@@ -200,14 +210,14 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
   }
 
   const matches = topMatches(
-    matchRules(rules, { report, extraText: diagnosticText, platform, codexVersion: report?.codexVersion }),
+    matchRules(rules, { report, extraText: diagnosticText, platform, codexVersion: report?.codexVersion ?? codexVersionEvidence }),
     limit,
   );
   const safeReport = report ? redactValue(report) : undefined;
   const safeMatches = redactValue(matches);
 
   if (values.json) {
-    console.log(JSON.stringify(redactValue({ schemaVersion: 1, mode, platform, report: safeReport, matches: safeMatches }), null, 2));
+    console.log(JSON.stringify(redactValue({ schemaVersion: 1, mode, platform, codexVersion: report?.codexVersion ?? codexVersionEvidence, report: safeReport, matches: safeMatches }), null, 2));
   } else {
     console.log(renderTerminal({ report: safeReport, matches: safeMatches, platform, locale }));
   }

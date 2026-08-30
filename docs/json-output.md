@@ -15,6 +15,7 @@ Starting with codex-triage 1.0 the `--json` output is a stable envelope. Within 
 - `schemaVersion`: `1` for the current envelope generation.
 - `mode`: one of `doctor` (automatic `codex doctor --json` execution), `file` (a saved report or stdin via `-`), `explain` (raw error text or stdin via `explain -`), `faq` (offline knowledge search).
 - `platform`: resolved platform — `windows`, `macos`, `linux`, or `wsl`.
+- `codexVersion`: version evidence used for matching (diagnostics modes only). Taken from the doctor report when present, otherwise from `--codex-version`; omitted when no version is known.
 
 ## Diagnostics modes (`doctor`, `file`, `explain`)
 

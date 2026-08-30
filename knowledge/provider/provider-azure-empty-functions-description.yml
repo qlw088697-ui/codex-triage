@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-azure-empty-functions-description",
+  "title": "Azure Responses provider rejects the empty functions namespace description",
+  "category": "provider",
+  "severity": "high",
+  "codexVersions": [
+    ">=0.147.0"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/37380",
+  "match": {
+    "any": [
+      {
+        "contains": "input[0].tools[0].description"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex 0.147.0 serializes default tools under a functions namespace with an empty description; Azure OpenAI requires a non-empty description there and rejects every request before the model answers.",
+  "explanation": "Regression between 0.146.0 and 0.147.0 (the functions namespace grouping from upstream #37022). Azure's NamespaceToolParam schema enforces minLength 1 on description; an upstream reporter replayed the identical request with a filled description and got HTTP 200, confirming the empty string as the direct cause. Disabling code_mode_host does not remove the namespace in 0.147.0.",
+  "actions": [
+    "Pin the previous version until the upstream fix lands: npm install -g @openai/codex@0.146.0.",
+    "Watch the upstream issue and the related provider-compatibility reports for the fix release.",
+    "If you operate the Azure gateway yourself, note the request is rejected by the namespace tools schema, not by auth or connectivity."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/37380",
+      "label": "openai/codex#37380"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31882",
+      "label": "openai/codex#31882"
+    }
+  ],
+  "tags": [
+    "provider",
+    "azure",
+    "regression",
+    "responses"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Azure Responses 提供商拒绝空的 functions 命名空间描述",
+      "summary": "Codex 0.147.0 把默认工具放进 functions 命名空间序列化时 description 为空串；Azure OpenAI 要求该字段非空，导致所有请求在模型回答前就被拒绝。",
+      "explanation": "0.146.0 到 0.147.0 之间的回归（上游 #37022 引入的 functions 命名空间分组）。Azure 的 NamespaceToolParam schema 对 description 强制 minLength 1；上游报告者把同一请求的 description 填上内容重放即返回 HTTP 200，证实空串就是直接原因。0.147.0 中禁用 code_mode_host 也无法移除该命名空间。",
+      "actions": [
+        "在上游修复落地前锁定上一版本：npm install -g @openai/codex@0.146.0。",
+        "关注上游 Issue 及相关 provider 兼容性报告，等待修复版本。",
+        "如果你自己运维 Azure 网关，注意请求是被命名空间工具 schema 拒绝的，与认证或连通性无关。"
+      ]
+    }
+  }
+}

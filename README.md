@@ -95,6 +95,12 @@ some-command-that-fails | codex-triage explain -
 codex doctor --json | codex-triage -
 ```
 
+Version-constrained rules need version evidence. Doctor and file modes take it from the report; with `explain`, pass it when you know the Codex version:
+
+```bash
+codex-triage explain "Invalid 'input[0].tools[0].description': empty string" --codex-version 0.147.0
+```
+
 Search the bundled knowledge offline before asking anywhere:
 
 ```bash
@@ -131,6 +137,7 @@ Important options:
 --knowledge <path>       Custom rule directory
 --limit <n>              Maximum matches/entries, 0..100
 --doctor-timeout <ms>    1000..120000
+--codex-version <ver>    Version evidence for matching when the input has none
 --version                Print package version
 ```
 
