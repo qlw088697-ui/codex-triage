@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.3.0] - 2026-08-30
+
+### Added
+
+- New auth rules: `auth-device-code-disabled` (openai/codex#9253 - headless login blocked by workspace policy) and `auth-401-stream-retry` (401 after retries means stale credentials, not rate limiting). The knowledge base now carries 25 rules.
+- Release automation: the publish workflow now runs with a repository `NPM_TOKEN` secret, so a published GitHub release builds, verifies, and ships to npm with provenance.
+
 ## [1.2.0] - 2026-08-30
 
 ### Added

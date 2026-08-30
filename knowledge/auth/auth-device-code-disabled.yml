@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 2,
+  "id": "auth-device-code-disabled",
+  "title": "Device code authentication is disabled by the workspace",
+  "category": "auth",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/9253",
+  "match": {
+    "any": [
+      {
+        "contains": "enable device code authentication"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex CLI on a headless machine (SSH, container, CI) forces device code login, but the ChatGPT workspace policy has that OAuth flow disabled, so login fails entirely.",
+  "explanation": "The same authorized user can log in from a machine with a GUI while the headless login is rejected, because the CLI switches to device code authentication when no browser is available and that flow requires a workspace-level opt-in.",
+  "actions": [
+    "Ask the workspace admin to enable device code authentication for the workspace.",
+    "Alternatively, run codex login once on a machine with a GUI browser, then return to the headless environment.",
+    "Track the upstream issue for a non-device-code headless login flow."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/9253",
+      "label": "openai/codex#9253"
+    }
+  ],
+  "tags": [
+    "auth",
+    "login",
+    "headless",
+    "workspace",
+    "ssh"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "工作区已禁用设备码认证",
+      "summary": "在无头环境（SSH、容器、CI）里 Codex CLI 强制走设备码登录，而 ChatGPT 工作区策略禁用了该 OAuth 流程，导致登录完全失败。",
+      "explanation": "同一个已授权用户在带 GUI 的机器上可以正常登录，而在无头环境被拒绝：因为 CLI 在无浏览器环境会切换到设备码认证，而该流程需要工作区级别的开启。",
+      "actions": [
+        "联系工作区管理员为工作区启用设备码认证。",
+        "或者先在带 GUI 浏览器的机器上完成一次 codex login，再回到无头环境使用。",
+        "关注上游 Issue，等待官方提供非设备码的无头登录流程。"
+      ]
+    }
+  }
+}
