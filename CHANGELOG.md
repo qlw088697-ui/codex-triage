@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.17.0] - 2026-08-30
+
+### Added
+
+- Server-side catalog family for GPT-5.6, three rules: `provider-context-window-clamp` (openai/codex#41325 - 1M config clamped to 872K/828,400 usable under ChatGPT auth, proven server-side via a rebuilt-binary experiment), `provider-sol-context-profile-flip` (openai/codex#40347 cluster - effective window flip-flops 828400/258400 mid-task as catalog refreshes switch profiles), and `provider-tool-arg-corruption-gibberish` (openai/codex#40369 - corrupted tool-call paths plus pseudo-language degeneration, persisted in rollout JSONL, not context-pressure related). Knowledge base: 54 rules across 12 categories.
+
 ## [1.16.0] - 2026-08-30
 
 ### Added
