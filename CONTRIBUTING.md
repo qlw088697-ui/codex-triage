@@ -2,7 +2,7 @@
 
 The easiest contribution is a new troubleshooting rule; most rule contributions do not require TypeScript changes.
 
-1. Add a JSON-syntax rule under `knowledge/<category>/<problem>.yml`.
+1. Scaffold a rule: `node scripts/rule-new.mjs <category> <rule-id> "<English title>"` creates `knowledge/<category>/<rule-id>.yml` with every required field and zh-CN stubs.
 2. Add sanitized positive and near-miss negative fixtures when possible.
 3. Add or update a focused test.
 4. Run `npm ci`, `npm test`, and `npm pack --dry-run --json`.

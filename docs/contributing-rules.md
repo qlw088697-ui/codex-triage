@@ -9,7 +9,9 @@ A useful rule answers four questions:
 
 ## File format
 
-Since 1.1, rule files may use strict JSON or the supported YAML subset (block mappings and sequences, flow collections, quoted or plain scalars, comments). Anchors, aliases, tags, directives, and multi-line block scalars are rejected. Quote any plain scalar that contains `": "`. The loader tries JSON first and falls back to the YAML subset. Validate a single file quickly with `node scripts/validate-rule.mjs <rule-file>`, then run `npm test` to confirm the rule parses, loads, and passes the fixture tests.
+Since 1.1, rule files may use strict JSON or the supported YAML subset (block mappings and sequences, flow collections, quoted or plain scalars, comments). Anchors, aliases, tags, directives, and multi-line block scalars are rejected. Quote any plain scalar that contains `": "`. The loader tries JSON first and falls back to the YAML subset. Scaffold a new rule with `node scripts/rule-new.mjs <category> <rule-id> "<English title>"`, then validate it with `node scripts/validate-rule.mjs <rule-file>` and run `npm test` to confirm the rule parses, loads, and passes the fixture tests.
+
+When a bundled rule misfires in the wild, users can report it through the "Wrong diagnosis" issue template; those reports are the primary driver of new rules and fixes.
 
 ## Optional metadata (validated at load time)
 
