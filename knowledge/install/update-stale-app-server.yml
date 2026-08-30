@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "update-stale-app-server",
+  "title": "Stale background app-server after an upgrade",
+  "category": "install",
+  "severity": "low",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/23984",
+  "match": {
+    "any": [],
+    "all": [],
+    "doctor": {
+      "checkIds": [
+        "app_server.status"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "doctor's app_server.status check reports the background app-server as not running or unhealthy - commonly a stale app-server process from the previous version that survived an upgrade.",
+  "explanation": "After upgrading, an old background app-server can keep serving outdated schema or routes, producing mismatches that look like database or storage bugs. Older local threads failing to open after a Desktop upgrade is a related reported symptom.",
+  "actions": [
+    "Kill lingering app-server processes, then start Codex fresh.",
+    "Update to the latest version - several post-upgrade thread-opening regressions were fixed in newer builds.",
+    "If failures persist after a clean restart, check the upstream storage-mismatch issue."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/26132",
+      "label": "openai/codex#26132"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/23984",
+      "label": "openai/codex#23984"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/23001",
+      "label": "openai/codex#23001"
+    }
+  ],
+  "tags": [
+    "install",
+    "update",
+    "app-server",
+    "doctor"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "升级后残留旧版后台 app-server",
+      "summary": "doctor 的 app_server.status 检查报告后台 app-server 未运行或状态异常——常见原因是升级后残留了旧版本的后台 app-server 进程。",
+      "explanation": "升级后，旧的后台 app-server 可能仍在用旧 schema 或旧路由服务，表象酷似数据库或存储 bug。Desktop 升级后打不开旧本地会话也是同族症状。",
+      "actions": [
+        "结束残留的 app-server 进程，重新启动 Codex。",
+        "更新到最新版本——多个升级后打不开旧会话的回归已在新版修复。",
+        "干净重启后仍失败，去看上游存储不匹配的 Issue。"
+      ]
+    }
+  }
+}

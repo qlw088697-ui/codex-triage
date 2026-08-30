@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.8.0] - 2026-08-30
+
+### Added
+
+- New network rule `network-dns-resolution-failed` (openai/codex#12867, openai/codex#16782, openai/codex#18675, openai/codex#37063): DNS failures inside Codex with sandbox-vs-host triage.
+- New install rule `update-stale-app-server` (openai/codex#23984, openai/codex#23001): doctor's app_server.status check after upgrades. Knowledge base: 38 rules.
+
 ## [1.7.0] - 2026-08-30
 
 ### Added
