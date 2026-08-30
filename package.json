@@ -27,8 +27,8 @@
   "scripts": {
     "dev": "npm run build --silent && node dist/cli.js",
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build --silent && node --test tests/*.test.mjs",
-    "test:coverage": "npm run build --silent && node --experimental-test-coverage --test tests/*.test.mjs",
+    "test": "npm run build --silent && node --test",
+    "test:coverage": "npm run build --silent && node --experimental-test-coverage --test",
     "coverage:check": "npm run build --silent && node scripts/check-coverage.mjs",
     "scan:secrets": "npm run build --silent && node scripts/scan-secrets.mjs",
     "pack:smoke": "npm run build --silent && node scripts/pack-smoke.mjs",

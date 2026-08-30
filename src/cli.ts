@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -221,7 +221,15 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
   return doctorResult && !doctorResult.report ? 2 : 0;
 }
 
-const isEntryPoint = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+// Entry-point detection must survive symlinked bin shims (npm global installs
+// on Unix symlink dist/cli.js), so compare against the resolved real path.
+let entryPath: string | undefined;
+try {
+  entryPath = process.argv[1] ? realpathSync(process.argv[1]) : undefined;
+} catch {
+  entryPath = process.argv[1];
+}
+const isEntryPoint = entryPath !== undefined && import.meta.url === pathToFileURL(entryPath).href;
 if (isEntryPoint) {
   main().then((exitCode) => { process.exitCode = exitCode; }).catch((error) => {
     console.error(`codex-triage: ${error instanceof Error ? error.message : String(error)}`);

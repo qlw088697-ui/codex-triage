@@ -8,10 +8,10 @@ const LINES_THRESHOLD = 80;
 const BRANCH_THRESHOLD = 70;
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const result = spawnSync(`"${process.execPath}" --experimental-test-coverage --test tests/*.test.mjs`, {
+const result = spawnSync(`"${process.execPath}" --experimental-test-coverage --test`, {
   cwd: root,
   encoding: "utf8",
-  shell: true, // the glob must be expanded by the shell on Windows
+  shell: true,
   maxBuffer: 32 * 1024 * 1024,
 });
 
