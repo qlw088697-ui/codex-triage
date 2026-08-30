@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "id": "auth-401-stream-retry",
+  "title": "Stream retries end in 401 Unauthorized",
+  "category": "auth",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://community.openai.com/t/codex-login-sign-in-could-not-be-completed-token-exchange-failed/1376953",
+  "match": {
+    "any": [
+      {
+        "contains": "exceeded retry limit, last status: 401"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Login may appear to succeed, but every stream request is rejected as 401 until the retry limit is hit, which points at stale or broken credentials rather than rate limiting.",
+  "explanation": "Community reports pair this signature with failed token exchange: the stored auth.json holds credentials the backend rejects. Do not confuse it with 429 rate limits - 401 means the credential itself is not accepted.",
+  "actions": [
+    "Run codex login again to refresh the stored credentials, then retry the same request.",
+    "Verify the account state with codex doctor and confirm the auth check passes.",
+    "If the login flow itself fails with token exchange errors, follow the linked upstream thread."
+  ],
+  "links": [
+    {
+      "type": "other",
+      "url": "https://community.openai.com/t/codex-login-sign-in-could-not-be-completed-token-exchange-failed/1376953",
+      "label": "OpenAI Community: Token exchange failed"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/25670",
+      "label": "openai/codex#25670"
+    }
+  ],
+  "tags": [
+    "auth",
+    "stream",
+    "401",
+    "credentials"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "流请求重试后仍返回 401 未授权",
+      "summary": "登录看似成功，但每个流请求都被 401 拒绝直到重试耗尽——这指向过期或损坏的凭据，而不是限流。",
+      "explanation": "社区报告显示该签名常伴随 token exchange 失败：本地 auth.json 里的凭据已被后端拒绝。不要和 429 限流混淆——401 表示凭据本身不被接受。",
+      "actions": [
+        "重新执行 codex login 刷新本地凭据，然后重试同一请求。",
+        "用 codex doctor 检查账号状态，确认 auth 检查通过。",
+        "如果登录流程本身就报 token exchange 错误，按上方链接追踪上游讨论。"
+      ]
+    }
+  }
+}
