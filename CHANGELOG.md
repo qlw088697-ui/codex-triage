@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.12.0] - 2026-08-30
+
+### Added
+
+- Community infrastructure: `scripts/rule-new.mjs` scaffolds a valid rule with every required field and zh-CN stubs; a "Wrong diagnosis" issue template collects false positives, false negatives, and wrong guidance with evidence paths; a pull-request template encodes the contribution checklist.
+
 ## [1.11.1] - 2026-08-30
 
 ### Added

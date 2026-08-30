@@ -1,0 +1,71 @@
+name: Wrong diagnosis
+description: Report a rule that fired when it should not have, or a real failure no rule caught
+labels: ["triage-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the feedback - this directly improves the knowledge base.
+        Run with `--json` and paste the `evidence[].path` entries: they show exactly
+        which field triggered the match. **Remove any private data first** (tokens,
+        emails, usernames, home directories).
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - False positive (a rule matched, but the diagnosis is wrong)
+        - False negative (a real failure that no rule caught)
+        - Wrong guidance (the match was right, the suggested steps were not)
+    validations:
+      required: true
+
+  - type: input
+    id: rule-id
+    attributes:
+      label: Rule id (for false positives or wrong guidance)
+      description: From the JSON output, e.g. proxy-tls-dns. Leave empty for false negatives.
+    validations:
+      required: false
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence paths (from --json output)
+      placeholder: |
+        e.g. doctor.check[network.websocket_reachability].details.error
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What actually happened
+      description: The real cause, if you found it.
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and Codex version
+      placeholder: windows, codex 0.144.5
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and sanitized output
+      description: The triage command you ran and the relevant (sanitized) output.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: sanitize
+    attributes:
+      label: Sanitization
+      options:
+        - label: I have removed credentials, emails, usernames, and private paths from this report
+          required: true
