@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 2,
+  "id": "mcp-server-path-unresolvable",
+  "title": "An MCP server path cannot be resolved",
+  "category": "mcp",
+  "severity": "medium",
+  "codexVersions": [
+    ">=0.130.0"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/26132",
+  "match": {
+    "any": [
+      {
+        "contains": "is not resolvable"
+      }
+    ],
+    "all": [],
+    "doctor": {
+      "checkIds": [
+        "mcp.config"
+      ],
+      "statuses": [
+        "warning",
+        "fail"
+      ]
+    }
+  },
+  "summary": "The doctor mcp.config check reports a configured MCP server whose executable path cannot be resolved on this machine.",
+  "explanation": "Observed in the upstream doctor report for 0.136.0: a stdio MCP server pointed at a Windows-side binary while Codex ran inside WSL, so the path did not resolve. Paths must exist on the platform that executes Codex, not the one that displays it.",
+  "actions": [
+    "Open the MCP configuration and verify the server path exists on the platform running Codex.",
+    "On WSL, replace Windows-side .exe paths with Linux binaries or a documented interop path.",
+    "Set the missing MCP env vars or disable the affected server to clear the warning."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/26132",
+      "label": "openai/codex#26132"
+    }
+  ],
+  "tags": [
+    "mcp",
+    "doctor",
+    "path",
+    "wsl"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "MCP 服务器路径无法解析",
+      "summary": "doctor 的 mcp.config 检查报告某个已配置的 MCP 服务器，其可执行路径在本机无法解析。",
+      "explanation": "上游 0.136.0 的 doctor 报告中观察到：在 WSL 内运行 Codex 时，MCP 服务器指向 Windows 侧的二进制路径，导致路径无法解析。路径必须存在于执行 Codex 的平台上，而不是显示它的平台上。",
+      "actions": [
+        "打开 MCP 配置，确认服务器路径在运行 Codex 的平台上真实存在。",
+        "在 WSL 内，把 Windows 侧的 .exe 路径换成 Linux 二进制或已文档化的互操作路径。",
+        "补齐缺失的 MCP 环境变量，或停用受影响的服务器以清除告警。"
+      ]
+    }
+  }
+}

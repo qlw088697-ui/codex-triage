@@ -49,6 +49,7 @@ function positiveInput(rule, platform) {
   return {
     report: { schemaVersion: 1, generatedAt: "now", overallStatus: check.status, codexVersion: fixtureCodexVersion(rule) ?? "0.0.0", checks: [check] },
     platform,
+    codexVersion: fixtureCodexVersion(rule),
   };
 }
 

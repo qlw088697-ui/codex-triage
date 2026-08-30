@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## [1.2.0] - 2026-08-30
+
+### Added
+
+- New rule `mcp-server-path-unresolvable` (openai/codex#26132): doctor's `mcp.config` check reports a configured MCP server whose executable path cannot be resolved, including the WSL Windows-path case.
+- Contributor tooling: `scripts/validate-rule.mjs` validates a single rule file (JSON or YAML) without running the full suite.
+
+### Fixed
+
+- `faq` no longer surfaces deprecated rules, matching the matcher's semantics.
+
 ## [1.1.0] - 2026-08-30
 
 ### Added
