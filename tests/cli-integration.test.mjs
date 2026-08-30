@@ -79,7 +79,7 @@ test("CLI rejects malformed inputs and invalid argument combinations", async (t)
 test("CLI exposes package version and accepts an explicit zero match limit", async (t) => {
   const version = run(["--version"]);
   assert.equal(version.status, 0);
-  assert.equal(version.stdout.trim(), "1.12.0");
+  assert.equal(version.stdout.trim(), "1.13.0");
 
   const directory = await mkdtemp(join(tmpdir(), "codex-triage-limit-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -210,4 +210,28 @@ test("faq and matching both exclude deprecated rules", async (t) => {
   assert.equal(explain.status, 0, explain.stderr);
   const matchIds = JSON.parse(explain.stdout).matches.map((match) => match.rule.id);
   assert.deepEqual(matchIds, ["faq-active-rule"]);
+});
+
+test("explain supports --codex-version evidence for version-constrained rules", () => {
+  const azureError = "Invalid 'input[0].tools[0].description': empty string. Expected a string with minimum length 1, but got an empty string instead.";
+
+  const withEvidence = run(["explain", azureError, "--codex-version", "0.147.0", "--json"]);
+  assert.equal(withEvidence.status, 0, withEvidence.stderr);
+  const withJson = JSON.parse(withEvidence.stdout);
+  assert.equal(withJson.codexVersion, "0.147.0");
+  assert.ok(withJson.matches.some((match) => match.rule.id === "provider-azure-empty-functions-description"), JSON.stringify(withJson.matches));
+
+  const withoutEvidence = run(["explain", azureError, "--json"]);
+  assert.equal(withoutEvidence.status, 0, withoutEvidence.stderr);
+  const withoutJson = JSON.parse(withoutEvidence.stdout);
+  assert.equal(withoutJson.codexVersion, undefined);
+  assert.ok(!withoutJson.matches.some((match) => match.rule.id === "provider-azure-empty-functions-description"));
+
+  const invalid = run(["explain", azureError, "--codex-version", "latest"]);
+  assert.equal(invalid.status, 1);
+  assert.match(invalid.stderr, /codex-version/i);
+
+  const faqRejected = run(["faq", "azure", "--codex-version", "0.147.0"]);
+  assert.equal(faqRejected.status, 1);
+  assert.match(faqRejected.stderr, /not available in faq mode/i);
 });

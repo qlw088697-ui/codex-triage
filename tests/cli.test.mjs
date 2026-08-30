@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { detectPlatform, normalizeLocale, parseIntegerOption, parsePlatform } from "../dist/cli.js";
+import { detectPlatform, normalizeLocale, parseCodexVersionOption, parseIntegerOption, parsePlatform } from "../dist/cli.js";
 
 test("platform detection prioritizes explicit and runtime evidence", () => {
   assert.equal(detectPlatform("mentions wsl docs", undefined, "win32", undefined), "windows");
@@ -23,4 +23,12 @@ test("integer options reject partial and out-of-range values", () => {
   assert.throws(() => parseIntegerOption("5x", "--limit", 0, 100), /integer/i);
   assert.throws(() => parseIntegerOption("-1", "--limit", 0, 100), /integer/i);
   assert.throws(() => parseIntegerOption("101", "--limit", 0, 100), /integer/i);
+});
+
+test("codex version option validates semver evidence", () => {
+  assert.equal(parseCodexVersionOption(undefined), undefined);
+  assert.equal(parseCodexVersionOption(" 0.147.0 "), "0.147.0");
+  assert.equal(parseCodexVersionOption("0.147.0-rc.1"), "0.147.0-rc.1");
+  assert.throws(() => parseCodexVersionOption("latest"), /codex-version/i);
+  assert.throws(() => parseCodexVersionOption("0.147"), /codex-version/i);
 });

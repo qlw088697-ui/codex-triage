@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.13.0] - 2026-08-30
+
+### Added
+
+- New provider category with `provider-azure-empty-functions-description` (openai/codex#37380): Codex 0.147.0+ serializes an empty functions namespace description that Azure Responses rejects; rule is version-constrained to >=0.147.0 with the pin-0.146.0 workaround. Knowledge base: 45 rules across 11 categories.
+- `--codex-version <ver>` supplies version evidence for matching when the input carries none (e.g. raw `explain` text), so version-constrained rules can fire; the JSON envelope now includes the resolved `codexVersion`.
+
 ## [1.12.0] - 2026-08-30
 
 ### Added
