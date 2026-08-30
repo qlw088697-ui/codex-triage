@@ -1,5 +1,6 @@
 # codex-triage
 
+[![npm version](https://img.shields.io/npm/v/codex-triage.svg)](https://www.npmjs.com/package/codex-triage)
 [![test](https://github.com/qlw088697-ui/codex-triage/actions/workflows/test.yml/badge.svg)](https://github.com/qlw088697-ui/codex-triage/actions/workflows/test.yml)
 
 Local, community-maintained troubleshooting knowledge for OpenAI Codex.

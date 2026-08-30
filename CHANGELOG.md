@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.4.0] - 2026-08-30
+
+### Added
+
+- New config rules: `config-toml-parse-error` (openai/codex#19476, openai/codex#9770 - startup failure with the file/line/column signature, including the VSCode duplication and Windows backslash cases) and `config-service-tier-invalid` (openai/codex#27297 - macOS desktop update regression). Knowledge base: 27 rules.
+- npm version badge in the README.
+
 ## [1.3.0] - 2026-08-30
 
 ### Added

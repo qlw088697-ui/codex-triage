@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "id": "config-toml-parse-error",
+  "title": "config.toml cannot be parsed (startup failure)",
+  "category": "config",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/19476",
+  "match": {
+    "any": [
+      {
+        "contains": "failed to load configuration"
+      },
+      {
+        "contains": "Error loading config.toml"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex exits at startup because ~/.codex/config.toml contains TOML it cannot parse; the error names the exact file, line, and column.",
+  "explanation": "Common causes reported upstream: the VSCode extension appending config.toml content into itself on every restart until TOML breaks, and Windows paths inside MCP server definitions written with single backslashes (TOML treats them as escapes).",
+  "actions": [
+    "Open ~/.codex/config.toml at the line and column from the error message.",
+    "Look for duplicated blocks (a known VSCode extension bug) and remove the duplicates.",
+    "In MCP server definitions on Windows, replace single backslashes in paths with forward slashes or doubled backslashes.",
+    "Run codex again; if doctor is reachable, run codex doctor to confirm config.load passes."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/19476",
+      "label": "openai/codex#19476"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/9770",
+      "label": "openai/codex#9770"
+    }
+  ],
+  "tags": [
+    "config",
+    "toml",
+    "startup",
+    "windows"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "config.toml 无法解析（启动失败）",
+      "summary": "Codex 启动即退出，因为 ~/.codex/config.toml 存在无法解析的 TOML；错误信息会给出确切的文件、行号和列号。",
+      "explanation": "上游常见原因：VSCode 扩展每次重启都把 config.toml 内容追加到自身，直到 TOML 损坏；以及 MCP 服务器定义里的 Windows 路径用了单个反斜杠（TOML 视为转义符）。",
+      "actions": [
+        "按错误信息里的行列号打开 ~/.codex/config.toml 定位问题。",
+        "检查是否有重复内容块（已知 VSCode 扩展 bug），删除重复部分。",
+        "Windows 下 MCP 服务器定义中的路径，把单反斜杠改为正斜杠或双反斜杠。",
+        "重新运行 codex；能进入的话再跑 codex doctor 确认 config.load 通过。"
+      ]
+    }
+  }
+}
