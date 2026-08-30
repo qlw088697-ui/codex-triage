@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.11.1] - 2026-08-30
+
+### Added
+
+- Documentation: [docs/triage-walkthrough.md](docs/triage-walkthrough.md) (end-to-end user guide) and [docs/faq.md](docs/faq.md).
+- README now leads with npm installation (`npx codex-triage` / `npm install -g codex-triage`); source installation moved to a fallback section.
+
 ## [1.11.0] - 2026-08-30
 
 ### Added
