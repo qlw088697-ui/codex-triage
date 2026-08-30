@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-context-window-clamp",
+  "title": "Configured 1M context is silently clamped to 872K by the ChatGPT server catalog",
+  "category": "provider",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/41325",
+  "match": {
+    "any": [
+      {
+        "contains": "828400"
+      },
+      {
+        "contains": "/ 828K)"
+      }
+    ],
+    "all": []
+  },
+  "summary": "With ChatGPT sign-in, model_context_window=1000000 and auto_compact=900000 in config.toml are clamped by the server-delivered catalog cap of 872,000, so the usable window is 828,400 and compaction resolves to 784,800 - regardless of user config or even a locally rebuilt binary.",
+  "explanation": "Under ChatGPT authentication the remote model catalog is authoritative over the bundled one, and it currently supplies max_context_window=872000 for GPT-5.6 Sol. The reporter proved the clamp is server-side: after changing the bundled catalog to 1,000,000 and rebuilding from source (bundled debug output confirmed 1M), a real ChatGPT session still reported the 828,400 usable window, and Codex Desktop reproduced it. The resolved values are deterministic: min(1,000,000, 872,000)=872,000 raw, x95%=828,400 usable, auto-compact min(900,000, 872,000x90%)=784,800. This is a service-side budget decision, not a local misconfiguration.",
+  "actions": [
+    "Do not burn time on config or source changes: the remote catalog clamps them both, verified with a controlled rebuilt-binary experiment.",
+    "If a workflow truly needs more than ~828K usable tokens today, split it - the ChatGPT-backed Codex path does not expose a 1M budget to the client.",
+    "Track the upstream issue; the cap lives in the server-delivered catalog, so it can change without a client update."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41325",
+      "label": "openai/codex#41325"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40347",
+      "label": "openai/codex#40347"
+    }
+  ],
+  "tags": [
+    "provider",
+    "context-window",
+    "gpt-5.6",
+    "catalog",
+    "compaction"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "配置的 1M 上下文被 ChatGPT 服务端目录悄悄钳制到 872K",
+      "summary": "ChatGPT 登录下，config.toml 里的 model_context_window=1000000 与 auto_compact=900000 都会被服务端目录的 872,000 上限钳制：可用窗口 828,400，自动压缩阈值解析为 784,800——改用户配置甚至本地重编译都无法突破。",
+      "explanation": "ChatGPT 认证下远程模型目录优先于内置目录，而它当前给 GPT-5.6 Sol 下发的 max_context_window 是 872000。报告者证明了钳制在服务端：把内置目录改成 1,000,000 并从源码重编译（bundled 调试输出确认 1M）后，真实 ChatGPT 会话仍然报 828,400 的可用窗口，Codex 桌面版同样复现。解析值是确定性的：min(1,000,000, 872,000)=872,000 原始，x95%=828,400 可用，自动压缩 min(900,000, 872,000x90%)=784,800。这是服务端的预算决策，不是本地配置错误。",
+      "actions": [
+        "不要在配置或源码上耗时间：两者都会被远程目录钳制，已有受控重编译实验验证。",
+        "如果工作流今天真的需要超过约 828K 可用 token，只能拆分任务——ChatGPT 后端的 Codex 通道目前不向客户端暴露 1M 预算。",
+        "关注上游 Issue；上限存在服务端下发的目录里，可能不经客户端更新就变化。"
+      ]
+    }
+  }
+}

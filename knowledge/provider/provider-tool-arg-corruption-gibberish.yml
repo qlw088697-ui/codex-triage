@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-tool-arg-corruption-gibberish",
+  "title": "Model corrupts tool-call paths and degenerates into gibberish mid-session",
+  "category": "provider",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/40369",
+  "match": {
+    "any": [
+      {
+        "contains": "gibberish"
+      },
+      {
+        "contains": "pseudo-language"
+      }
+    ],
+    "all": []
+  },
+  "summary": "In a long tool-heavy gpt-5.6-sol session at high reasoning effort, generated tool calls start containing corrupted working directories and filenames (even after the model explicitly says it corrected them), and the TUI streams repetitive pseudo-language until interrupted.",
+  "explanation": "The corruption happens during model response generation, not inside the shell: nonexistent paths like /u001zeni/... and SKUL.md instead of SKILL.md appear in tool calls, the model acknowledges and 'fixes' them, and the very next call corrupts the same values again. It is persisted evidence, not a rendering glitch - the corrupted arguments are stored in the rollout JSONL as response_item/custom_tool_call records. Context pressure is ruled out: the session was at roughly 21% of an 828,400-token window at both failures, with no stream disconnects, retries, or compaction events around the affected turns. Single detailed report, no deterministic reproducer yet.",
+  "actions": [
+    "Interrupt the turn and continue in a fresh thread - the reporter recovered by interrupting; degeneration persisted within the same thread.",
+    "Do not chase context or memory: usage was ~21% with no compaction or retry events nearby.",
+    "When reporting upstream, attach the session/thread ID and the rollout JSONL - the corrupted tool-call arguments are persisted there as response_item/custom_tool_call records, which is exactly the evidence maintainers need."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40369",
+      "label": "openai/codex#40369"
+    }
+  ],
+  "tags": [
+    "provider",
+    "gpt-5.6",
+    "tool-calls",
+    "degeneration",
+    "rollout"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "模型在会话中途损坏工具调用路径并退化成乱码",
+      "summary": "在长而重的 gpt-5.6-sol 高推理强度会话里，生成的工具调用开始包含损坏的工作目录和文件名（模型明确说已修正后依然复现），TUI 随后流式输出重复的伪语言直到被打断。",
+      "explanation": "损坏发生在模型响应生成阶段，而不是 shell 内部：工具调用里出现不存在的路径（如 /u001zeni/...）和 SKUL.md（应为 SKILL.md），模型承认并\"修正\"后，紧接着的下一次调用又把同样的值写坏。这是有持久化证据的，不是渲染故障——损坏的参数已经作为 response_item/custom_tool_call 记录存进 rollout JSONL。上下文压力已排除：两次失败时会话都只用了约 21% 的 828,400 窗口，附近也没有流断连、重试或压缩事件。目前是单份详细报告，尚无确定性复现步骤。",
+      "actions": [
+        "打断当前轮并换新线程继续——报告者靠打断恢复；同一线程内退化会持续。",
+        "不要排查上下文或内存：用量仅约 21%，附近也没有压缩或重试事件。",
+        "向上游报告时附上会话/线程 ID 和 rollout JSONL——损坏的工具调用参数就持久化在 response_item/custom_tool_call 记录里，这正是维护者需要的证据。"
+      ]
+    }
+  }
+}

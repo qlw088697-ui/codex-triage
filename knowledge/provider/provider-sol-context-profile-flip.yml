@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-sol-context-profile-flip",
+  "title": "GPT-5.6 Sol flips between 828K and 258K context profiles mid-task",
+  "category": "provider",
+  "severity": "medium",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/40347",
+  "match": {
+    "any": [
+      {
+        "contains": "258400"
+      }
+    ],
+    "all": []
+  },
+  "summary": "The server-delivered catalog intermittently switches GPT-5.6 Sol between an 872K and a 272K max-context profile, so the effective window in token_count events flip-flops between 828400 and 258400 across turns of the same task with no local change.",
+  "explanation": "This is not a stale UI value: rollout records contain token_count events alternating 258400 -> 828400 -> 258400 across days, including between adjacent turns with identical model, client version, and configuration. A fresh catalog snapshot explains the two profiles: Sol sometimes receives max_context_window=272000 while Terra and Luna receive 872000 in the same snapshot. The practical impact is that auto-compaction suddenly kicks in far earlier mid-task when the small profile lands. Related reports show the stable variant too: Sol stuck at 272K while Terra/Luna keep 872K (openai/codex#39144, #40106). No user-side configuration triggers or prevents it; the profile changes arrive with server-side catalog refreshes.",
+  "actions": [
+    "Treat unexpected early auto-compaction on Sol as this profile flip, not as your context filling up - check the model_context_window value in the token_count event.",
+    "If a long task keeps landing on the 272K profile, switching to gpt-5.6-terra or gpt-5.6-luna avoided it in the observed catalog snapshot (single-snapshot evidence).",
+    "There is no client-side setting that pins the profile; track the upstream cluster for the rollout behavior to be documented or fixed."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40347",
+      "label": "openai/codex#40347"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/39144",
+      "label": "openai/codex#39144"
+    }
+  ],
+  "tags": [
+    "provider",
+    "context-window",
+    "gpt-5.6",
+    "catalog",
+    "compaction"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "GPT-5.6 Sol 在同一任务中于 828K 与 258K 上下文档位间反复切换",
+      "summary": "服务端目录会间歇性把 GPT-5.6 Sol 在 872K 与 272K 两档 max-context 之间切换，同一任务的 token_count 事件里有效窗口在 828400 与 258400 之间来回跳，本地没有任何改动。",
+      "explanation": "这不是 UI 显示滞后：rollout 记录里 token_count 事件按 258400 -> 828400 -> 258400 跨天交替，甚至相邻两轮之间也会切换，而模型、客户端版本、配置完全相同。一次新目录快照解释了两档来源：Sol 有时会拿到 max_context_window=272000，而同一快照里 Terra 和 Luna 是 872000。实际影响是当小档位落地时，自动压缩会在任务中途突然大幅提前。相关报告里还有稳定版变体：Sol 卡在 272K 而 Terra/Luna 保持 872K（openai/codex#39144、#40106）。没有任何用户侧配置能触发或阻止它；档位随服务端目录刷新到达。",
+      "actions": [
+        "把 Sol 上意外的提前自动压缩当作档位切换，而不是上下文真的满了——去看 token_count 事件里的 model_context_window 值。",
+        "如果长任务总是落在 272K 档，换到 gpt-5.6-terra 或 gpt-5.6-luna 在观察到的目录快照中躲开了它（单快照证据）。",
+        "没有客户端设置能固定档位；关注上游集群等灰度行为被文档化或修复。"
+      ]
+    }
+  }
+}
