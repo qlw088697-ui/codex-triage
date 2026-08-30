@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.10.0] - 2026-08-30
+
+### Added
+
+- New auth rule `auth-token-endpoint-403` (openai/codex#2414): OAuth token exchange blocked with 403 on the Windows + WSL callback path or by intercepting proxies.
+- New macOS sandbox rules `sandbox-macos-ps-blocked` (openai/codex#4620) and `sandbox-macos-sourcekitd` (openai/codex#37430). Knowledge base: 43 rules.
+
 ## [1.9.0] - 2026-08-30
 
 ### Added

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "id": "auth-token-endpoint-403",
+  "title": "OAuth token endpoint returned 403 Forbidden",
+  "category": "auth",
+  "severity": "medium",
+  "platforms": [
+    "wsl"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/2414",
+  "match": {
+    "any": [
+      {
+        "contains": "token endpoint returned status 403"
+      }
+    ],
+    "all": []
+  },
+  "summary": "During OAuth login the token exchange endpoint answers 403 Forbidden, so sign-in completes in the browser but the CLI never receives credentials - the callback path or the auth endpoint is being intercepted.",
+  "explanation": "Reported in the Windows + WSL setup: the browser-side login works, but the token endpoint request is blocked before it reaches the CLI. A proxy, VPN, or security software filtering auth.openai.com produces the same 403 shape.",
+  "actions": [
+    "Retry the login with any VPN, proxy, or security software paused, then compare.",
+    "On WSL, confirm Windows-to-WSL localhost forwarding works for the callback port.",
+    "If a corporate proxy is required, configure it for the CLI environment and sign in again."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/2414",
+      "label": "openai/codex#2414"
+    }
+  ],
+  "tags": [
+    "auth",
+    "oauth",
+    "403",
+    "wsl",
+    "proxy"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "OAuth token 端点返回 403 Forbidden",
+      "summary": "OAuth 登录时 token 交换端点返回 403 Forbidden——浏览器侧登录成功，但 CLI 始终拿不到凭据：回调链路或 auth 端点被中间设备拦截。",
+      "explanation": "上报于 Windows + WSL 场景：浏览器登录正常，token 端点请求在到达 CLI 前被拦。代理、VPN 或安全软件过滤 auth.openai.com 也会产生同样的 403 形态。",
+      "actions": [
+        "暂停 VPN、代理或安全软件后重试登录，再做对比。",
+        "WSL 场景确认 Windows 到 WSL 的 localhost 转发对回调端口可用。",
+        "如果必须走公司代理，为 CLI 环境配置代理后重新登录。"
+      ]
+    }
+  }
+}

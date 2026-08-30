@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "id": "sandbox-macos-sourcekitd",
+  "title": "Seatbelt sandbox breaks sourcekitd (Swift tooling)",
+  "category": "sandbox",
+  "severity": "low",
+  "platforms": [
+    "macos"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/37430",
+  "match": {
+    "any": [
+      {
+        "contains": "sourcekitd"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Swift tooling that depends on sourcekitd fails when run inside the macOS Seatbelt sandbox, while the same tooling works outside Codex.",
+  "explanation": "sourcekitd needs machine-level service lookups that the sandbox profile does not allow, so Swift language features and builds driven from inside Codex fail in ways unrelated to the code itself.",
+  "actions": [
+    "Confirm the failure is sandbox-specific by running the same Swift command outside Codex.",
+    "Approve the affected command or run Swift builds outside the sandbox for now.",
+    "Track the upstream issue for a Seatbelt allowance covering sourcekitd."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/37430",
+      "label": "openai/codex#37430"
+    }
+  ],
+  "tags": [
+    "sandbox",
+    "macos",
+    "swift",
+    "seatbelt"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Seatbelt 沙箱破坏 sourcekitd（Swift 工具链）",
+      "summary": "依赖 sourcekitd 的 Swift 工具在 macOS Seatbelt 沙箱内运行时失败，同样的工具在 Codex 外一切正常。",
+      "explanation": "sourcekitd 需要的机器级服务查询不在沙箱 profile 允许列表里，导致从 Codex 内驱动的 Swift 语言特性和构建以与代码无关的方式失败。",
+      "actions": [
+        "在 Codex 外运行同样的 Swift 命令，确认失败是沙箱特异性。",
+        "对受影响命令走审批，或暂时把 Swift 构建放到沙箱外执行。",
+        "跟进上游 Issue，等待 profile 放行 sourcekitd。"
+      ]
+    }
+  }
+}
