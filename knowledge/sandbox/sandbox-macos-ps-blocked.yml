@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 2,
+  "id": "sandbox-macos-ps-blocked",
+  "title": "Sandbox blocks process listing (/bin/ps: Operation not permitted)",
+  "category": "sandbox",
+  "severity": "low",
+  "platforms": [
+    "macos"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/4620",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "/bin/ps"
+      },
+      {
+        "contains": "Operation not permitted"
+      }
+    ]
+  },
+  "summary": "Under the macOS Seatbelt sandbox, /bin/ps and related process-inspection calls fail with Operation not permitted, which breaks tooling that inspects running processes from inside Codex.",
+  "explanation": "The Seatbelt profile does not grant process-information lookups; commands that merely list processes (ps, some build tools, health checks) report failures that look like breakage but are the sandbox working as designed.",
+  "actions": [
+    "Confirm the same command fails only inside the sandbox; outside it should succeed.",
+    "Approve the specific command through the normal flow, or run the process-inspection step outside the sandbox.",
+    "Track the upstream issue for a profile allowance for process listing."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/4620",
+      "label": "openai/codex#4620"
+    }
+  ],
+  "tags": [
+    "sandbox",
+    "macos",
+    "seatbelt",
+    "process"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "沙箱拦截进程列表（/bin/ps: Operation not permitted）",
+      "summary": "macOS Seatbelt 沙箱下 /bin/ps 等进程查看调用报 Operation not permitted，导致 Codex 内部需要检查进程的工具链失效。",
+      "explanation": "Seatbelt profile 没有授予进程信息查询权限；单纯列出进程的命令（ps、部分构建工具、健康检查）会报错——看起来像坏了，其实是沙箱按设计在工作。",
+      "actions": [
+        "确认同一命令只在沙箱内失败、沙箱外正常。",
+        "按正常流程对该命令单独审批，或把进程检查步骤放到沙箱外执行。",
+        "跟进上游 Issue，等待 profile 对进程列表的放行。"
+      ]
+    }
+  }
+}
