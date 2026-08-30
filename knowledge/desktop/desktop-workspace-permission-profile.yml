@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 2,
+  "id": "desktop-workspace-permission-profile",
+  "title": "Desktop chats fail with a :workspace permission-profile type error",
+  "category": "desktop",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/40801",
+  "match": {
+    "any": [
+      {
+        "contains": "PermissionProfileSelectionParams"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex Desktop sends the built-in \":workspace\" permission profile as a plain string where the backend now expects an internally tagged enum, so every chat - new and resumed - fails immediately and GPT-5.6 models vanish from the picker.",
+  "explanation": "The failure is a client/server contract regression on the Desktop side: the exact error is 'Invalid request: invalid type: string \":workspace\", expected internally tagged enum PermissionProfileSelectionParams'. The reporter ruled out the three local causes: the app was updated to the latest Microsoft Store package, app data was reset with Reset-AppxPackage, and ~/.codex/config.toml contains no custom default_permissions = \":workspace\" - yet every new and existing chat still fails on Windows 11 x64 (Desktop 26.820.7780.0, enterprise plan). The combination of a vanished GPT-5.6 picker entry plus this type error points at the Desktop picker/session/permission-state regressions tracked in the related issues.",
+  "actions": [
+    "Cheap sanity check first: confirm ~/.codex/config.toml has no custom default_permissions setting - a local override could produce the same error shape (it was absent in the reference report).",
+    "Do not keep reinstalling: both a Store update and a full app-data reset were verified insufficient in the report; this needs a client fix.",
+    "Track the upstream issue and the related Desktop picker/session regressions for the fix release."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40801",
+      "label": "openai/codex#40801"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/39195",
+      "label": "openai/codex#39195"
+    }
+  ],
+  "tags": [
+    "desktop",
+    "windows",
+    "permissions",
+    "gpt-5.6",
+    "chat"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "桌面版所有聊天因 :workspace 权限档位类型错误而失败",
+      "summary": "Codex 桌面版把内置的 \":workspace\" 权限档位当普通字符串发送，而后端现在要求内部标签枚举，导致所有聊天（新建和续聊）立即失败，GPT-5.6 也从模型选择器里消失。",
+      "explanation": "这是桌面版一侧的客户端/服务端契约回归，确切错误是 'Invalid request: invalid type: string \":workspace\", expected internally tagged enum PermissionProfileSelectionParams'。报告者排除了三个本地原因：App 已更新到最新的 Microsoft Store 包、用 Reset-AppxPackage 重置了应用数据、~/.codex/config.toml 里没有自定义 default_permissions = \":workspace\"——但 Windows 11 x64（Desktop 26.820.7780.0，企业计划）上所有新旧聊天依然全部失败。\"GPT-5.6 从选择器消失 + 这个类型错误\"的组合指向相关 issue 里追踪的桌面版选择器/会话/权限状态回归。",
+      "actions": [
+        "先做便宜的排查：确认 ~/.codex/config.toml 没有自定义 default_permissions——本地覆盖可能产生同样的报错形态（参考报告里没有）。",
+        "不要反复重装：报告中 Store 更新和完整应用数据重置都被验证无效，这需要客户端修复。",
+        "关注上游 issue 及相关桌面版选择器/会话回归，等修复版本。"
+      ]
+    }
+  }
+}
