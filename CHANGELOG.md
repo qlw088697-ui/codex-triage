@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [1.1.0] - 2026-08-30
+
+### Added
+
+- Dependency-free YAML subset parser for knowledge rules: block mappings and sequences, compact `- key: value` items, flow collections, quoted and plain scalars, and comments. Anchors, aliases, tags, directives, and multi-line block scalars are rejected with clear errors. JSON remains fully supported and is tried first.
+- Documentation updated to describe the accepted YAML subset.
+
 ## [1.0.0] - 2026-08-30
 
 ### Added

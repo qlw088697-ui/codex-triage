@@ -9,7 +9,7 @@ A useful rule answers four questions:
 
 ## File format
 
-v0.1.x accepts JSON syntax stored in `.yml`, `.yaml`, or `.json` files. General YAML syntax is not supported yet. Confirm a proposed rule parses with `JSON.parse`.
+Since 1.1, rule files may use strict JSON or the supported YAML subset (block mappings and sequences, flow collections, quoted or plain scalars, comments). Anchors, aliases, tags, directives, and multi-line block scalars are rejected. Quote any plain scalar that contains `": "`. The loader tries JSON first and falls back to the YAML subset; run `npm test` to confirm a proposed rule parses and loads.
 
 ## Optional metadata (validated at load time)
 

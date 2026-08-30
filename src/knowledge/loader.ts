@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { extname, join } from "node:path";
 import { validateRule, type Rule } from "./schema.js";
+import { parseYaml } from "./yaml.js";
 
 export const DEFAULT_KNOWLEDGE_DIR = fileURLToPath(new URL("../../knowledge", import.meta.url));
 
@@ -16,13 +17,25 @@ async function walk(directory: string): Promise<string[]> {
   return files.sort();
 }
 
+function parseRuleSource(source: string, path: string): unknown {
+  try {
+    return JSON.parse(source);
+  } catch {
+    // Not JSON: fall back to the YAML subset (JSON is itself valid YAML).
+    try {
+      return parseYaml(source);
+    } catch (yamlError) {
+      throw new Error(`${path} is neither valid JSON nor supported YAML: ${yamlError instanceof Error ? yamlError.message : String(yamlError)}`);
+    }
+  }
+}
+
 export async function loadRules(directory = DEFAULT_KNOWLEDGE_DIR): Promise<Rule[]> {
   const paths = await walk(directory);
   const rules = await Promise.all(paths.map(async (path) => {
     const source = await readFile(path, "utf8");
     try {
-      // JSON is a valid YAML 1.2 subset. v0.1 deliberately uses this subset so the CLI has zero runtime dependencies.
-      return validateRule(JSON.parse(source));
+      return validateRule(parseRuleSource(source, path));
     } catch (error) {
       throw new Error(`Invalid knowledge rule ${path}: ${error instanceof Error ? error.message : String(error)}`);
     }
