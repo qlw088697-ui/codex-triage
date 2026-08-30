@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 2,
+  "id": "auth-usage-limit-reached",
+  "title": "You've hit your usage limit",
+  "category": "usage",
+  "severity": "low",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/12799",
+  "match": {
+    "any": [
+      {
+        "contains": "You've hit your usage limit"
+      },
+      {
+        "contains": "usage limit reached"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Codex blocks requests with the usage-limit message. On paid plans this can still be plan confusion or one of the known metering bugs: limits draining without activity, or a reset window exhausting immediately.",
+  "explanation": "Upstream reports include limits draining with no corresponding activity, Pro plans immediately shown as exhausted, and reset windows spent within minutes. First confirm the limit is real by checking the plan usage page before treating it as a technical failure.",
+  "actions": [
+    "Check the plan usage page in ChatGPT settings to confirm the remaining allowance.",
+    "Wait for the 5-hour or weekly window to reset; on ChatGPT plans try codex rate-limit reset where available.",
+    "If the limit drains without activity or resets and instantly exhausts, compare against the upstream metering issues.",
+    "API-key users: rate limits depend on account billing tier, not the ChatGPT plan."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/12799",
+      "label": "openai/codex#12799"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/28908",
+      "label": "openai/codex#28908"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/32607",
+      "label": "openai/codex#32607"
+    },
+    {
+      "type": "other",
+      "url": "https://community.openai.com/t/upgraded-to-pro-and-get-hit-with-usage-limit-error/1379259",
+      "label": "OpenAI Community: Usage limit error on Pro"
+    }
+  ],
+  "tags": [
+    "usage",
+    "rate-limit",
+    "plan",
+    "billing"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "已达使用上限（You've hit your usage limit）",
+      "summary": "Codex 以用量上限为由拒绝请求。付费计划下也可能是计划混淆或已知的计量 bug：限额无活动也在消耗、重置后立刻耗尽。",
+      "explanation": "上游报告包括限额在无对应活动的情况下下降、Pro 计划刚升级就显示耗尽、重置窗口几分钟内用完。先到 ChatGPT 设置的用量页确认限额是真的用完了，再当作技术故障处理。",
+      "actions": [
+        "到 ChatGPT 设置的用量页确认剩余额度。",
+        "等待 5 小时或每周窗口重置；ChatGPT 计划可用的话尝试 codex rate-limit reset。",
+        "如果限额无活动自行下降、或重置后立刻耗尽，对照上游计量问题。",
+        "API key 用户：限流取决于账户计费档位，与 ChatGPT 计划无关。"
+      ]
+    }
+  }
+}
