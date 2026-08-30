@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "id": "provider-responses-lite-model-unsupported",
+  "title": "ChatGPT route rejects the model as unsupported under Responses-Lite",
+  "category": "provider",
+  "severity": "high",
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/31150",
+  "match": {
+    "any": [
+      {
+        "contains": "not supported when using X-OpenAI-Internal-Codex-Responses-Lite"
+      }
+    ],
+    "all": []
+  },
+  "summary": "With ChatGPT-account sign-in on the official backend, catalog metadata routes the selected model (typically gpt-5.5) into the Responses-Lite transport that no longer accepts it; every request fails with 400 unsupported_value before any response is produced.",
+  "explanation": "The local model catalog marks the failing model with use_responses_lite=true while working models (gpt-5.4, gpt-5.4-mini) are false, so the client adds the Responses-Lite header and the ChatGPT backend rejects the combination - a server-side routing/catalog regression, not a local misconfiguration. Reports span Codex Desktop and CLI on Windows across 0.142.x and later; the same account can work on other OSes, and one reporter saw gpt-5.5 work earlier the same day, so availability shifted server-side. Re-login does not help and VPN/proxy changes do not change the result. Note the sibling failure mode: if the error instead says Responses-Lite only supports function tools, that is the custom-provider transport rule.",
+  "actions": [
+    "Switch to gpt-5.4 or gpt-5.4-mini - confirmed working on the same machine and account in every report.",
+    "Optional and unverified for this route: set use_responses_lite=false for the model in a local catalog via model_catalog_json, the same mechanism verified for custom providers in openai/codex#31882 - the header is added client-side from catalog metadata, so suppressing it should route the request normally.",
+    "Skip credential churn: logout/login and network changes were tested and do not affect this failure.",
+    "Track the upstream cluster for the routing fix."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/31150",
+      "label": "openai/codex#31150"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/30403",
+      "label": "openai/codex#30403"
+    }
+  ],
+  "tags": [
+    "provider",
+    "chatgpt",
+    "responses-lite",
+    "gpt-5.5",
+    "400"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "ChatGPT 通道以 Responses-Lite 不支持为由拒绝当前模型",
+      "summary": "ChatGPT 账号登录走官方后端时，目录元数据把所选模型（通常是 gpt-5.5）路由进已不再接受它的 Responses-Lite 传输；每个请求都在产生任何回复之前以 400 unsupported_value 失败。",
+      "explanation": "本地模型目录把失败模型标记为 use_responses_lite=true，而正常工作的模型（gpt-5.4、gpt-5.4-mini）为 false，于是客户端加上 Responses-Lite 头，ChatGPT 后端拒绝这个组合——这是服务端路由/目录回归，不是本地配置错误。报告横跨 Windows 上的 Codex Desktop 与 CLI（0.142.x 及以后）；同一账号在其他系统上可能正常，还有报告者当天早些时候 gpt-5.5 还能用，说明可用性在服务端发生过变化。重新登录无效，换 VPN/代理也不影响结果。注意区分兄弟场景：如果错误说的是 Responses-Lite 只支持函数工具，那是自定义提供商传输规则。",
+      "actions": [
+        "切换到 gpt-5.4 或 gpt-5.4-mini——所有报告中同机同号均确认可用。",
+        "可选（此场景未验证）：通过 model_catalog_json 在本地目录中把该模型的 use_responses_lite 设为 false，即 openai/codex#31882 中为自定义提供商验证过的同一机制——该头由客户端依据目录元数据添加，抑制后请求应能正常路由。",
+        "不要折腾凭据：报告中登出重登与更换网络均无效。",
+        "关注上游集群 issue 等待路由修复。"
+      ]
+    }
+  }
+}

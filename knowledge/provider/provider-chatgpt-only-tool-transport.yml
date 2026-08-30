@@ -9,7 +9,7 @@
   "match": {
     "any": [
       {
-        "contains": "X-OpenAI-Internal-Codex-Responses-Lite"
+        "contains": "X-OpenAI-Internal-Codex-Responses-Lite only supports"
       },
       {
         "contains": "Namespace 'collaboration' is reserved"
