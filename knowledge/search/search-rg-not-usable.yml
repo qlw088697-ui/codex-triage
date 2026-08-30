@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "id": "search-rg-not-usable",
+  "title": "ripgrep is not usable in this shell (falls back to PowerShell search)",
+  "category": "search",
+  "severity": "low",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-08-30",
+  "source": "https://github.com/openai/codex/issues/13542",
+  "match": {
+    "any": [
+      {
+        "contains": "rg is not usable in this shell"
+      }
+    ],
+    "all": []
+  },
+  "summary": "On Windows, Codex reports that ripgrep is not usable in the current shell and silently falls back to slower PowerShell file search, usually because an rg.exe from the user PATH shadows the bundled binary.",
+  "explanation": "Upstream reports describe the Desktop/CLI resolving rg from the user PATH before the Codex-bundled ripgrep; a broken or incompatible rg.exe on PATH then makes the shell declare it unusable even though rg works outside Codex.",
+  "actions": [
+    "Run rg --version in the same shell Codex uses and confirm which rg.exe resolves (where rg).",
+    "Remove or rename the conflicting user-PATH rg.exe, or update it, so the bundled binary wins.",
+    "Restart Codex and confirm search no longer reports the fallback."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/13542",
+      "label": "openai/codex#13542"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/22360",
+      "label": "openai/codex#22360"
+    }
+  ],
+  "tags": [
+    "search",
+    "ripgrep",
+    "windows",
+    "path"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "ripgrep 在当前 shell 不可用（回退到 PowerShell 搜索）",
+      "summary": "Windows 上 Codex 报告 ripgrep 在当前 shell 不可用，静默回退到较慢的 PowerShell 文件搜索；常见原因是用户 PATH 里的 rg.exe 遮蔽了内置版本。",
+      "explanation": "上游报告：Desktop/CLI 先从用户 PATH 解析 rg，PATH 上损坏或不兼容的 rg.exe 会让 shell 判定其不可用——尽管 rg 在 Codex 之外工作正常。",
+      "actions": [
+        "在 Codex 使用的同一个 shell 里运行 rg --version，用 where rg 确认解析到的是哪个 rg.exe。",
+        "移除或改名 PATH 上冲突的 rg.exe（或升级它），让内置二进制生效。",
+        "重启 Codex，确认搜索不再报回退。"
+      ]
+    }
+  }
+}
