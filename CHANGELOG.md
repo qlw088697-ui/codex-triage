@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.7.0] - 2026-08-30
+
+### Added
+
+- New state rules for the two SQLite failure families: `state-db-locked` (openai/codex#28666, openai/codex#30105, openai/codex#20213, openai/codex#31426 - another Codex process holds the state_5.sqlite lock) and `state-db-malformed` (openai/codex#24030, openai/codex#30957, openai/codex#27363 - corrupted database, backup-first and let auto-recovery rebuild). Knowledge base: 36 rules.
+
 ## [1.6.0] - 2026-08-30
 
 ### Added
