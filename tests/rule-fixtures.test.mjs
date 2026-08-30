@@ -9,6 +9,7 @@ const regexSamples = new Map([
   ["certificate|custom CA|ECONNRESET|connection refused|dns|proxy", "TLS certificate"],
   ["orchestrator_helper_launch_failed|sandbox helper.*(missing|not found)|codex-windows-sandbox.*(missing|not found)|module could not be found", "orchestrator_helper_launch_failed: sandbox helper program not found"],
   ["CodexSandbox(?:Offline|Online)", "CodexSandboxOffline"],
+  ["Cannot read directory[\\s\\S]{0,400}?Access is denied", 'Cannot read directory "../../..": Access is denied.'],
 ]);
 
 function matcherSample(matcher) {

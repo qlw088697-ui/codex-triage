@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-unelevated-nul-delay",
+  "title": "Every sandboxed command stalls ~15 seconds on a CreateFile against the NUL device",
+  "category": "sandbox",
+  "severity": "medium",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-08-31",
+  "source": "https://github.com/openai/codex/issues/41351",
+  "match": {
+    "any": [
+      {
+        "contains": "OBJECT PATH INVALID"
+      },
+      {
+        "contains": "\\\\NUL\\\\\\"
+      }
+    ],
+    "all": []
+  },
+  "summary": "With the unelevated Windows sandbox, every command incurs a highly repeatable ~15.5 second delay before it starts; Process Monitor pins almost all of it to a single codex.exe CreateFile against the \\\\NUL\\\\ device path that returns OBJECT PATH INVALID after 15.4 seconds.",
+  "explanation": "The report's controls isolate the cause to the sandbox path: native cmd.exe runs in ~22 ms, the Windows Null driver is healthy (service running, null.sys present, redirect to nul in ~28 ms), and danger-full-access executes the same trivial command in ~122 ms. The slow call flows through KernelBase CreateFileW / GetDriveTypeW against \\\\NUL\\\\\\, after which the pipe is created and the command completes normally - so nothing is broken, just ~15.5 seconds burned per command. Reported from Windows 11 (build 26200) with Codex CLI 0.150.1 and [windows] sandbox = \"unelevated\".",
+  "actions": [
+    "Verify with Process Monitor (filter codex.exe): one CreateFile on \\\\NUL\\\\\\ with OBJECT PATH INVALID and a >10 s duration confirms this diagnosis.",
+    "The stall only burns time - commands still complete correctly, so batch work is unaffected beyond the per-command latency.",
+    "danger-full-access is fast in the report's control but removes sandboxing - not a casual fix; track the upstream issue for the NUL-path probe fix."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41351",
+      "label": "openai/codex#41351"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "performance",
+    "nul",
+    "createfile"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "沙箱内每条命令都对 NUL 设备做一次耗时约 15 秒的 CreateFile",
+      "summary": "非提升（unelevated）Windows 沙箱下，每条命令启动前都有高度可复现的约 15.5 秒延迟；Process Monitor 把几乎全部耗时定位到 codex.exe 对 \\\\NUL\\\\ 设备路径的一次 CreateFile——15.4 秒后返回 OBJECT PATH INVALID。",
+      "explanation": "报告的对照组把原因隔离在沙箱路径上：原生 cmd.exe 约 22 毫秒、Windows Null 驱动健康（服务运行中、null.sys 存在、重定向到 nul 约 28 毫秒）、danger-full-access 执行同一条平凡命令约 122 毫秒。慢调用经由 KernelBase CreateFileW / GetDriveTypeW 打向 \\\\NUL\\\\\\，返回后管道正常创建、命令正常完成——什么都没坏，只是每条命令白烧约 15.5 秒。来自 Windows 11（build 26200）+ Codex CLI 0.150.1、[windows] sandbox = \"unelevated\" 的报告。",
+      "actions": [
+        "用 Process Monitor 验证（过滤 codex.exe）：一次对 \\\\NUL\\\\\\ 的 CreateFile、结果 OBJECT PATH INVALID、耗时超过 10 秒，即可确认此诊断。",
+        "卡顿只消耗时间——命令仍会正确完成，除了每条命令的延迟外批处理不受影响。",
+        "报告的对照里 danger-full-access 很快，但那会移除沙箱——不建议当日常解法；关注上游 issue 等 NUL 路径探测的修复。"
+      ]
+    },
+    "ja": {
+      "title": "サンドボックス内の全コマンドが NUL デバイスへの CreateFile で約 15 秒停滞する",
+      "summary": "非昇格（unelevated）Windows サンドボックスでは、すべてのコマンドが開始前に高度に再現性のある約 15.5 秒の遅延を起こします。Process Monitor はそのほぼすべてを、codex.exe による \\\\NUL\\\\ デバイスパスへの 1 回の CreateFile（15.4 秒後に OBJECT PATH INVALID）に特定しました。",
+      "explanation": "報告の対照実験は原因をサンドボックス経路に隔離します。ネイティブ cmd.exe は約 22 ミリ秒、Windows の Null ドライバは健全（サービス実行中、null.sys 存在、nul へのリダイレクト約 28 ミリ秒）、danger-full-access なら同じ軽微なコマンドが約 122 ミリ秒。遅い呼び出しは KernelBase CreateFileW / GetDriveTypeW 経由で \\\\NUL\\\\\\ に至り、その後はパイプ生成とコマンドが正常に完了します。何も壊れておらず、1 コマンドごとに約 15.5 秒を浪費するだけです。Windows 11（build 26200）+ Codex CLI 0.150.1、[windows] sandbox = \"unelevated\" からの報告です。",
+      "actions": ["Process Monitor で検証します（codex.exe でフィルタ）。\\\\NUL\\\\\\ への CreateFile が OBJECT PATH INVALID で 10 秒超ならこの診断で確定です。", "停滞は時間を浪費するだけです。コマンドは正しく完了するため、1 コマンドあたりの遅延以外にバッチ処理への影響はありません。", "報告の対照では danger-full-access は高速ですがサンドボックスが外れます。安易な対処にはしません。NUL パス探索の修正を上流 issue でウォッチしてください。"]
+    }
+  }
+}
