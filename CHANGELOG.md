@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.23.0] - 2026-08-31
+
+### Changed
+
+- Supply-chain hardening: all workflow actions pinned to commit SHAs, every checkout runs with `persist-credentials: false`, and the `npm` environment now only accepts deployments from `main` and `v*` tags. SECURITY.md documents the tokenless release model.
+
 ## [1.22.0] - 2026-08-31
 
 ### Added
