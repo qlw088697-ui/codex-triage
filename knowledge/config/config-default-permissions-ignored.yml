@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "id": "config-default-permissions-ignored",
+  "title": "Desktop ignores default_permissions = \":danger-full-access\" and launches a restricted sandbox",
+  "category": "config",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-08-31",
+  "source": "https://github.com/openai/codex/issues/41724",
+  "match": {
+    "any": [
+      {
+        "contains": "Method invocation is supported only on core types in this language mode"
+      }
+    ],
+    "all": []
+  },
+  "summary": "With the Codex Desktop composer permission selector on \"Custom (config.toml)\", the configured default_permissions = \":danger-full-access\" is not applied: new tasks get a restricted read-only sandbox with Constrained Language Mode, even though other config.toml entries from the same file load.",
+  "explanation": "The report's probes isolate the failure precisely: the shell_environment_policy env var (WORKSPACE_ACCESS_MODE=FULL_ACCESS) from the same config.toml IS injected, yet reading workspace files, creating files inside or outside the workspace are all denied, and PowerShell reports 'Method invocation is supported only on core types in this language mode' - the signature of a restricted sandbox with Constrained Language Mode. The A/B control is decisive: switching the composer permission selector from \"Custom (config.toml)\" to the built-in \"Full access\" option makes the identical probe succeed immediately, so filesystem access and machine policy are healthy - the Desktop app simply stops honoring default_permissions under the Custom selector. The same setup worked ~15 hours earlier; the report could not pin the regression to a specific app build and explicitly warns against attributing it to the update that landed during debugging. Note Constrained Language Mode can also come from real PowerShell enterprise policies - check $ExecutionContext.SessionState.LanguageMode outside Codex to disambiguate.",
+  "actions": [
+    "Immediate workaround, verified in the report: switch the Desktop composer permission selector from \"Custom (config.toml)\" to the built-in \"Full access\" option and start a fresh task.",
+    "If Full access via the selector also fails, the cause is a real machine or PowerShell language-mode policy - run $ExecutionContext.SessionState.LanguageMode in a plain PowerShell outside Codex; ConstrainedLanguage there is not a Codex problem.",
+    "Keep the config.toml snippet with default_permissions for the upstream report - the fact that other entries from the same file load makes this a selector/permissions-profile bug, not a parse failure."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41724",
+      "label": "openai/codex#41724"
+    }
+  ],
+  "tags": [
+    "config",
+    "windows",
+    "desktop",
+    "permissions",
+    "sandbox"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "桌面版无视 default_permissions = \":danger-full-access\"，启动受限沙箱",
+      "summary": "当 Codex 桌面版的权限选择器停在 \"Custom (config.toml)\" 时，配置的 default_permissions = \":danger-full-access\" 不生效：新任务拿到受限只读沙箱并进入 Constrained Language Mode，尽管同一 config.toml 的其他条目正常加载。",
+      "explanation": "报告的探针把失败定位得很准：同一 config.toml 里的 shell_environment_policy 环境变量（WORKSPACE_ACCESS_MODE=FULL_ACCESS）确实注入了，但读工作区文件、在Workspace内外创建文件全部被拒，PowerShell 报 'Method invocation is supported only on core types in this language mode'——这是受限沙箱加 Constrained Language Mode 的标志。A/B 对照是决定性的：把选择器从 \"Custom (config.toml)\" 切到内置 \"Full access\"，同样的探针立即成功——文件系统和机器策略都健康，是桌面版在 Custom 选择器下不再执行 default_permissions。同样的配置约 15 小时前还能用；报告无法把回归钉到具体版本，并明确警告别归因于调试期间落地的那个更新。注意 Constrained Language 也可能来自真实的 PowerShell 企业策略——在 Codex 外的普通 PowerShell 里跑 $ExecutionContext.SessionState.LanguageMode 即可区分。",
+      "actions": [
+        "立竿见影的绕过（报告已验证）：把桌面版权限选择器从 \"Custom (config.toml)\" 切到内置 \"Full access\"，开新任务。",
+        "如果选择器的 Full access 也不行，那原因就是真实的机器或 PowerShell 语言模式策略——在 Codex 外的普通 PowerShell 跑 $ExecutionContext.SessionState.LanguageMode；若那里是 ConstrainedLanguage，则与 Codex 无关。",
+        "向上游报告时附上带 default_permissions 的 config.toml 片段——同文件其他条目能加载这一点，说明这是选择器/权限档位 bug 而非解析失败。"
+      ]
+    },
+    "ja": {
+      "title": "Desktop が default_permissions = \":danger-full-access\" を無視し制限付きサンドボックスで起動する",
+      "summary": "Codex Desktop の権限セレクタが「Custom (config.toml)」のとき、設定した default_permissions = \":danger-full-access\" は適用されません。新しいタスクは制限付き読み取り専用サンドボックスと Constrained Language Mode になりながら、同じ config.toml の他のエントリは正常に読み込まれます。",
+      "explanation": "報告のプローブは失敗を正確に切り分けています。同じ config.toml の shell_environment_policy 環境変数（WORKSPACE_ACCESS_MODE=FULL_ACCESS）は実際に注入されるのに、ワークスペース内外のファイル作成や読み取りはすべて拒否され、PowerShell は 'Method invocation is supported only on core types in this language mode' を出します。これは制限付きサンドボックス + Constrained Language Mode の署名です。決定的なのは A/B 対照で、セレクタを「Custom (config.toml)」から内蔵の「Full access」に切り替えると同じプローブが即座に成功します。ファイルシステムもマシンポリシーも健全で、Desktop が Custom セレクタ下で default_permissions を反映していないだけです。同じ構成が約 15 時間前には動作しており、報告は回帰を特定ビルドに固定できず、デバッグ中に降ってきた更新のせいにしないよう明示的に警告しています。Constrained Language は実際の PowerShell 企業ポリシー由来の可能性もあるため、Codex 外の普通の PowerShell で $ExecutionContext.SessionState.LanguageMode を実行して切り分けてください。",
+      "actions": ["即効の回避策（報告で検証済み）：Desktop の権限セレクタを「Custom (config.toml)」から内蔵の「Full access」に切り替え、新しいタスクを開始します。", "セレクタの Full access でも失敗するなら、原因は実際のマシンまたは PowerShell 言語モードポリシーです。Codex 外の普通の PowerShell で $ExecutionContext.SessionState.LanguageMode を実行し、ConstrainedLanguage なら Codex の問題ではありません。", "上流への報告には default_permissions 入りの config.toml 断片を添えてください。同じファイルの他のエントリが読み込まれる事実から、これはパース失敗ではなくセレクタ/権限プロファイルのバグだと分かります。"]
+    }
+  }
+}

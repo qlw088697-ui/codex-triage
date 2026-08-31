@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.22.0] - 2026-08-31
+
+### Added
+
+- `config-default-permissions-ignored` (openai/codex#41724): with the Desktop composer selector on "Custom (config.toml)", configured default_permissions = ":danger-full-access" is not applied - new tasks run in a restricted sandbox with Constrained Language Mode while other entries from the same config load. The verified workaround is switching the selector to built-in "Full access". Knowledge base: 60 rules across 12 categories.
+
+### Changed
+
+- `windows-sandbox-provision-helper-unknown` now also covers the built-in Browser/Chrome runtime failure with the same helper_unknown_error signature (openai/codex#41055).
+
 ## [1.21.1] - 2026-08-31
 
 ### Changed
