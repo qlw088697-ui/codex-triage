@@ -17,7 +17,7 @@
     ],
     "all": []
   },
-  "summary": "Windows sandbox setup/refresh fails before process creation - \"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\" - so every terminal, file, and task operation dies even though normal PowerShell works outside Codex.",
+  "summary": "Windows sandbox setup/refresh fails before process creation - \"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\" - so every terminal, file, and task operation dies even though normal PowerShell works outside Codex. The same error also kills the Desktop's built-in Browser/Chrome runtime before any page opens (openai/codex#41055).",
   "explanation": "Doctor's hard failure is the sandbox provisioning check (elevated backend). The strongest documented lead is in the same doctor output: CrowdStrike Falcon is detected with a warning that it can interfere with Codex, even though no explicit blocking event appeared in the Windows logs. The reporter verified the usual local causes are clean: runtime files exist, the workspace and its parent are owned by the normal Windows user, CodexSandboxUsers already holds Modify/Synchronize on the workspace, no domain or Azure AD join is configured, and reboot, app Repair, and new conversations did not clear it. Reported on Windows 11 (build 26200) with Codex Desktop 26.825.6671.0, sandbox_mode workspace-write.",
   "actions": [
     "Run codex doctor and read the sandbox provisioning entry together with the security.endpoint warning - the CrowdStrike/EDR flag is the strongest documented correlation for helper_unknown_error.",
@@ -30,6 +30,11 @@
       "type": "github_issue",
       "url": "https://github.com/openai/codex/issues/41715",
       "label": "openai/codex#41715"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/41055",
+      "label": "openai/codex#41055"
     },
     {
       "type": "github_issue",
