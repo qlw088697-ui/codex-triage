@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.21.1] - 2026-08-31
+
+### Changed
+
+- Publishing migrated to npm Trusted Publishing (OIDC): the release workflow now publishes tokenlessly from GitHub Actions with `id-token: write` on Node 24 (npm 11+); the `NPM_TOKEN` secret is no longer used. The package's trusted publisher is pinned to `qlw088697-ui/codex-triage` + `publish.yml` + environment `npm`.
+
 ## [1.21.0] - 2026-08-31
 
 ### Added
