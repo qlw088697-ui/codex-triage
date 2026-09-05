@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-sandbox-uv-passwd-enomem",
+  "title": "Node.js fails inside the sandbox with uv_os_get_passwd ENOMEM (not real OOM)",
+  "category": "sandbox",
+  "severity": "medium",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42753",
+  "match": {
+    "any": [
+      {
+        "contains": "uv_os_get_passwd returned ENOMEM"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Node.js commands that read user account information (os.userInfo(), and tools built on it like some pnpm/test flows) fail inside the Windows sandbox with 'uv_os_get_passwd returned ENOMEM (not enough memory)' - a misleading error, since the same Node install works fine outside Codex and memory is sufficient.",
+  "explanation": "The report's differential isolates the cause to the sandbox environment, not memory or the Node installation: outside Codex, node -e \"require('os').userInfo()\" succeeds; inside Codex, os.homedir() still works while os.userInfo() consistently fails with the ENOMEM SystemError. libuv's uv_os_get_passwd queries user account data through the process token, and the sandboxed process runs under a different identity - the query fails and libuv surfaces it as ENOMEM. Reported from Windows (build 26200) with codex-cli 0.153.0, Node v24.13.0 installed via NVM for Windows, gpt-5.6-luna.",
+  "actions": [
+    "Do not chase memory: the ENOMEM label is a misnomer from libuv error mapping, not actual exhaustion - the report verifies ample free memory and a healthy Node outside Codex.",
+    "For user-info-dependent steps (os.userInfo(), getpass-style prompts, some runners), run them outside the sandbox for now; paths that only need os.homedir() keep working inside Codex.",
+    "Track the upstream issue for a sandbox token fix."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42753",
+      "label": "openai/codex#42753"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "nodejs",
+    "enomem",
+    "userinfo"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "沙箱内 Node.js 报 uv_os_get_passwd ENOMEM（并非真的内存不足）",
+      "summary": "在 Windows 沙箱内，读取用户账户信息的 Node 命令（os.userInfo() 及建立在其上的部分 pnpm/测试流程）报 'uv_os_get_passwd returned ENOMEM (not enough memory)'——这是个误导性错误：同一个 Node 安装在 Codex 外一切正常，内存也充足。",
+      "explanation": "报告的差分定位把原因隔离到沙箱环境，而非内存或 Node 安装：Codex 外 node -e \"require('os').userInfo()\" 成功；Codex 内 os.homedir() 仍正常而 os.userInfo() 稳定失败并抛 ENOMEM SystemError。libuv 的 uv_os_get_passwd 通过进程令牌查询用户账户数据，而沙箱内进程运行在另一身份下——查询失败被 libuv 映射成 ENOMEM。来自 Windows（build 26200）+ codex-cli 0.153.0 + NVM for Windows 安装的 Node v24.13.0 + gpt-5.6-luna 的报告。",
+      "actions": [
+        "不要追内存：ENOMEM 标签是 libuv 错误映射的误称，并非真的耗尽——报告已验证空闲内存充足且 Codex 外 Node 健康。",
+        "依赖用户信息的步骤（os.userInfo()、getpass 类提示、部分运行器）暂时在沙箱外执行；只需要 os.homedir() 的路径在 Codex 内继续可用。",
+        "关注上游 issue 等沙箱令牌修复。"
+      ]
+    },
+    "ja": {
+      "title": "サンドボックス内の Node.js が uv_os_get_passwd ENOMEM で失敗する（実際のメモリ不足ではない）",
+      "summary": "Windows サンドボックス内では、ユーザー情報を読む Node コマンド（os.userInfo() とそれに依存する pnpm/テストフロー）が 'uv_os_get_passwd returned ENOMEM (not enough memory)' で失敗します。誤解を招くエラーで、同じ Node は Codex の外では正常でメモリも十分です。",
+      "explanation": "報告の差分検証は原因をサンドボックス環境に隔離します。メモリでも Node 也不ありません。Codex の外では node -e \"require('os').userInfo()\" が成功し、Codex 内では os.homedir() は動くのに os.userInfo() だけが安定して ENOMEM SystemError で失敗します。libuv の uv_os_get_passwd はプロセストークン経由でユーザーアカウント情報を照会しますが、サンドボックス内のプロセスは別の ID で動くため照会が失敗し、libuv がそれを ENOMEM として表面化させます。Windows（build 26200）+ codex-cli 0.153.0 + NVM for Windows の Node v24.13.0 + gpt-5.6-luna からの報告です。",
+      "actions": ["メモリを追わないでください。ENOMEM というラベルは libuv のエラー写像による誤称で、実際の枯渇ではありません。空きメモリ十分と Codex 外の Node 正常は報告内で検証済みです。", "ユーザー情報に依存するステップ（os.userInfo()、getpass 系プロンプト、一部ランナー）は当面サンドボックスの外で実行します。os.homedir() だけのパスは Codex 内でも動きます。", "サンドボックストークンの修正を上流 issue でウォッチしてください。"]
+    }
+  }
+}

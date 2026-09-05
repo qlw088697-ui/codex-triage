@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-permissions-deny-root-read-leak",
+  "title": "Custom permission profile with \":root\" = \"deny\" still allows reads outside reopened roots",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42184",
+  "match": {
+    "any": [
+      {
+        "contains": "\":root\" = \"deny\""
+      }
+    ],
+    "all": []
+  },
+  "summary": "On the Windows elevated sandbox, a custom permission profile that denies \":root\" and reopens a single readable root does not actually prevent reads outside that root - files outside the allowed root can still be read and their contents returned to the model, while write restrictions from the same profile are enforced.",
+  "explanation": "The report verifies the profile is parsed and selected correctly: the elevated Windows backend provisions, the process runs under the dedicated CodexSandboxOffline account, network is disabled, and write restrictions hold - only the read restriction leaks. It reproduces through the normal codex exec path including --strict-config (not just the desktop UI), on desktop package 26.831.1445.0 with bundled CLI 0.152.0. Practical meaning: on Windows today, the deny entry for :root in a permission profile must not be trusted for read confidentiality - anything the sandboxed user can read may reach the model even when the profile says otherwise.",
+  "actions": [
+    "Do not rely on the \":root\" = \"deny\" profile entry for read confidentiality on Windows - enforce confidentiality with real NTFS permissions for the sandbox account, or keep secrets outside any path the sandboxed user can read.",
+    "Writes from the same profile are enforced - the leak is read-only, so triage which readable locations contain material that must not reach the model.",
+    "Track the upstream issue for the enforcement fix; reproducing it needs only codex exec with --strict-config and a minimal deny-root profile."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42184",
+      "label": "openai/codex#42184"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "permissions",
+    "security",
+    "deny-root"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "自定义权限档位设 \":root\" = \"deny\" 后，重开根之外的读取仍然放行",
+      "summary": "Windows 提升后端上，拒绝 \":root\" 并只重开一个可读根的自定义权限档位并不能真的阻止读取该根之外的文件——外面文件照样可读且内容会返回给模型，而同一档位的写入限制是生效的。",
+      "explanation": "报告验证了档位被正确解析和选中：elevated Windows 后端正常供给、进程运行在专用 CodexSandboxOffline 账户下、网络已禁用、写入限制成立——只有读取限制在泄漏。它经由普通 codex exec 路径复现（含 --strict-config，不只是桌面 UI），环境为桌面包 26.831.1445.0 + 内置 CLI 0.152.0。实际含义：在今天的 Windows 上，权限档位里对 :root 的 deny 条目不能拿来保证读取机密性——沙箱账户读得到的任何东西都可能进模型，即使档位写的是相反。",
+      "actions": [
+        "在 Windows 上不要依赖 \":root\" = \"deny\" 档位条目保证读取机密性——用沙箱账户的真实 NTFS 权限来保证机密，或者把秘密放在沙箱账户读不到的地方。",
+        "同一档位的写入是生效的——泄漏只发生在读取侧，排查哪些可读位置含有不能进模型的内容。",
+        "关注上游 issue 等执行修复；复现只需要 codex exec 加 --strict-config 和一个最小的 deny-root 档位。"
+      ]
+    },
+    "ja": {
+      "title": "カスタム権限プロファイルの \":root\" = \"deny\" でも、再オープンしたルート外の読み取りが許可される",
+      "summary": "Windows の昇格バックエンドでは、\":root\" を deny して読み取り可能ルートを 1 つだけ再オープンするカスタム権限プロファイルでも、その外のファイル読み取りは実際には防がれません。外のファイルは読めて内容がモデルに返り、同じプロファイルの書き込み制限は効いています。",
+      "explanation": "報告はプロファイルが正しくパース・選択されていることを検証済みです。昇格 Windows バックエンドは供給され、プロセスは専用の CodexSandboxOffline アカウントで動き、ネットワークは無効、書き込み制限は効く——漏れているのは読み取り制限だけです。通常の codex exec 経路（--strict-config 込み、デスクトップ UI に限らない）で再現し、環境はデスクトップパッケージ 26.831.1445.0 + バンドル CLI 0.152.0。実務的な意味：今日の Windows では、権限プロファイルの :root への deny エントリを読み取りの機密保持に使ってはいけません。サンドボックスアカウントが読めるものは、プロファイルと逆でもモデルに届きます。",
+      "actions": ["Windows では \":root\" = \"deny\" のプロファイル項目を読み取りの機密保持に頼らないでください。機密はサンドボックスアカウントに対する実際の NTFS 権限で守るか、秘密をサンドボックスアカウントが読めない場所に置きます。", "同じプロファイルの書き込みは効いています。漏れは読み取り専用なので、モデルに渡ってはいけない内容がどの可読位置にあるかを洗い出してください。", "実行の修正を上流 issue でウォッチしてください。再現には codex exec と --strict-config、最小の deny-root プロファイルだけで足ります。"]
+    }
+  }
+}

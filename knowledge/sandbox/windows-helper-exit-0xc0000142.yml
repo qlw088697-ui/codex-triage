@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 2,
+  "id": "windows-helper-exit-0xc0000142",
+  "title": "Windows sandbox helper dies with exit code -1073741502 (0xC0000142 DLL initialization failure)",
+  "category": "sandbox",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42774",
+  "match": {
+    "any": [
+      {
+        "contains": "orchestrator_helper_exit_nonzero"
+      },
+      {
+        "contains": "-1073741502"
+      }
+    ],
+    "all": []
+  },
+  "summary": "On affected Windows PCs, local tools fail with 'code-mode host exited during handshake' or 'orchestrator_helper_exit_nonzero' carrying exit code -1073741502 (0xC0000142, STATUS_DLL_INIT_FAILED): a sandbox helper process cannot initialize its DLLs, so commands die before doing anything - machine-specific, surviving reboot and app repair.",
+  "explanation": "0xC0000142 is the classic STATUS_DLL_INIT_FAILED: a process launched but its DLL initialization was aborted. The report pins the shape: one or two commands briefly succeed after a restart, then failures return; the identical app works on the reporter's notebook; the app is current and neither a Windows reboot nor a Windows Settings repair changed anything. Exit code -1073741502 (signed for 0xC0000142) on a helper that starts and immediately dies is the signature of DLL initialization being blocked or broken on that specific machine - classically antivirus/EDR injection into newly spawned processes or damaged system DLLs - rather than a Codex logic bug. Reported from ChatGPT desktop 26.901.22334 on Windows 11 with a Feedback ID attached.",
+  "actions": [
+    "Treat the machine, not Codex, as the suspect: the report verifies the same app version works on another PC and that reboot plus Repair do not help - reinstalling Codex again will not fix a DLL-init failure.",
+    "Check what injects into new processes on this PC: antivirus/EDR product, DLL-injection utilities, or overlay/export proxies are the classic blockers of helper DLL initialization; loop in your security team before disabling anything.",
+    "Capture Process Monitor or the sandbox log around one failing launch - the DLL that fails to initialize identifies the interfering component.",
+    "Report upstream with the Feedback ID and the failing helper name; this is distinct from the machine-specific handshake-path bug, though both surface as local-tool failures."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42774",
+      "label": "openai/codex#42774"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/40943",
+      "label": "openai/codex#40943"
+    }
+  ],
+  "tags": [
+    "windows",
+    "sandbox",
+    "dll-init",
+    "helper",
+    "0xc0000142"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Windows 沙箱 helper 以退出码 -1073741502（0xC0000142 DLL 初始化失败）死亡",
+      "summary": "在受影响的 Windows 电脑上，本地工具报 'code-mode host exited during handshake' 或 'orchestrator_helper_exit_nonzero' 且退出码 -1073741502（0xC0000142，STATUS_DLL_INIT_FAILED）：沙箱 helper 进程的 DLL 初始化被中断，命令未开始就死亡——机器特定，重启和修复应用都无效。",
+      "explanation": "0xC0000142 是经典的 STATUS_DLL_INIT_FAILED：进程启动了但 DLL 初始化被中止。报告钉死了形态：重启后有一两条命令短暂成功，随后失败回归；同一应用在报告者的笔记本上正常；应用是最新版，Windows 重启和系统设置里的修复都没改变任何事。启动即死的 helper 带着这个退出码，是 DLL 初始化在这台特定机器上被阻断或损坏的签名——典型原因是杀软/EDR 向新进程注入或系统 DLL 损坏——而不是 Codex 逻辑 bug。来自 Windows 11 上 ChatGPT 桌面版 26.901.22334 的报告，附 Feedback ID。",
+      "actions": [
+        "把怀疑对象放在机器而非 Codex 上：报告验证了同版本应用在另一台电脑正常、重启加修复无效——再重装一次 Codex 也治不了 DLL 初始化失败。",
+        "排查这台电脑上会向新进程注入的东西：杀软/EDR、DLL 注入工具、覆盖型代理是 helper DLL 初始化的典型阻断者；禁用任何东西之前先拉上安全团队。",
+        "围绕一次失败启动抓 Process Monitor 或沙箱日志——初始化失败的那个 DLL 会指认干扰组件。",
+        "向上游报告时附 Feedback ID 和失败的 helper 名称；这与机器特定的握手路径 bug 不同，但表面上都是本地工具失败。"
+      ]
+    },
+    "ja": {
+      "title": "Windows サンドボックスのヘルパーが終了コード -1073741502（0xC0000142 DLL 初期化失敗）で死亡する",
+      "summary": "影響を受ける Windows PC では、ローカルツールが 'code-mode host exited during handshake' または 'orchestrator_helper_exit_nonzero'（終了コード -1073741502 = 0xC0000142、STATUS_DLL_INIT_FAILED）で失敗します。サンドボックスヘルパーの DLL 初期化が中断され、コマンドは何もせずに死亡します。マシン固有で、再起動とアプリ修復は無効です。",
+      "explanation": "0xC0000142 は古典的な STATUS_DLL_INIT_FAILED です。プロセスは起動するが DLL 初期化が中止される。報告が形状を固定しています。再起動後に 1〜2 コマンドだけ一時的に成功し、その後失敗が戻る。同一アプリは報告者のノート PC では正常。アプリは最新で、Windows 再起動も Windows 設定からの修復も何も変えません。起動直後に死ぬヘルパーがこの終了コードを返すのは、この特定マシンで DLL 初期化が遮断・破損している署名です。古典的な原因は新規プロセスへの AV/EDR インジェクションやシステム DLL の破損であり、Codex のロジックバグではありません。Windows 11 の ChatGPT desktop 26.901.22334 からの報告で Feedback ID 付きです。",
+      "actions": [
+        "疑うべきは Codex ではなくマシンです。同バージョンが別 PC で正常、再起動と修復は無効と報告内で検証済み。DLL 初期化失敗は Codex の再インストールでは治りません。",
+        "この PC で新規プロセスにインジェクションするものを特定します。AV/EDR 製品、DLL インジェクションユーティリティ、オーバーレイ型プロキシがヘルパー DLL 初期化の古典的な阻害要因です。何かを無効化する前にセキュリティチームを巻き込んでください。",
+        "失敗する起動 1 回分の Process Monitor かサンドボックスログを取得します。初期化に失敗した DLL が妨害コンポーネントを特定します。",
+        "上流へは Feedback ID と失敗したヘルパー名を添えて報告してください。マシン固有のハンドシェイク経路バグとは別物ですが、表面上は同じローカルツール失敗です。"
+      ]
+    }
+  }
+}
