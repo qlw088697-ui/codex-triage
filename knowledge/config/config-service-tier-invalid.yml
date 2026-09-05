@@ -21,7 +21,7 @@
     ]
   },
   "summary": "After a Codex Desktop update on macOS, new sessions fail with an invalid configuration error referencing service_tier in config.toml.",
-  "explanation": "Reported as a macOS Codex Desktop update regression: an older service_tier entry in config.toml is rejected by the newer build, blocking new sessions until the key is removed or corrected.",
+  "explanation": "Reported as a macOS Codex Desktop update regression: an older service_tier entry in config.toml is rejected by the newer build, blocking new sessions until the key is removed or corrected. Upstream closed the report as completed in August 2026, so this rule now mainly matches older Codex Desktop builds that predate the fix.",
   "actions": [
     "Open ~/.codex/config.toml and find the service_tier entry.",
     "Remove or comment out the service_tier line, then restart Codex.",
@@ -44,7 +44,7 @@
     "zh-CN": {
       "title": "更新后 service_tier 配置无效",
       "summary": "macOS 上的 Codex Desktop 更新后，新会话因 config.toml 中 service_tier 相关的无效配置报错。",
-      "explanation": "上游报告为 macOS Codex Desktop 的更新回归：config.toml 里旧版 service_tier 配置被新版拒绝，删除或修正该键之前无法新建会话。",
+      "explanation": "上游报告为 macOS Codex Desktop 的更新回归：config.toml 里旧版 service_tier 配置被新版拒绝，删除或修正该键之前无法新建会话。 上游已于 2026 年 8 月关闭该报告（completed），本规则现在主要匹配修复前的旧版 Codex Desktop 构建。",
       "actions": [
         "打开 ~/.codex/config.toml，找到 service_tier 条目。",
         "删除或注释掉 service_tier 行，重启 Codex。",
@@ -54,7 +54,7 @@
     "ja": {
       "title": "更新後の service_tier 設定が不正になる",
       "summary": "macOS の Codex Desktop 更新後、新しいセッションが config.toml の service_tier に関する不正な設定エラーで失敗します。",
-      "explanation": "macOS Codex Desktop 更新のリグレッションとして報告されています。古い service_tier エントリが新しいビルドに拒否され、キーを削除・修正するまで新しいセッションが開始できません。",
+      "explanation": "macOS Codex Desktop 更新のリグレッションとして報告されています。古い service_tier エントリが新しいビルドに拒否され、キーを削除・修正するまで新しいセッションが開始できません。 上流は 2026 年 8 月にこの報告を完了としてクローズしたため、本ルールは主に修正前の旧 Codex Desktop ビルドに一致します。",
       "actions": [
         "~/.codex/config.toml を開いて service_tier エントリを探します。",
         "service_tier の行を削除またはコメントアウトし、Codex を再起動します。",
