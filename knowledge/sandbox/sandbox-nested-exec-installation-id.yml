@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "id": "sandbox-nested-exec-installation-id",
+  "title": "Nested codex exec fails at app-server init when the outer sandbox denies writes to installation_id",
+  "category": "sandbox",
+  "severity": "medium",
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42398",
+  "match": {
+    "any": [
+      {
+        "contains": "failed to initialize in-process app-server client"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Launching a nested codex exec from inside a read-only outer task sandbox fails before any JSON events with 'failed to initialize in-process app-server client: Operation not permitted (os error 1)' - the inner CLI needs to write ~/.codex/installation_id even when that file exists, is user-owned, and is readable.",
+  "explanation": "The report pins the hidden requirement the error never names: ~/.codex/installation_id requires WRITE access at app-server initialization, not just read. The reproducer was unusually rigorous - redirected writable log/SQLite dirs, analytics disabled, history persistence none, --ephemeral, and an existing user-owned 0644 installation_id - and the failure persisted through all of it, blocking the read-only-worker-with-existing-state pattern entirely. The error message names neither the file nor the write requirement, which is exactly what makes this hard to diagnose blind. Reported on macOS.",
+  "actions": [
+    "Read the unspoken requirement here: the app-server client initialization writes to ~/.codex/installation_id - a read-only outer sandbox that allows reads but denies writes to that file breaks nested exec with a bare 'Operation not permitted'.",
+    "No documented workaround passed the report's matrix: writable log/SQLite redirects, analytics off, history none, and --ephemeral all still failed - so a fully writable CODEX_HOME copy is the only plausible route, unverified upstream.",
+    "For read-only automation workers, track the upstream issue and consider reporting - the diagnostic should name the file and the write requirement."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42398",
+      "label": "openai/codex#42398"
+    }
+  ],
+  "tags": [
+    "sandbox",
+    "nested",
+    "installation-id",
+    "exec",
+    "app-server"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "外层只读沙箱拒绝写 installation_id 时，嵌套 codex exec 在 app-server 初始化就失败",
+      "summary": "从只读的外层任务沙箱里启动嵌套 codex exec，在任何 JSON 事件之前就失败：'failed to initialize in-process app-server client: Operation not permitted (os error 1)'——内层 CLI 需要对 ~/.codex/installation_id 有写权限，哪怕该文件已存在、归用户所有且可读。",
+      "explanation": "报告钉住了错误信息从不说出口的隐含要求：app-server 初始化要对 ~/.codex/installation_id 执行写操作，只读不够。复现器异常严谨——重定向到可写目录的日志/SQLite、禁用分析、history.persistence 设为 none、加 --ephemeral、加上已存在的用户所有 0644 权限 installation_id——失败贯穿所有配置，'只读 worker 复用现有状态'的模式整体被阻断。错误信息既不说文件名也不说需要写权限，这正是盲诊断困难的根源。来自 macOS 的报告。",
+      "actions": [
+        "读懂这条没说出口的要求：app-server 客户端初始化会写 ~/.codex/installation_id——只读外层沙箱若允许读但拒绝写该文件，嵌套 exec 就会以一句干巴巴的 'Operation not permitted' 失败。",
+        "报告的矩阵里没有任何已文档化的绕过生效：可写日志/SQLite 重定向、关分析、history 设 none、--ephemeral 全部仍然失败——唯一可能的路线是完整可写的 CODEX_HOME 副本，上游未验证。",
+        "对只读自动化 worker 场景，关注上游 issue 并考虑报告——诊断信息应当指出文件名和写需求。"
+      ]
+    },
+    "ja": {
+      "title": "外側の読み取り専用サンドボックスが installation_id への書き込みを拒否すると、ネストした codex exec が app-server 初期化で失敗する",
+      "summary": "読み取り専用の外側タスクサンドボックスからネストした codex exec を起動すると、JSON イベントの前に 'failed to initialize in-process app-server client: Operation not permitted (os error 1)' で失敗します。内側の CLI は ~/.codex/installation_id への書き込みを必要とします。そのファイルが存在し、ユーザー所有で読み取り可能でも。",
+      "explanation": "報告は、エラーが決して名指ししない隠れた要件を特定しました。app-server の初期化は ~/.codex/installation_id への書き込みを必要とし、読み取りだけでは足りません。再現器は異例に厳密です。書き込み可能なログ/SQLite ディレクトリのリダイレクト、分析無効、history.persistence なし、--ephemeral、既存のユーザー所有 0644 の installation_id——それでも失敗が続き、「既存状態を使う読み取り専用ワーカー」パターン全体が blocking されます。エラーメッセージはファイル名も書き込み要件も名指ししないので、盲目的な診断が難しい本質です。macOS からの報告です。",
+      "actions": ["語られていない要件を読み取ってください。app-server クライアントの初期化は ~/.codex/installation_id に書き込みます。読み取りを許しその書き込みを拒む外側サンドボックスでは、ネストした exec が無言の 'Operation not permitted' で失敗します。", "報告のマトリクスで文書化された回避策は一つも通りませんでした。書き込み可能なログ/SQLite リダイレクト、分析無効、history なし、--ephemeral すべて失敗——唯一あり得るのは完全に書き込み可能な CODEX_HOME コピーですが、上流で未検証です。", "読み取り専用オートメーションワーカーが必要なら、上流 issue をウォッチし、診断がファイル名と書き込み要件を名指しするよう報告することを検討してください。"]
+    }
+  }
+}

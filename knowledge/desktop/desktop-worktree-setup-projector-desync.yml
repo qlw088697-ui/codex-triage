@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "desktop-worktree-setup-projector-desync",
+  "title": "Threads stuck on \"Waiting for worktree setup\" after the projector rejects the new rate_limits record",
+  "category": "desktop",
+  "severity": "high",
+  "platforms": [
+    "windows"
+  ],
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42794",
+  "match": {
+    "any": [
+      {
+        "contains": "invalid type: map, expected f64"
+      },
+      {
+        "contains": "Waiting for worktree setup"
+      }
+    ],
+    "all": []
+  },
+  "summary": "On Desktop 26.901.4073.0, new threads intermittently stick forever on 'Waiting for worktree setup...' / 'Starting your task' even for Local run targets, sometimes with the app closing itself without a crash report - caused by the history projector rejecting the build's own new rate_limits token_count record and desyncing its cursor.",
+  "explanation": "The report verifies the mechanics from local stores: the stuck thread exists only as an empty shell (a threads row with has_user_event=0, model NULL, no rollout file), the composer is disabled and user_input never reaches the app_server, and the log shows the projector skipping the thread's own token_count line with 'invalid type: map, expected f64' - the line contains the new structured rate_limits object this same build writes (limit_id, primary/secondary windows). After that rejection the projection cursor desyncs and every later record is rejected too. Thread-correlated (an early conversation may work, a later one sticks), survives app restarts, and the app sometimes auto-quits without a crash report.",
+  "actions": [
+    "Recognize the state: a thread stuck on worktree setup with the composer disabled is not a slow backend - check the log for 'invalid type: map, expected f64' skipping a token_count line to confirm the projector desync.",
+    "The affected thread is an empty shell - user input from it never reached the app_server - so retype the prompt into a NEW thread rather than waiting on the stuck one.",
+    "Do not chase the model or backend: the report shows no rollout is even written for the stuck thread.",
+    "Track the upstream issue; the fix belongs in the projector's handling of the new rate_limits structure its own build writes."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42794",
+      "label": "openai/codex#42794"
+    }
+  ],
+  "tags": [
+    "desktop",
+    "windows",
+    "projector",
+    "rate-limits",
+    "stuck"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "投影器拒绝新的 rate_limits 记录后，线程卡死在 \"Waiting for worktree setup\"",
+      "summary": "Desktop 26.901.4073.0 上，新线程会间歇性永远卡在 'Waiting for worktree setup...' / 'Starting your task'，哪怕运行目标是 Local，有时应用还会没有任何崩溃报告地自行关闭——原因是历史投影器拒绝了同版本自己写出的新 rate_limits token_count 记录并使游标失步。",
+      "explanation": "报告从本地存储验证了机制：卡死的线程只是个空壳（threads 行 has_user_event=0、model 为 NULL、没有 rollout 文件），输入框被禁用、user_input 从未到达 app_server；日志显示投影器跳过该线程自己的 token_count 行并报 'invalid type: map, expected f64'——正是这个构建写出的新结构化 rate_limits 对象（limit_id、primary/secondary 窗口）。拒绝之后投影游标失步，后续所有记录也全部被拒。与线程相关（第一条会话可能正常、后面某条卡死）、应用重启后依旧，应用有时无崩溃报告地自退。",
+      "actions": [
+        "识别这个状态：卡在 worktree setup 且输入框禁用的线程不是后端慢——查日志里有没有 'invalid type: map, expected f64' 跳过 token_count 行来确认投影器失步。",
+        "受影响的线程是空壳——它的输入从未到达 app_server——把提示词重新输入到新线程，别在卡死的线程上等。",
+        "别追模型或后端：报告显示卡死线程连 rollout 都没写。",
+        "关注上游 issue；修复应落在投影器对自家构建所写新 rate_limits 结构的处理上。"
+      ]
+    },
+    "ja": {
+      "title": "プロジェクターが新しい rate_limits 記録を拒否し、スレッドが \"Waiting for worktree setup\" で固まる",
+      "summary": "Desktop 26.901.4073.0 では、新しいスレッドが断続的に 'Waiting for worktree setup...' / 'Starting your task' で永久に固まります。実行先が Local でもです。クラッシュレポートなしでアプリが自己終了することもあります。原因は、履歴プロジェクターが同じビルド自身の書いた新しい rate_limits token_count 記録を拒否し、カーソルが脱同期することです。",
+      "explanation": "報告はローカルストアから機構を検証しています。固まったスレッドは空の殻しかない（threads 行は has_user_event=0、model は NULL、rollout ファイルなし）、コンポーザーは無効で user_input は app_server に届かず、ログにはプロジェクターがそのスレッド自身の token_count 行を 'invalid type: map, expected f64' でスキップした記録——その行はこのビルド自身の書く新しい構造化 rate_limits オブジェクト（limit_id、primary/secondary ウィンドウ）を含みます。拒否の後、投影カーソルが脱同期し、以降の全記録も拒否されます。スレッド相関（最初の会話は動き、後のものが固まる）、アプリ再起動でも存続、クラッシュレポートなしの自己終了あり。",
+      "actions": ["状態を見分けてください。worktree setup で固まりコンポーザーが無効なスレッドは、バックエンドが遅いのではありません。ログに token_count 行をスキップした 'invalid type: map, expected f64' がないか確認して脱同期を確定します。", "影響スレッドは空の殻です——入力は app_server に届いていないので、固まったスレッドで待たず、新しいスレッドにプロンプトを打ち直してください。", "モデルやバックエンドを追わないでください。報告では固まったスレッドの rollout すら書かれていません。", "修正はプロジェクターの、自ビルドが書く新しい rate_limits 構造の処理にあるはずです。上流 issue をウォッチしてください。"]
+    }
+  }
+}
