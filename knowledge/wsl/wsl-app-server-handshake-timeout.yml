@@ -15,7 +15,7 @@
     ]
   },
   "summary": "The desktop/app transport started but app-server initialization did not complete within the expected window.",
-  "explanation": "This symptom has multiple possible causes, including WSL packaging problems, state database work, and stale/mismatched app-server components.",
+  "explanation": "This symptom has multiple possible causes, including WSL packaging problems, state database work, and stale/mismatched app-server components. A closely related Windows report (openai/codex#39169) was closed as completed in August 2026, so some handshake failures of this shape are already fixed in newer builds.",
   "actions": [
     "Keep nearby log lines that explain why initialization is still pending; the timeout alone is not enough to identify root cause.",
     "Check for `bwrap`, state backfill, SQLite, or version-mismatch messages before deleting state.",
@@ -38,7 +38,7 @@
     "zh-CN": {
       "title": "WSL 模式下 app-server 握手超时",
       "summary": "Desktop / app transport 已启动，但 app-server 初始化未在预期时间内完成。",
-      "explanation": "这个症状可能由多种原因触发，包括 WSL 打包问题、state 数据库处理以及 app-server 组件版本不一致。",
+      "explanation": "这个症状可能由多种原因触发，包括 WSL 打包问题、state 数据库处理以及 app-server 组件版本不一致。 一个紧密相关的 Windows 报告（openai/codex#39169）已于 2026 年 8 月关闭（completed），这类握手中的一部分已在较新构建中修复。",
       "actions": [
         "保留超时前后解释“仍在等待什么”的日志；单独一个 timeout 不足以确定根因。",
         "删除 state 前先检查 `bwrap`、state backfill、SQLite 或版本不一致信息。",
@@ -48,7 +48,7 @@
     "ja": {
       "title": "WSL モードで Codex app-server のハンドシェイクがタイムアウトする",
       "summary": "デスクトップ/アプリのトランスポートは始まったものの、app-server の初期化が期待された時間内に完了しませんでした。",
-      "explanation": "この症状には複数の原因があり得ます。WSL パッケージングの問題、状態データベースの処理、古い/不一致の app-server コンポーネントなどです。",
+      "explanation": "この症状には複数の原因があり得ます。WSL パッケージングの問題、状態データベースの処理、古い/不一致の app-server コンポーネントなどです。 密接に関連する Windows の報告（openai/codex#39169）は 2026 年 8 月に完了としてクローズされており、この形のハンドシェイク失敗の一部は新しいビルドで修正済みです。",
       "actions": [
         "初期化がまだ保留な理由を説明する近くのログ行を残します。タイムアウトだけでは根因を特定できません。",
         "状態を消す前に、bwrap、状態バックフィル、SQLite、バージョン不一致のメッセージを確認します。",

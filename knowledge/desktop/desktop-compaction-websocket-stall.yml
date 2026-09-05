@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 2,
+  "id": "desktop-compaction-websocket-stall",
+  "title": "Desktop task stalls in automatic compaction with WebSocket idle-timeout reconnects",
+  "category": "desktop",
+  "severity": "medium",
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42896",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "Context automatically compacting"
+      },
+      {
+        "contains": "idle timeout waiting for websocket"
+      }
+    ]
+  },
+  "summary": "On macOS Desktop, a long-running task enters automatic context compaction, stalls there, and loops reconnect attempts with 'stream disconnected before completion: idle timeout waiting for websocket' - with no further task output, surviving an app restart.",
+  "explanation": "The documented sequence: a shell command succeeds, then 'Context automatically compacting' appears, followed by reconnect attempts and the idle-timeout stream error; more than twenty minutes of waiting and a full app restart did not clear it. The reporter also verified the trap this creates: the native task status still reads active/inProgress with a null terminal error and no new tool markers - so the running indicator is NOT evidence of productive progress in this state. Clear on the Goal, Stop, and a manual compaction attempt also produced no progress. Reported from ChatGPT.app 26.901.41123 on macOS arm64 (composer showing GPT-6 Astra / Max - a UI observation, not causal attribution).",
+  "actions": [
+    "Do not wait on the spinner: in this state the active/inProgress status is not evidence of progress - the report watched 20+ minutes of it.",
+    "Verify against the visible pair: automatic compaction followed by 'idle timeout waiting for websocket' reconnects is this signature; a plain transient reconnect without compaction is not.",
+    "App restart, Goal Clear, Stop, and manual compaction were all tried without progress in the report - preserve what you need from the task context and start a fresh task rather than waiting indefinitely.",
+    "When reporting upstream, include the app bundle version - the report deliberately omits private task content and documents the build from the installed bundle instead."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42896",
+      "label": "openai/codex#42896"
+    }
+  ],
+  "tags": [
+    "desktop",
+    "macos",
+    "compaction",
+    "websocket",
+    "stall"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "桌面版任务卡在自动压缩与 WebSocket 空闲超时重连循环",
+      "summary": "macOS 桌面版上，长任务进入自动上下文压缩后卡死，反复重连并报 'stream disconnected before completion: idle timeout waiting for websocket'——不再有任何任务输出，重启应用也无法恢复。",
+      "explanation": "记录在案的序列：一条 shell 命令成功，随后出现 'Context automatically compacting'，接着是重连尝试和空闲超时的流错误；等待二十多分钟加完整重启应用都没有清除。报告者还验证了这种状态下的陷阱：原生任务状态依然显示 active/inProgress、终止错误为 null、也没有新的工具标记——所以此状态下'运行中'的指示器不是进展的证据。Goal 的 Clear、Stop、手动压缩尝试也都没有产生进展。来自 macOS arm64 上 ChatGPT.app 26.901.41123 的报告（任务输入框显示 GPT-6 Astra / Max——仅为 UI 观察，非因果归因）。",
+      "actions": [
+        "不要对着转圈干等：该状态下 active/inProgress 状态不是进展的证据——报告者盯着它看了 20 多分钟。",
+        "对照可见特征核实：自动压缩 + 'idle timeout waiting for websocket' 重连是本签名；没有伴随压缩的普通瞬时重连不算。",
+        "报告里应用重启、Goal Clear、Stop、手动压缩全部尝试无效——把任务上下文里需要的东西保住，开新任务，别无限等。",
+        "向上游报告时附上应用 bundle 版本——报告刻意不贴私有任务内容，改为从安装的 bundle 记录构建号。"
+      ]
+    },
+    "ja": {
+      "title": "Desktop のタスクが自動圧縮と WebSocket アイドルタイムアウト再接続で停滞する",
+      "summary": "macOS Desktop で長時間タスクが自動コンテキスト圧縮に入ったまま固まり、'stream disconnected before completion: idle timeout waiting for websocket' の再接続を繰り返します。タスク出力はそれ以上なく、アプリ再起動でも回復しません。",
+      "explanation": "記録されたシーケンス：シェルコマンドが成功した後、'Context automatically compacting' が現れ、続いて再接続とアイドルタイムアウトのストリームエラー。20 分以上の待機とアプリの完全再起動でも解消しませんでした。報告者はこの状態の罠も検証しています。ネイティブのタスクステータスは active/inProgress のまま、終端エラーは null、新しいツールマーカーもなし——つまりこの状態で「実行中」の表示は進捗の証拠になりません。Goal の Clear、Stop、手動圧縮も成果なし。macOS arm64 の ChatGPT.app 26.901.41123 からの報告です（コンポーザーは GPT-6 Astra / Max 表示——UI 観察であり因果帰属ではありません）。",
+      "actions": ["スピナーを見つめたまま待たないでください。この状態では active/inProgress 表示は進捗の証拠になりません。報告者は 20 分以上見ていました。", "可視ペアで照合します。自動圧縮に続く 'idle timeout waiting for websocket' 再接続がこの署名です。圧縮を伴わない一過性の再接続は該当しません。", "アプリ再起動・Goal Clear・Stop・手動圧縮は報告内ですべて不調でした。タスクコンテキストから必要なものを保存し、無期限に待たず新しいタスクを開始してください。", "上流へ報告する際はアプリの bundle バージョンを添えて。報告は非公開のタスク内容を載せず、インストール済み bundle からビルドを記録する方式です。"]
+    }
+  }
+}

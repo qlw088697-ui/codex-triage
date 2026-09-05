@@ -22,7 +22,7 @@
   "actions": [
     "For read-only runs use -m gpt-5.5, or switch the session to -s workspace-write; both are confirmed working in the reproduction matrix.",
     "Do not chase permissions: adding sandbox_permissions=[\"disk-full-read-access\"] was tested and does not provision tools.",
-    "Track the upstream issue - the fix belongs in GPT-5.6 tool provisioning for read-only sandboxes."
+    "The primary upstream issue was closed as not planned without a fix - symptom appears unresolved. Track the gpt-5.6 metadata family instead and attach new reports there or file fresh with this evidence pattern."
   ],
   "links": [
     {
@@ -51,7 +51,7 @@
       "actions": [
         "只读任务改用 -m gpt-5.5，或把会话切到 -s workspace-write；两者都在复现矩阵中确认可用。",
         "不要折腾权限：实测加 sandbox_permissions=[\"disk-full-read-access\"] 并不会供给工具。",
-        "关注上游 Issue——修复应落在 GPT-5.6 在只读沙箱下的工具供给。"
+        "主上游 issue 已以 not planned 关闭且无修复——症状看来没有解决。改为跟踪 gpt-5.6 元数据家族，带着本证据模式提交新报告。"
       ]
     },
     "ja": {
@@ -61,7 +61,7 @@
       "actions": [
         "読み取り専用の実行には -m gpt-5.5 を使うか、セッションを -s workspace-write に切り替えます。両方とも再現マトリクスで動作確認済みです。",
         "権限を追いかけないでください。sandbox_permissions=[\"disk-full-read-access\"] の追加は試験済みで、ツールは供給されません。",
-        "修正は読み取り専用サンドボックス向け GPT-5.6 のツール供給にあるはずです。上流 issue をウォッチしてください。"
+        "一次の上流 issue は修正なしで not planned としてクローズされました。症状は未解決のようです。gpt-5.6 メタデータファミリーを追い、この証拠パターン付きで新しい報告を提出してください。"
       ]
     }
   }

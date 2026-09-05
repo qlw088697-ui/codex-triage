@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 2,
+  "id": "data-loss-gpt56-home-deletion-risk",
+  "title": "Bulk home-directory deletion reported while gpt-5.6-sol sessions run with auto-approved escalations",
+  "category": "data-loss",
+  "severity": "high",
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42875",
+  "match": {
+    "any": [],
+    "all": [
+      {
+        "contains": "gpt-5.6"
+      },
+      {
+        "contains": "deleted"
+      }
+    ]
+  },
+  "summary": "A thoroughly documented report describes ~221 GB permanently unlinked from $HOME on macOS while gpt-5.6-sol sessions ran with approval_policy=never and --approve-for-me escalations - bypassing the Trash under the user's own privileges. The report matches the July GPT-5.6 Sol temporary-directory deletion failure mode (#19202, #38312), though it does not prove Codex performed the deletion.",
+  "explanation": "The report is unusually rigorous: a full timeline, surviving client rollouts listing only benign review commands, and a unified-log window showing NO sandbox file-write-unlink denial from any process - meaning whatever deleted the data ran with full filesystem access, the exact condition OpenAI described in July for GPT-5.6 Sol deleting $HOME while handling a temporary directory. What the evidence cannot show: whether a command executed unsandboxed after automatic approval, or activity from paths that write no rollout (sub-agents, background PTYs, Desktop threads, automations). Treat this as a documented risk pattern, not a confirmed mechanism: rollouts surviving in ~/.codex/sessions and the matching TempDir cleanup window are the strongest correlation on record.",
+  "actions": [
+    "Do not run gpt-5.6 sessions with approval_policy=never or --approve-for-me in workspaces adjacent to $HOME contents; keep real work in dedicated deep directories and point TMPDIR somewhere expendable before long autonomous runs.",
+    "Take a real backup before any long unattended gpt-5.6 session - the report's losses (repositories, ~/.nvm, ~/.config, ~/.zshrc, Docker stack data under ~/prod ~/uat ~/test, runners) bypassed the Trash and are unrecoverable.",
+    "If you were hit: preserve ~/.codex/sessions rollouts immediately, then check the macOS unified log for sandbox file-write-unlink denials in the window - their absence indicates the actor ran unsandboxed, which is the key evidence upstream asks for.",
+    "Track the upstream report and the July predecessors for the mechanism confirmation and fix."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42875",
+      "label": "openai/codex#42875"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/38312",
+      "label": "openai/codex#38312"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/19202",
+      "label": "openai/codex#19202"
+    }
+  ],
+  "tags": [
+    "data-loss",
+    "macos",
+    "gpt-5.6",
+    "approvals",
+    "home-directory",
+    "数据丢失"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "gpt-5.6 会话运行期间 $HOME 被批量删除的风险模式",
+      "summary": "一份证据极其完整的报告描述了 macOS 上约 221 GB 数据在 gpt-5.6-sol 会话运行期间被永久删除（绕过废纸篓、用户自身权限），当时会话带 approval_policy=never 和 --approve-for-me 自动批准升级。形态与 7 月 GPT-5.6 Sol 处理临时目录时删除 $HOME 的失败模式（#19202、#38312）吻合，但报告本身并未证明是 Codex 所为。",
+      "explanation": "这份报告罕见地严谨：完整时间线、幸存的客户端 rollout（只列出了良性的 review 命令）、以及统一日志窗口内没有任何进程的沙箱 file-write-unlink 拒绝记录——意味着执行删除的东西拥有完整文件系统权限，正是 OpenAI 七月描述过的那个条件。证据无法显示的：是否有命令在自动批准后脱离沙箱执行，以及不写 rollout 的执行路径（子代理、后台 PTY、桌面线程、自动化）。请把它当作有据可查的风险模式，而非已证实的机制：~/.codex/sessions 里幸存的 rollout 与 TMPDIR 清理窗口的吻合是目前最强的关联。",
+      "actions": [
+        "不要在与 $HOME 内容相邻的工作区里以 approval_policy=never 或 --approve-for-me 运行 gpt-5.6 会话；把实际工作放在专用的深层目录里，长时间自主运行前把 TMPDIR 指到可牺牲的位置。",
+        "任何长时间无人值守的 gpt-5.6 会话之前先做真正的备份——报告的损失（仓库、~/.nvm、~/.config、~/.zshrc、~/prod ~/uat ~/test 下的 Docker 数据、runner）绕过了废纸篓，无法恢复。",
+        "如果中招：立即保住 ~/.codex/sessions 的 rollout，然后查 macOS 统一日志里该时间窗的沙箱 file-write-unlink 拒绝——没有拒绝记录说明执行者脱离了沙箱，这是上游要的关键证据。",
+        "关注上游报告与 7 月的两个前案，等机制确认与修复。"
+      ]
+    },
+    "ja": {
+      "title": "gpt-5.6 セッション実行中に $HOME が一括削除されるリスクパターン",
+      "summary": "非常に信頼できる報告が、gpt-5.6-sol セッションの実行中（approval_policy=never と --approve-for-me の自動承認付き）に macOS の $HOME から約 221 GB がゴミ箱を経由せず永続削除されたと記録しています。7 月に GPT-5.6 Sol が一時ディレクトリ処理中に $HOME を削除した失敗モード（#19202、#38312）と一致しますが、Codex が削除したとは証明していません。",
+      "explanation": "報告は異例なほど厳密です。完全なタイムライン、良性の review コマンドだけを示す残存クライアント rollout、そして統一ログの該当ウィンドウにサンドボックスの file-write-unlink 拒否が一切ないこと——削除した主体は完全なファイルシステム権限で動いたことを意味し、7 月に OpenAI が説明した条件そのものです。証拠が示せないのは、自動承認後にサンドボックス外で実行されたコマンドの有無や、rollout を書かない経路（サブエージェント、背景 PTY、Desktop スレッド、自動化）の活動です。これは確認済みのメカニズムではなく文書化されたリスクパターンとして扱ってください。~/.codex/sessions に残った rollout と TMPDIR クリーンアップ窗口の一致が現時点で最強の相関です。",
+      "actions": [
+        "$HOME の内容に隣接するワークスペースで、approval_policy=never や --approve-for-me のまま gpt-5.6 セッションを実行しないでください。実際の作業は専用の深いディレクトリに置き、長時間の自律実行の前に TMPDIR を捨ててもよい場所へ向けてください。",
+        "長時間の無人 gpt-5.6 セッションの前に必ず本物のバックアップを。報告の損失（リポジトリ、~/.nvm、~/.config、~/.zshrc、~/prod ~/uat ~/test の Docker データ、ランナー）はゴミ箱を経由せず復元不可能でした。",
+        "被害に遭ったら：まず ~/.codex/sessions の rollout を保存し、統一ログで当該窗口のサンドボックス file-write-unlink 拒否を確認してください。拒否がなければ実行者はサンドボックス外で、これが上流が求める重要な証拠です。",
+        "メカニズムの確認と修正を、上流の報告と 7 月の 2 件の前例でウォッチしてください。"
+      ]
+    }
+  }
+}

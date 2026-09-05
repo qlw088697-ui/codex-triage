@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.24.0] - 2026-09-05
+
+### Added
+
+- Knowledge-base freshness sweep over all 71 cited upstream issues. New: `data-loss-gpt56-home-deletion-risk` (openai/codex#42875 - ~221 GB home-directory deletion during gpt-5.6-sol sessions with auto-approved escalations, matching the July #19202/#38312 TempDir failure mode; new data-loss category, preventive guidance, not a confirmed mechanism) and `desktop-compaction-websocket-stall` (openai/codex#42896 - macOS Desktop task stuck in compaction with websocket idle-timeout reconnects; the running indicator is not progress). Knowledge base: 62 rules across 13 categories.
+
+### Changed
+
+- Freshness notes: `config-service-tier-invalid` and `wsl-app-server-handshake-timeout` marked against upstream fixes closed in August 2026; `sandbox-gpt56-readonly-no-tools` primary issue closed as not planned (symptom unresolved). npm keywords broadened for search.
+
 ## [1.23.0] - 2026-08-31
 
 ### Changed
