@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.25.0] - 2026-09-05
+
+### Added
+
+- Three Windows sandbox rules from the September sweep: `windows-helper-exit-0xc0000142` (openai/codex#42774 - helper dies with STATUS_DLL_INIT_FAILED exit -1073741502, machine-specific, reboot/repair verified insufficient), `windows-sandbox-uv-passwd-enomem` (openai/codex#42753 - os.userInfo() fails inside the sandbox with a misleading ENOMEM while the same Node works outside), and `windows-permissions-deny-root-read-leak` (openai/codex#42184 - a ":root" = "deny" permission profile does not enforce read restrictions on the elevated Windows backend; writes are enforced). Knowledge base: 65 rules across 13 categories.
+
 ## [1.24.1] - 2026-09-05
 
 ### Changed
