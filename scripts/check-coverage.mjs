@@ -4,8 +4,8 @@
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const LINES_THRESHOLD = 80;
-const BRANCH_THRESHOLD = 70;
+const LINES_THRESHOLD = 95;
+const BRANCH_THRESHOLD = 85;
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const result = spawnSync(`"${process.execPath}" --experimental-test-coverage --test`, {
