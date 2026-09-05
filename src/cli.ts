@@ -76,7 +76,7 @@ export function parseCodexVersionOption(value: string | undefined): string | und
 }
 
 function help(): string {
-  return `codex-triage v${packageVersion()}\n\nUsage:\n  codex-triage [doctor.json] [options]\n  codex-triage explain "<error text>" [options]\n  codex-triage faq [query] [options]\n\nUse "-" as the input path (codex-triage -) or as the explain text (explain -) to read from stdin.\n\nOptions:\n  --log <path>             Add a Codex/app log to the analysis\n  --report                 Write codex-triage-report.md\n  --output <path>          Change the report output path\n  --json                   Emit sanitized matches as JSON\n  --lang <locale>          en, zh-CN, or ja (default: en)\n  --platform <platform>    windows, macos, linux, or wsl\n  --knowledge <path>       Use a custom knowledge directory\n  --limit <n>              Maximum matches/entries to show, 0..100 (default: 5)\n  --doctor-timeout <ms>    Timeout for codex doctor, 1000..120000 (default: 15000)\n  --codex-version <ver>    Version evidence (e.g. 0.147.0) when the input carries none\n  -v, --version            Show the package version\n  -h, --help               Show this help\n`;
+  return `codex-triage v${packageVersion()}\n\nUsage:\n  codex-triage [doctor.json] [options]\n  codex-triage explain "<error text>" [options]\n  codex-triage faq [query] [options]\n\nUse "-" as the input path (codex-triage -) or as the explain text (explain -) to read from stdin.\n\nOptions:\n  --log <path>             Add a Codex/app log to the analysis\n  --report                 Write codex-triage-report.md\n  --output <path>          Change the report output path\n  --json                   Emit sanitized matches as JSON\n  --lang <locale>          en, zh-CN, or ja (default: en)\n  --platform <platform>    windows, macos, linux, or wsl\n  --knowledge <path>       Use a custom knowledge directory\n  --limit <n>              Maximum matches/entries to show, 0..100 (default: 5)\n  --category <name>        faq only: restrict results to one rule category\n  --doctor-timeout <ms>    Timeout for codex doctor, 1000..120000 (default: 15000)\n  --codex-version <ver>    Version evidence (e.g. 0.147.0) when the input carries none\n  -v, --version            Show the package version\n  -h, --help               Show this help\n`;
 }
 
 async function readTextFile(path: string): Promise<string> {
@@ -128,6 +128,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
       platform: { type: "string" },
       knowledge: { type: "string" },
       limit: { type: "string", default: "5" },
+      category: { type: "string" },
       "doctor-timeout": { type: "string", default: "15000" },
       "codex-version": { type: "string" },
       version: { type: "boolean", short: "v", default: false },
@@ -200,10 +201,19 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
 
   if (mode === "faq") {
     const query = positionals.slice(1).join(" ").trim();
-    const scoped = rules.filter((rule) => !rule.deprecated && (!rule.platforms?.length || rule.platforms.includes(platform)));
+    let scoped = rules.filter((rule) => !rule.deprecated && (!rule.platforms?.length || rule.platforms.includes(platform)));
+    let category: string | undefined;
+    if (values.category) {
+      category = values.category.trim().toLowerCase();
+      const known = [...new Set(rules.map((rule) => rule.category))].sort();
+      if (!known.includes(category)) {
+        throw new Error(`--category must be one of: ${known.join(", ")}`);
+      }
+      scoped = scoped.filter((rule) => rule.category === category);
+    }
     const hits = searchRules(scoped, query, locale).slice(0, limit);
     if (values.json) {
-      console.log(JSON.stringify(redactValue({ schemaVersion: 1, mode, platform, query, results: faqHitsToJson(hits, locale) }), null, 2));
+      console.log(JSON.stringify(redactValue({ schemaVersion: 1, mode, platform, query, category, results: faqHitsToJson(hits, locale) }), null, 2));
     } else {
       console.log(renderFaq({ hits, query, locale }));
     }
