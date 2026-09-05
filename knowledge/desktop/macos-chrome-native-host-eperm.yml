@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "id": "macos-chrome-native-host-eperm",
+  "title": "Chrome native host fails with Operation not permitted after a macOS upgrade",
+  "category": "desktop",
+  "severity": "medium",
+  "platforms": [
+    "macos"
+  ],
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42618",
+  "match": {
+    "any": [
+      {
+        "contains": "extension-host: Operation not permitted"
+      }
+    ],
+    "all": []
+  },
+  "summary": "Immediately after upgrading macOS (26.6.2 in the report), the ChatGPT/Codex Chrome side panel stops connecting to its native messaging host: Chrome logs repeat 'extension-host: Operation not permitted (os error 1)' even though the host binary's code signature is valid and it is not quarantined.",
+  "explanation": "The report's diagnostics rule out the usual suspects before pointing at the OS: the native host exists as an arm64 Mach-O, codesign verification passes ('valid on disk, satisfies its Designated Requirement', signed by OpenAI), the file carries no com.apple.quarantine attribute, and a clean copy outside the plugin cache with extended attributes removed still fails instantly. macOS logs during launch attempts show 'syspolicyd: Process was already in provenance sandbox, skipping'. This differs from the older invalid-signature failure (openai/codex#22659) - here the signature is fine and the failure is an OS-level permission/sandbox regression correlated with the macOS 26.6.2 upgrade.",
+  "actions": [
+    "Correlate with your macOS upgrade history first: the report's failure started immediately after updating to macOS 26.6.2 on an arm64 Mac with the extension loading fine.",
+    "Do not re-sign or replace the host binary - codesign validation and the quarantine check were both clean, and a clean copy with attributes stripped still failed.",
+    "Capture 'syspolicyd' lines from the macOS log around a launch attempt - the provenance-sandbox skip message is the documented clue in this report.",
+    "Track the upstream issue and the macOS release notes for the permission regression fix."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42618",
+      "label": "openai/codex#42618"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/22659",
+      "label": "openai/codex#22659"
+    }
+  ],
+  "tags": [
+    "desktop",
+    "macos",
+    "chrome",
+    "native-host",
+    "eperm"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "macOS 升级后 Chrome native host 报 Operation not permitted",
+      "summary": "升级 macOS（报告为 26.6.2）后，ChatGPT/Codex 的 Chrome 侧边栏立刻连不上原生消息主机：Chrome 日志反复刷 'extension-host: Operation not permitted (os error 1)'，而主机二进制签名有效且未被隔离。",
+      "explanation": "报告的诊断先排除了常见嫌疑再指向系统：native host 是 arm64 Mach-O、codesign 验证通过（'valid on disk, satisfies its Designated Requirement'，OpenAI 签名）、无 com.apple.quarantine 属性，把干净副本挪出插件缓存并去掉扩展属性后依然立刻失败。启动尝试期间的 macOS 日志出现 'syspolicyd: Process was already in provenance sandbox, skipping'。这与旧的签名无效故障（openai/codex#22659）不同——这次签名没问题，失败是与 macOS 26.6.2 升级相关的系统级权限/沙箱回归。",
+      "actions": [
+        "先对照你的 macOS 升级历史：报告的故障在 arm64 Mac 上升级到 26.6.2 后立即出现，且扩展本身加载正常。",
+        "不要重签或替换主机二进制——codesign 验证和隔离检查都是干净的，去掉属性的干净副本照样失败。",
+        "抓一次启动尝试前后的 macOS 日志里 syspolicyd 相关行——provenance sandbox 跳过消息就是这份报告记录的线索。",
+        "关注上游 issue 和 macOS 发行说明，等权限回归修复。"
+      ]
+    },
+    "ja": {
+      "title": "macOS アップグレード後に Chrome ネイティブホストが Operation not permitted で失敗する",
+      "summary": "macOS へのアップグレード（報告では 26.6.2）の直後から、ChatGPT/Codex の Chrome サイドパネルがネイティブメッセージホストに接続できなくなります。Chrome のログには 'extension-host: Operation not permitted (os error 1)' が繰り返し出力されますが、ホストバイナリの署名は有効で検疫もされていません。",
+      "explanation": "報告の診断はありきたりな容疑者を排除してから OS を指摘します。ネイティブホストは arm64 Mach-O として存在し、codesign 検証は通过（valid on disk, satisfies its Designated Requirement、OpenAI 署名）、com.apple.quarantine 属性はなく、プラグインキャッシュの外に拡張属性を除去した清浄コピーも即座に失敗します。起動試行中の macOS ログには 'syspolicyd: Process was already in provenance sandbox, skipping' が現れます。これは古い無効署名の失敗（openai/codex#22659）とは別物で、今回は署名が正常で、失敗は macOS 26.6.2 アップグレードに相関する OS レベルの権限/サンドボックス回帰です。",
+      "actions": ["まず macOS のアップグレード履歴と突き合わせます。報告の失敗は arm64 Mac で 26.6.2 に更新した直後に始まり、拡張自体は正常に読み込まれていました。", "ホストバイナリの再署名や置き換えはしないでください。codesign 検証も検疫チェックもクリーンで、属性を除去した清浄コピーも失敗しています。", "起動試行の前後の macOS ログから syspolicyd 行を取得します。provenance サンドボックスのスキップメッセージがこの報告の記録した手がかりです。", "権限回帰の修正を、上流 issue と macOS のリリースノートでウォッチしてください。"]
+    }
+  }
+}

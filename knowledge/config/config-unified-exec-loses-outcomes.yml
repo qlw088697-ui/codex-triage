@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "id": "config-unified-exec-loses-outcomes",
+  "title": "unified_exec replaces structured command records with custom_tool_call in rollouts and hooks",
+  "category": "config",
+  "severity": "medium",
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42864",
+  "match": {
+    "any": [
+      {
+        "contains": "custom_tool_call_output"
+      }
+    ],
+    "all": []
+  },
+  "summary": "With the unified_exec feature enabled on Codex CLI 0.153.0, shell activity is recorded as custom_tool_call/custom_tool_call_output instead of structured CommandExecution records - losing parsed read classification, completion status, and exit codes from rollouts, and PostToolUse hooks receive plain text with no exit code.",
+  "explanation": "The practical damage lands on checkpoint and audit integrations: without structured records they cannot tell which files were read or whether a command failed, and an empty tool_response can incorrectly read as 'nothing failed' even though the execution layer holds the exit code internally. The report verifies the feature switch directly - the same controlled session with unified_exec disabled restores the structured CommandExecution records - and pins the version at codex-cli 0.153.0 on Windows. The replacement records are custom_tool_call and custom_tool_call_output, which is the recognizable marker when inspecting a rollout under ~/.codex/sessions/.",
+  "actions": [
+    "Set [features] unified_exec = false in config.toml (or launch with --disable unified_exec) - verified in the report to restore structured CommandExecution records with exit codes and read classification.",
+    "If you maintain checkpoint or audit hooks, do not treat an empty tool_response as success while unified_exec is on - the exit code exists in the execution layer but is not surfaced.",
+    "Track the upstream issue for the structured records to return under unified_exec."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42864",
+      "label": "openai/codex#42864"
+    }
+  ],
+  "tags": [
+    "config",
+    "unified-exec",
+    "rollout",
+    "hooks",
+    "audit"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "unified_exec 用 custom_tool_call 取代 rollout 和钩子里的结构化命令记录",
+      "summary": "Codex CLI 0.153.0 启用 unified_exec 后，shell 活动被记成 custom_tool_call/custom_tool_call_output 而非结构化 CommandExecution 记录——丢失解析出的读分类、完成状态和退出码，PostToolUse 钩子只拿到纯文本输出、没有退出码。",
+      "explanation": "实际伤害落在检查点和审计集成上：没有结构化记录就无法判断哪些文件被读过、命令是否失败，而空的 tool_response 可能被误读成'什么都没失败'——尽管执行层内部握有退出码。报告直接验证了特性开关：同一受控会话关闭 unified_exec 后结构化 CommandExecution 记录即恢复，版本钉在 codex-cli 0.153.0（Windows）。替换记录叫 custom_tool_call 与 custom_tool_call_output——检查 ~/.codex/sessions/ 下的 rollout 时认这个标记。",
+      "actions": [
+        "在 config.toml 设 [features] unified_exec = false（或启动加 --disable unified_exec）——报告已验证可恢复带退出码和读分类的结构化 CommandExecution 记录。",
+        "如果你维护检查点或审计钩子，unified_exec 开着时不要把空 tool_response 当成功——退出码在执行层手里，只是没暴露出来。",
+        "关注上游 issue 等结构化记录在 unified_exec 下回归。"
+      ]
+    },
+    "ja": {
+      "title": "unified_exec が rollout とフックの構造化コマンド記録を custom_tool_call に置き換える",
+      "summary": "Codex CLI 0.153.0 で unified_exec を有効にすると、シェル活動が構造化 CommandExecution 記録ではなく custom_tool_call/custom_tool_call_output として記録されます。読み取り分類・完了ステータス・終了コードが失われ、PostToolUse フックは終了コードなしの平文だけを受け取ります。",
+      "explanation": "実害はチェックポイントと監査統合に降りかかります。構造化記録がなければ、どのファイルが読まれたか・コマンドが失敗したかを判定できず、空の tool_response が「何も失敗していない」と誤読され得ます——実行層は終了コードを内部で保持しているのに。報告はフィーチャースイッチを直接検証しています。同じ制御セッションで unified_exec を無効にすると構造化 CommandExecution 記録が復帰し、バージョンは codex-cli 0.153.0（Windows）に固定。置き換え記録は custom_tool_call と custom_tool_call_output で、~/.codex/sessions/ の rollout を調べるときの目印です。",
+      "actions": ["config.toml に [features] unified_exec = false を設定（または起動時に --disable unified_exec）——報告で検証済み、終了コードと読み取り分類付きの構造化 CommandExecution 記録が復帰します。", "チェックポイントや監査フックを保守しているなら、unified_exec 有効中は空の tool_response を成功扱いにしないでください。終了コードは実行層にありますが表面化していません。", "unified_exec の下で構造化記録が戻ることを、上流 issue でウォッチしてください。"]
+    }
+  }
+}

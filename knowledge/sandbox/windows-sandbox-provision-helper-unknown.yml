@@ -17,12 +17,12 @@
     ],
     "all": []
   },
-  "summary": "Windows sandbox setup/refresh fails before process creation - \"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\" - so every terminal, file, and task operation dies even though normal PowerShell works outside Codex. The same error also kills the Desktop's built-in Browser/Chrome runtime before any page opens (openai/codex#41055).",
-  "explanation": "Doctor's hard failure is the sandbox provisioning check (elevated backend). The strongest documented lead is in the same doctor output: CrowdStrike Falcon is detected with a warning that it can interfere with Codex, even though no explicit blocking event appeared in the Windows logs. The reporter verified the usual local causes are clean: runtime files exist, the workspace and its parent are owned by the normal Windows user, CodexSandboxUsers already holds Modify/Synchronize on the workspace, no domain or Azure AD join is configured, and reboot, app Repair, and new conversations did not clear it. Reported on Windows 11 (build 26200) with Codex Desktop 26.825.6671.0, sandbox_mode workspace-write.",
+  "summary": "Windows sandbox setup/refresh fails before process creation - \"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\" - so every terminal, file, and task operation dies even though normal PowerShell works outside Codex. The same error also kills the Desktop's built-in Browser/Chrome runtime before any page opens (openai/codex#41055). The same error also has a session-scoped sub-agent variant that a fresh session recovers (openai/codex#42653).",
+  "explanation": "Doctor's hard failure is the sandbox provisioning check (elevated backend). The strongest documented lead is in the same doctor output: CrowdStrike Falcon is detected with a warning that it can interfere with Codex, even though no explicit blocking event appeared in the Windows logs. The reporter verified the usual local causes are clean: runtime files exist, the workspace and its parent are owned by the normal Windows user, CodexSandboxUsers already holds Modify/Synchronize on the workspace, no domain or Azure AD join is configured, and reboot, app Repair, and new conversations did not clear it. Reported on Windows 11 (build 26200) with Codex Desktop 26.825.6671.0, sandbox_mode workspace-write. Variants under the same helper_unknown_error banner: the ACL-application stage (openai/codex#42426 - persists across both elevated and unelevated modes, apply_patch files become unreadable, approved out-of-sandbox commands still work) and a session-scoped sub-agent trigger (openai/codex#42653 - gpt-5.6-sol parent with gpt-5.6-luna sub-agents, the whole session breaks mid-run, but a NEW session in the same project immediately recovers, unlike the machine-specific #41715 case).",
   "actions": [
     "Run codex doctor and read the sandbox provisioning entry together with the security.endpoint warning - the CrowdStrike/EDR flag is the strongest documented correlation for helper_unknown_error.",
     "Loop in your security team before touching EDR: an exclusion for the Codex runtime paths is the plausible fix but was not tested in the report.",
-    "Do not keep rebooting or repairing: reboot, app Repair, ownership checks, and explicit CodexSandboxUsers ACL grants were all verified clean in the report.",
+    "Do not keep rebooting or repairing: reboot, app Repair, ownership checks, and explicit CodexSandboxUsers ACL grants were all verified clean in the report. For the session-scoped sub-agent variant, simply starting a new session recovers command execution (openai/codex#42653).",
     "When reporting upstream, include the doctor sandbox-provisioning section and the exact CreateProcess rejection message."
   ],
   "links": [
@@ -35,6 +35,16 @@
       "type": "github_issue",
       "url": "https://github.com/openai/codex/issues/41055",
       "label": "openai/codex#41055"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42426",
+      "label": "openai/codex#42426"
+    },
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42653",
+      "label": "openai/codex#42653"
     },
     {
       "type": "github_issue",
@@ -51,8 +61,8 @@
   "i18n": {
     "zh-CN": {
       "title": "Windows 沙箱供给在任何命令之前就失败（helper_unknown_error）",
-      "summary": "Windows 沙箱的建立/刷新在进程创建之前就失败（\"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\"），导致所有终端、文件和任务操作全部死亡，而 Codex 之外正常 PowerShell 一切正常。",
-      "explanation": "doctor 的硬失败是沙箱供给检查（elevated 后端）。文档证据里最强的线索在同一段 doctor 输出中：检测到 CrowdStrike Falcon 并附有\"可能干扰 Codex\"的警告——尽管 Windows 日志里没有明确的拦截事件，EDR 关联仍是首要怀疑。报告者已验证常规本地原因全部干净：运行时文件存在，工作区及其父目录归正常 Windows 用户所有，CodexSandboxUsers 已有工作区的 Modify/Synchronize 权限，未加入域或 Azure AD，重启、应用修复和新会话都无法清除。来自 Windows 11（build 26200）+ Codex Desktop 26.825.6671.0、sandbox_mode workspace-write 的报告。",
+      "summary": "Windows 沙箱的建立/刷新在进程创建之前就失败（\"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\"），导致所有终端、文件和任务操作全部死亡，而 Codex 之外正常 PowerShell 一切正常。 同一错误还有会话级子代理变体：新开会话即可恢复（openai/codex#42653）。",
+      "explanation": "doctor 的硬失败是沙箱供给检查（elevated 后端）。文档证据里最强的线索在同一段 doctor 输出中：检测到 CrowdStrike Falcon 并附有\"可能干扰 Codex\"的警告——尽管 Windows 日志里没有明确的拦截事件，EDR 关联仍是首要怀疑。报告者已验证常规本地原因全部干净：运行时文件存在，工作区及其父目录归正常 Windows 用户所有，CodexSandboxUsers 已有工作区的 Modify/Synchronize 权限，未加入域或 Azure AD，重启、应用修复和新会话都无法清除。来自 Windows 11（build 26200）+ Codex Desktop 26.825.6671.0、sandbox_mode workspace-write 的报告。 同一 helper_unknown_error 旗帜下的变体：ACL 应用阶段（#42426——提升/非提升两种模式都持续，apply_patch 建的文件变得不可读写，批准的沙箱外命令仍可用）和会话级子代理触发（#42653——gpt-5.6-sol 父代理带 gpt-5.6-luna 子代理，会话中途整体损坏，但同项目新开会话立即恢复，与机器特定的 #41715 不同）。",
       "actions": [
         "运行 codex doctor，把沙箱供给条目和 security.endpoint 警告放在一起读——CrowdStrike/EDR 标记是 helper_unknown_error 最强的文档化关联。",
         "动 EDR 之前先拉上安全团队：给 Codex 运行时路径加排除是合理的修法候选，但报告中未验证。",
@@ -62,9 +72,14 @@
     },
     "ja": {
       "title": "Windows サンドボックスの供給がどのコマンドより先に失敗する（helper_unknown_error）",
-      "summary": "Windows サンドボックスのセットアップ/リフレッシュがプロセス生成の前に失敗し（\"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\"）、端末・ファイル・タスクの全操作が死にます。Codex の外の通常の PowerShell は正常です。",
-      "explanation": "doctor の深刻な失敗はサンドボックス供給チェック（elevated バックエンド）です。文書化された最有力の手がかりは同じ doctor 出力にあります。CrowdStrike Falcon が「Codex を妨害しうる」という警告付きで検出されており、Windows ログに明示的なブロックイベントはないものの、EDR 関連が第一容疑です。報告者は通常のローカル原因をすべて検証済みです。ランタイムファイルは存在し、ワークスペースと親ディレクトリは通常の Windows ユーザー所有、CodexSandboxUsers にはワークスペースの Modify/Synchronize が既に付与済み、ドメインや Azure AD 参加はなし、再起動・アプリ修復・新しい会話でも解消しません。Windows 11（build 26200）+ Codex Desktop 26.825.6671.0、sandbox_mode workspace-write からの報告です。",
-      "actions": ["codex doctor を実行し、サンドボックス供給エントリと security.endpoint の警告を併せて読みます。CrowdStrike/EDR のフラグが helper_unknown_error の最有力の文書化された相関です。", "EDR に手を付ける前にセキュリティチームを巻き込んでください。Codex ランタイムパスの除外が有望な修正ですが、報告内では未検証です。", "再起動や修復を繰り返さないでください。再起動・アプリ修復・所有権チェック・CodexSandboxUsers への明示的な ACL 付与は、報告内ですべてクリーンと検証済みです。", "上流へ報告する際は、doctor のサンドボックス供給セクションと正確な CreateProcess 拒否メッセージを添えてください。"]
+      "summary": "Windows サンドボックスのセットアップ/リフレッシュがプロセス生成の前に失敗し（\"Failed to create unified exec process: helper_unknown_error: setup refresh had errors\"）、端末・ファイル・タスクの全操作が死にます。Codex の外の通常の PowerShell は正常です。 同一エラーにはセッション単位のサブエージェント変体もあります。新しいセッションで回復します（openai/codex#42653）。",
+      "explanation": "doctor の深刻な失敗はサンドボックス供給チェック（elevated バックエンド）です。文書化された最有力の手がかりは同じ doctor 出力にあります。CrowdStrike Falcon が「Codex を妨害しうる」という警告付きで検出されており、Windows ログに明示的なブロックイベントはないものの、EDR 関連が第一容疑です。報告者は通常のローカル原因をすべて検証済みです。ランタイムファイルは存在し、ワークスペースと親ディレクトリは通常の Windows ユーザー所有、CodexSandboxUsers にはワークスペースの Modify/Synchronize が既に付与済み、ドメインや Azure AD 参加はなし、再起動・アプリ修復・新しい会話でも解消しません。Windows 11（build 26200）+ Codex Desktop 26.825.6671.0、sandbox_mode workspace-write からの報告です。 同じ helper_unknown_error の傘下にある変体：ACL 適用ステージ（#42426——昇格/非昇格の両モードで持続し、apply_patch のファイルが読めなくなり、承認されたサンドボックス外コマンドは動作）と、セッション単位のサブエージェント引き金（#42653——gpt-5.6-sol 親 + gpt-5.6-luna サブエージェントでセッション途中から全体が壊れるが、同プロジェクトの新しいセッションですぐ回復。マシン固有の #41715 とは異なります）。",
+      "actions": [
+        "codex doctor を実行し、サンドボックス供給エントリと security.endpoint の警告を併せて読みます。CrowdStrike/EDR のフラグが helper_unknown_error の最有力の文書化された相関です。",
+        "EDR に手を付ける前にセキュリティチームを巻き込んでください。Codex ランタイムパスの除外が有望な修正ですが、報告内では未検証です。",
+        "再起動や修復を繰り返さないでください。再起動・アプリ修復・所有権チェック・CodexSandboxUsers への明示的な ACL 付与は、報告内ですべてクリーンと検証済みです。",
+        "上流へ報告する際は、doctor のサンドボックス供給セクションと正確な CreateProcess 拒否メッセージを添えてください。"
+      ]
     }
   }
 }
