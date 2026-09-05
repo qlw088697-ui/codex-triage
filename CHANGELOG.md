@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## [1.26.0] - 2026-09-05
+
+### Added
+
+- `config-unified-exec-loses-outcomes` (openai/codex#42864): with unified_exec enabled on 0.153.0, rollouts and PostToolUse hooks lose structured command records (exit codes, read classification); the verified workaround is disabling unified_exec. Signature: the custom_tool_call_output marker in rollouts.
+- `macos-chrome-native-host-eperm` (openai/codex#42618): Chrome native host fails with Operation not permitted immediately after a macOS upgrade; codesign and quarantine ruled out, syspolicyd provenance-sandbox line is the clue. Knowledge base: 67 rules across 13 categories.
+
+### Changed
+
+- `windows-sandbox-provision-helper-unknown` absorbed two more helper_unknown_error variants: the ACL-application stage (openai/codex#42426) and the session-scoped sub-agent trigger with new-session recovery (openai/codex#42653).
+
 ## [1.25.0] - 2026-09-05
 
 ### Added
