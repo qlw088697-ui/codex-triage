@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "id": "mcp-tool-disabled-transient",
+  "title": "Custom MCP tool rejected with \"The MCPv3 tool has been disabled\", then the namespace vanishes",
+  "category": "mcp",
+  "severity": "high",
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42907",
+  "match": {
+    "any": [
+      {
+        "contains": "The MCPv3 tool has been disabled"
+      }
+    ],
+    "all": []
+  },
+  "summary": "A healthy custom remote MCP app transiently disappears at the tool-binding boundary: discovery exposes its tools, the first real invocation is rejected client-side with 'The MCPv3 tool has been disabled', rediscovery no longer lists the namespace, and later it reappears and works again with no reconfiguration.",
+  "explanation": "The report proves the rejection is client/harness-side, not server-side: the MCP server's telemetry shows no matching request arrival for the rejected call, other concurrent chats kept making successful calls to the same backend, and health endpoints stayed HTTP 200. It also documents why this is not the known frozen-tool-snapshot case - the tool-definition source had been unchanged for over a day, and when the namespace returned the same snapshot worked without an admin refresh. Practical reading: an intermittent binding/snapshot glitch that fixes itself; changing your MCP server config mid-incident makes diagnosis harder, not easier.",
+  "actions": [
+    "Wait and rediscover instead of reconfiguring: in the report the namespace returned on its own and the same tool schema worked without any admin refresh or OAuth reset.",
+    "Confirm the server never saw the call: check request telemetry for a matching arrival - its absence proves the rejection happened in the client/harness binding layer.",
+    "Compare against the documented frozen-tool-snapshot case only after verifying the tool definitions truly changed - an unchanged schema for 24+ hours rules it out.",
+    "Report upstream with the exact rejection string 'The MCPv3 tool has been disabled' - it identifies the binding-boundary path."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42907",
+      "label": "openai/codex#42907"
+    }
+  ],
+  "tags": [
+    "mcp",
+    "windows",
+    "transient",
+    "namespace",
+    "binding"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "自定义 MCP 工具被报 \"The MCPv3 tool has been disabled\"，随后命名空间消失",
+      "summary": "健康的自定义远程 MCP 应用会在工具绑定边界上瞬时消失：发现阶段暴露了工具，第一次真实调用就被客户端以 'The MCPv3 tool has been disabled' 拒绝，重新发现后命名空间整个不见了，而稍后它又自己回来并恢复正常——期间没有任何重新配置。",
+      "explanation": "报告证明了拒绝发生在客户端/工具绑定层而非服务端：被拒调用在 MCP 服务端遥测里没有对应的请求到达，同一时段其他活跃会话对同一后端的 MCP 调用持续成功，健康端点保持 HTTP 200。报告还说明了为什么这不是已知的冻结工具快照问题——工具定义源已超过一天未变，命名空间回来后同一快照无需管理员刷新就能工作。实务解读：这是会自愈的间歇性绑定/快照故障；故障期间改你的 MCP 服务端配置只会让诊断更难。",
+      "actions": [
+        "等待并重新发现，而不是重新配置：报告里命名空间自己回来了，同一工具模式无需管理员刷新或 OAuth 重置就能工作。",
+        "确认服务端从未收到调用：查遥测里有没有对应请求到达——没有即证明拒绝发生在客户端绑定层。",
+        "只有在确认工具定义真的变了之后，才去对照文档里的冻结工具快照问题——24 小时未变的模式可排除它。",
+        "向上游报告时附上确切的拒绝串 'The MCPv3 tool has been disabled'——它能定位到绑定边界路径。"
+      ]
+    },
+    "ja": {
+      "title": "カスタム MCP ツールが \"The MCPv3 tool has been disabled\" で拒否され、名前空間が消える",
+      "summary": "健全なカスタムリモート MCP アプリが、ツールバインディング境界で一時的に消失します。ディスカバリはツールを公開するのに、最初の実際の呼び出しはクライアント側で 'The MCPv3 tool has been disabled' として拒否され、再ディスカバリで名前空間が消え、後になって何も設定を変えずに復帰して正常動作します。",
+      "explanation": "報告は拒否がクライアント/ハーネス側であることを証明しています。拒否された呼び出しに対応するリクエスト到着が MCP サーバーのテレメトリになく、同じ時間帯に他のアクティブなチャートは同じバックエンドへの呼び出しに成功し、ヘルスエンドポイントは HTTP 200 を維持。さらに、既知の凍結ツールスナップショット問題でもないことを文書化しています。ツール定義ソースは 1 日以上変更されておらず、名前空間の復帰後、同じスナップショットが管理者リフレッシュなしで動きました。実務的な読み方：自己修復する間欠的なバインディング/スナップショットの不具合であり、インシデント中に MCP サーバー設定を変更すると診断がむしろ難しくなります。",
+      "actions": ["再設定ではなく待機と再ディスカバリを。報告では名前空間が自然に戻り、同じツールスキーマが管理者リフレッシュや OAuth リセットなしで動きました。", "サーバーが呼び出しを一度も受け取っていないことを確認します。対応する到着がテレメトリになければ、拒否はクライアント/バインディング層で起きたと証明されます。", "ツール定義が本当に変わった確認が取れてから、文書化された凍結ツールスナップショット問題と比較してください。24 時間以上不変のスキーマなら除外できます。", "上流への報告には正確な拒否文字列 'The MCPv3 tool has been disabled' を添えてください。バインディング境界経路の特定になります。"]
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "id": "usage-luna-reserve-read-only",
+  "title": "Luna Reserve turns read-only: edits rejected by the regular usage limit",
+  "category": "usage",
+  "severity": "low",
+  "lastVerified": "2026-09-05",
+  "source": "https://github.com/openai/codex/issues/42910",
+  "match": {
+    "any": [
+      {
+        "contains": "rejected due to the Codex usage limit"
+      }
+    ],
+    "all": []
+  },
+  "summary": "After the regular allowance is exhausted, Luna Reserve keeps reading files, running commands, and reasoning - but every managed file-edit/apply_patch operation is rejected with 'rejected due to the Codex usage limit', making Reserve effectively read-only for coding work.",
+  "explanation": "The report pins the split precisely: reads, inspection, command execution, and reasoning all continue under Reserve, while the managed file-edit operation alone is rejected with the usage-limit message. It reproduces in a fresh thread started directly with Luna Reserve and in a thread that switched to Reserve mid-session, so it is not a stale-session artifact. Whether this split is intended Reserve behavior or an accounting bug is not established upstream. Practical meaning: during a Reserve window, plan read-only work (review, analysis, planning) and defer edits until the regular allowance resets.",
+  "actions": [
+    "Plan around it: during a Reserve window, use the session for reading, analysis, and preparing edits, then apply changes after the regular allowance resets.",
+    "Do not re-prompt the edit or retry apply_patch - the rejection is account-level, not a tool or permission failure.",
+    "Compare against the usage page to confirm the regular allowance is exhausted while Reserve is active before reporting upstream."
+  ],
+  "links": [
+    {
+      "type": "github_issue",
+      "url": "https://github.com/openai/codex/issues/42910",
+      "label": "openai/codex#42910"
+    }
+  ],
+  "tags": [
+    "usage",
+    "luna-reserve",
+    "apply-patch",
+    "read-only"
+  ],
+  "i18n": {
+    "zh-CN": {
+      "title": "Luna Reserve 变成只读：文件编辑被常规用量上限拒绝",
+      "summary": "常规额度耗尽后，Luna Reserve 仍能读文件、跑命令、做推理——但每次受管文件编辑/apply_patch 都以 'rejected due to the Codex usage limit' 被拒，Reserve 对编码工作实际上变成只读。",
+      "explanation": "报告把分界钉得很准：Reserve 下读取、检查、命令执行、推理全部继续，唯独受管的文件编辑操作被用量上限消息拒绝。它在全新开启的 Luna Reserve 线程和中途切换到 Reserve 的线程里都能复现，所以不是陈旧会话的假象。这个分界是 Reserve 的设计行为还是记账 bug，上游尚未定论。实务含义：Reserve 窗口期规划只读工作（评审、分析、准备修改），等常规额度重置后再动手。",
+      "actions": [
+        "围绕它做规划：Reserve 窗口期用会话做读取、分析和准备修改，等常规额度重置后再应用变更。",
+        "不要对着编辑重试 apply_patch——拒绝来自账户层，不是工具或权限故障。",
+        "向上游报告前先对照用量页，确认常规额度确实耗尽而 Reserve 仍在生效。"
+      ]
+    },
+    "ja": {
+      "title": "Luna Reserve が読み取り専用になる：ファイル編集が通常上限で拒否される",
+      "summary": "通常の許容量を使い切った後も、Luna Reserve はファイルの読み取り・コマンド実行・推論を続けられます——しかし管理対象のファイル編集/apply_patch だけは 'rejected due to the Codex usage limit' で拒否され、Reserve はコーディング作業において事実上読み取り専用になります。",
+      "explanation": "報告は分岐を正確に固定しています。Reserve 下でも読み取り・検査・コマンド実行・推論は続き、管理対象のファイル編集操作だけが使用上限メッセージで拒否されます。Luna Reserve で直接開始した新しいスレッドと、セッション途中で Reserve に切り替えたスレッドの両方で再現するため、古いセッションの残像ではありません。この分岐が Reserve の意図した挙動か会計バグかは、上流で未確定です。実務的な意味：Reserve の期間では読み取り専用の作業（レビュー、分析、編集の準備）を行い、編集は通常許容量のリセット後まで延期してください。",
+      "actions": [
+        "それを前提に計画してください。Reserve の期間ではセッションを読み取り・分析・編集の準備に使い、通常許容量のリセット後に変更を適用します。",
+        "編集を再プロンプトしたり apply_patch を再試行しないでください。拒否はアカウントレベルのもので、ツールや権限の失敗ではありません。",
+        "上流へ報告する前に使用ページと照合し、通常許容量が尽きて Reserve が有効であることを確認してください。"
+      ]
+    }
+  }
+}

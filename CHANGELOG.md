@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.27.0] - 2026-09-05
+
+### Added
+
+- Four rules from the September 5 sweep: `mcp-tool-disabled-transient` (openai/codex#42907 - "The MCPv3 tool has been disabled" rejected client-side, namespace self-heals), `desktop-worktree-setup-projector-desync` (openai/codex#42794 - threads stuck on worktree setup because the projector rejects the new rate_limits record), `sandbox-nested-exec-installation-id` (openai/codex#42398 - nested exec fails when the outer sandbox denies writes to installation_id), and `usage-luna-reserve-read-only` (openai/codex#42910 - Reserve allows reads and commands but edits are usage-limit rejected). Knowledge base: 71 rules across 13 categories.
+
 ## [1.26.0] - 2026-09-05
 
 ### Added
