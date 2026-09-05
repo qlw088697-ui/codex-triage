@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [1.29.0] - 2026-09-05
+
+### Added
+
+- `scripts/check-citations.mjs`: the citation freshness sweep as a repeatable tool - checks every cited upstream issue, lists rules whose sources are closed as completed (fixed), and supports `--strict` for pre-release gating. Doctrine documented in CONTRIBUTING.md (completed closures are review triggers; symptom-based rules stay valid for older builds).
+
+### Changed
+
+- Coverage thresholds raised as a ratchet: 80/70 -> 95 lines / 85 branches (actuals 96.87/88.89).
+
 ## [1.28.0] - 2026-09-05
 
 ### Changed
