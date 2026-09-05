@@ -261,7 +261,7 @@ test("ja locale renders Japanese UI, localized rules, and English fallback", asy
 });
 
 test("faq --category filters by rule category and rejects unknown names", () => {
-  const filtered = run(["faq", "helper", "--category", "sandbox", "--json"]);
+  const filtered = run(["faq", "helper", "--category", "sandbox", "--platform", "windows", "--json"]);
   assert.equal(filtered.status, 0, filtered.stderr);
   const parsed = JSON.parse(filtered.stdout);
   assert.equal(parsed.category, "sandbox");
@@ -270,7 +270,7 @@ test("faq --category filters by rule category and rejects unknown names", () => 
     assert.equal(entry.category, "sandbox");
   }
 
-  const listed = run(["faq", "--category", "usage", "--json"]);
+  const listed = run(["faq", "--category", "usage", "--platform", "windows", "--json"]);
   assert.equal(listed.status, 0, listed.stderr);
   const usageAll = JSON.parse(listed.stdout);
   assert.ok(usageAll.results.length, "usage category should list rules");
