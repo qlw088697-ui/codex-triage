@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.24.1] - 2026-09-05
+
+### Changed
+
+- Quality supplement, tests only: doctor parser matrix (legacy details merging, issue/detail/duration validation, runCodexDoctor degradation paths), loader error surfaces (invalid YAML, invalid rule, duplicate id, unknown replacedBy, non-rule extensions ignored), and markdown report branches (explain mode, shared-link dedupe, inner backticks). Coverage: 92.08% -> 96.49% lines, 84.29% -> 88.4% branches (71 tests).
+
 ## [1.24.0] - 2026-09-05
 
 ### Added
