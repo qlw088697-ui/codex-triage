@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## [1.30.0] - 2026-09-05
+
+### Added
+
+- `faq --category <name>`: restrict knowledge-base browsing and search to one rule category; unknown names are rejected with the valid list, and the faq JSON envelope carries the resolved `category`. Also `scripts/check-signatures.mjs`, an audit that reports duplicate match signatures across bundled rules (platform scoping can make overlaps legitimate).
 ## [1.29.0] - 2026-09-05
 
 ### Added

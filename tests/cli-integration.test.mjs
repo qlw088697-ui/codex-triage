@@ -79,7 +79,7 @@ test("CLI rejects malformed inputs and invalid argument combinations", async (t)
 test("CLI exposes package version and accepts an explicit zero match limit", async (t) => {
   const version = run(["--version"]);
   assert.equal(version.status, 0);
-  assert.equal(version.stdout.trim(), "1.29.0");
+  assert.equal(version.stdout.trim(), "1.30.0");
 
   const directory = await mkdtemp(join(tmpdir(), "codex-triage-limit-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -258,4 +258,27 @@ test("ja locale renders Japanese UI, localized rules, and English fallback", asy
   assert.equal(fallback.status, 0, fallback.stderr);
   assert.match(fallback.stdout, /English only rule/);
   assert.match(fallback.stdout, /推奨される次のステップ/);
+});
+
+test("faq --category filters by rule category and rejects unknown names", () => {
+  const filtered = run(["faq", "helper", "--category", "sandbox", "--platform", "windows", "--json"]);
+  assert.equal(filtered.status, 0, filtered.stderr);
+  const parsed = JSON.parse(filtered.stdout);
+  assert.equal(parsed.category, "sandbox");
+  assert.ok(parsed.results.length, "sandbox query should hit rules");
+  for (const entry of parsed.results) {
+    assert.equal(entry.category, "sandbox");
+  }
+
+  const listed = run(["faq", "--category", "usage", "--platform", "windows", "--json"]);
+  assert.equal(listed.status, 0, listed.stderr);
+  const usageAll = JSON.parse(listed.stdout);
+  assert.ok(usageAll.results.length, "usage category should list rules");
+  for (const entry of usageAll.results) {
+    assert.equal(entry.category, "usage");
+  }
+
+  const unknown = run(["faq", "--category", "nonexistent"]);
+  assert.equal(unknown.status, 1);
+  assert.match(unknown.stderr, /--category must be one of/);
 });

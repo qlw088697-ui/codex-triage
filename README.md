@@ -108,7 +108,7 @@ codex-triage faq websocket
 codex-triage faq 握手超时 --lang zh-CN --platform wsl
 ```
 
-With no query, `faq` lists every rule in the knowledge base. Results honor `--platform` and `--limit`, and Chinese and Japanese queries match zh-CN and ja titles and summaries.
+With no query, `faq` lists every rule in the knowledge base. Results honor `--platform`, `--limit`, and `--category`, and Chinese and Japanese queries match zh-CN and ja titles and summaries.
 
 Generate a sanitized Markdown report:
 
@@ -136,6 +136,7 @@ Important options:
 --platform <platform>    windows, macos, linux, or wsl
 --knowledge <path>       Custom rule directory
 --limit <n>              Maximum matches/entries, 0..100
+--category <name>        faq only: restrict results to one rule category
 --doctor-timeout <ms>    1000..120000
 --codex-version <ver>    Version evidence for matching when the input has none
 --version                Print package version
