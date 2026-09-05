@@ -24,7 +24,7 @@
   "explanation": "Treat this as a likely match, not proof of root cause.",
   "actions": [
     "Confirm where the Codex login listener is running and where the browser is running.",
-    "For remote/headless flows, prefer an authentication method designed for that environment when available.",
+    "For remote/headless flows, check whether a device-code login flow is now available for your build (a request for it, openai/codex#12263, was closed as completed in August 2026) - it avoids the localhost callback entirely.",
     "Check for stale VS Code/devcontainer port forwarding on port 1455 before retrying."
   ],
   "links": [
@@ -47,7 +47,7 @@
       "explanation": "这只是高概率匹配，不等同于已经证明根因。",
       "actions": [
         "确认 Codex 登录监听器运行在哪里，以及浏览器运行在哪里。",
-        "远程/无头环境优先选择适合该环境的认证方式。",
+        "远程/无头流程先确认你的构建是否已支持设备码登录（相关请求 openai/codex#12263 已于 2026 年 8 月以 completed 关闭）——它可完全避开 localhost 回调。",
         "重试前检查 VS Code / devcontainer 是否残留 1455 端口转发。"
       ]
     },
@@ -57,7 +57,7 @@
       "explanation": "根因の証明ではなく、有力な一致として扱ってください。",
       "actions": [
         "Codex のログインリスナーがどこで、ブラウザがどこで動いているか確認します。",
-        "リモート/ヘッドレスのフローでは、可能ならその環境向けに設計された認証方法を選びます。",
+        "リモート/ヘッドレスのフローでは、まずビルドにデバイスコード ログインが用意されているか確認してください（その要望 openai/codex#12263 は 2026 年 8 月に完了としてクローズされました）。localhost コールバックを完全に回避できます。",
         "再試行前に、ポート 1455 の古い VS Code/devcontainer ポート転送を確認します。"
       ]
     }

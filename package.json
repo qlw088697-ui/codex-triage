@@ -1,6 +1,6 @@
 {
   "name": "codex-triage",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "description": "Community troubleshooting knowledge layer for OpenAI Codex",
   "type": "module",
   "main": "./dist/index.js",

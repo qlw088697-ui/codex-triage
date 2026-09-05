@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [1.28.0] - 2026-09-05
+
+### Changed
+
+- Second freshness sweep: `auth-usage-limit-reached` absorbed the strongest metering evidence on record (openai/codex#42912 - a freshly reset 5-hour window draining 58% to 17% while completely idle, with timestamped screenshots); `usage-luna-reserve-read-only` annotated with the upstream same-day completion confirming the read-only split as intended; `wsl-oauth-localhost-callback` now points at the landed device-code login flow (openai/codex#12263).
+
 ## [1.27.0] - 2026-09-05
 
 ### Added
